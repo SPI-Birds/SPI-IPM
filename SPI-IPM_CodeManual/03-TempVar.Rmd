@@ -1,0 +1,17 @@
+# Modelling temporal variation {#TempVar}
+
+
+##	Random year variation
+
+
+##	Temporal covariates
+
+###	Continuous variables
+
+###	Categorical variables
+
+###	Imputation of missing covariate values
+
+
+##	Notes on covariate selection
+

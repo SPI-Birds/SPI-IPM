@@ -1,0 +1,22 @@
+# Visualizing and interpreting direct IPM outputs {#ResultsViz}
+
+
+##	Population trajectories
+
+
+##	Within-population variation in vital rates
+
+###	Age-class-specific averages
+
+###	Year-by-year variation
+
+
+##	Between-population variation in vital rates
+
+###	Population-specific averages
+
+###	Year-by-year variation
+
+
+##	Covariate effects
+

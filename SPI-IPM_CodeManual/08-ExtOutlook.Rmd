@@ -1,0 +1,31 @@
+# Useful extensions and outlook {#ExtOutlook}
+
+
+##	Adapting the population model for your species/population
+
+###	Accounting for multiple broods per bird per year
+
+###	Altering age structure
+
+###	Individual heterogeneity beyond age: sex, traits, and more
+
+
+##	Including additional data and informative priors
+
+###	Including partially observed age information
+
+###	Making the most of auxiliary knowledge about immigrants/dispersers
+
+###	Letting published values help with estimation when data is sparse
+
+
+##	Building on the multi-population perspective
+
+###	Joint analysis of data from several populations
+
+###	Modelling cross-population covariation
+
+###	Estimating hyper-parameters in large-scale analyses
+
+###	Unlocking the secrets of dispersal
+

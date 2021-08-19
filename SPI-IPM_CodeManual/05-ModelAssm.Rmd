@@ -1,0 +1,18 @@
+# Model Assessment {#ModelAssm}
+
+
+## Assessing chain convergence
+
+
+##	Plotting data vs. predictions
+
+
+##	Comparing estimates from integrated vs. independent analyses
+
+
+##	“Reality check” using stochastic simulations
+
+
+##	Other approaches
+Running for additional years and comparing to non-included data, PPCs, etc.
+

@@ -1,0 +1,25 @@
+# Follow-up Analyses {#AddAnalyses}
+
+
+##	Testing for time-trends
+
+
+##	Testing for density-dependence
+
+
+##	Investigating cross-population covariation
+
+
+##	Quantifying demographic contributions to short term population dynamics
+
+###	Year-by-year variation in population growth rate (random design LTRE)	 
+
+###	Year-to-year differences in population growth rate (fixed design LTRE)
+
+
+##	Quantifying demographic contributions to long-term population trends
+
+###	Differences in population trajectories between time periods (period design LTRE)
+
+###	Differences in population trajectories between locations (period design LTRE with time-by-space substitution)
+

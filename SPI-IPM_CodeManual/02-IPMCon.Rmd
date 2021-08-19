@@ -1,0 +1,25 @@
+# IPM Construction {#IPMCon}
+
+
+
+##	Open population model with 2 age classes
+
+
+
+##	Data likelihoods
+
+
+###	Nest count data likelihood
+
+###	Clutch size data likelihoods
+
+###	Fledgling count data likelihoods
+
+###	Mark-recapture data likelihood
+
+###	Immigrant count data likelihood
+
+
+
+##	Priors and constraints
+

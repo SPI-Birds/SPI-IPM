@@ -1,0 +1,14 @@
+# IPM Implementation {#IPMImp}
+
+
+##	Efficient implementation using NIMBLE
+We use the fantastic **nimble** package [@devalpine2017]!
+
+
+##	Simulation of initial values
+
+
+##	Test runs and full runs: chains, iterations, burn-in, and thinning
+
+
+##	Trouble-shooting implementation issues

@@ -134,6 +134,7 @@ dev.off()
 pdf('Plots_Cont/ResultsSurvRep_AllPops.pdf', width = 8, height = 6)
 ggplot(subset(LTRE_local, parameter %in% c('Survival', 'Reproduction') & cont > -0.025 & cont < 0.1), aes(x = cont, y = PopID)) + 
   geom_density_ridges(aes(height = ..ndensity.., fill = parameter, color = parameter), alpha = 0.6, scale = 1) +
+  geom_vline(aes(xintercept = 0), color = 'white', linetype = 'dotted', size = 0.4) + 
   xlab('Contribution') + ylab('Category') +
   scale_x_continuous(expand = c(0.01, 0)) +
   scale_y_discrete(expand = c(0.01, 0), limits = rev) +

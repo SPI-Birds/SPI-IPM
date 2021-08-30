@@ -8,7 +8,7 @@ message(green$underline$bold(paste0('Random design LTRE analyses for ', PopID)))
 StudyYears <- eval(parse(text = paste0('StudyYearsList$', PopID)))
 
 ## Load MCMC samples
-load(paste0(DataPath,'/FlycatcherIPM_CovA_Sub_', PopID, '.RData'))
+load(paste0(DataPath,'/SPI-IPM__', PopID, '.RData'))
 #str(PFC.IPM) # = posterior samples in coda format
 
 ## Transform samples into matrix (all chains combined)

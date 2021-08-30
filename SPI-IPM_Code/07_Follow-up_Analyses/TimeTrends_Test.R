@@ -13,25 +13,25 @@ library(tidyr)
 #--------------------#
 
 ## Load posterior samples from all 7 runs
-load('FlycatcherIPM_CovA_Sub_DIN.RData')
+load('SPI-IPM_DIN.RData')
 DIN.IPM <- PFC.IPM
 
-load('FlycatcherIPM_CovA_Sub_EDM.RData')
+load('SPI-IPM_EDM.RData')
 EDM.IPM <- PFC.IPM
 
-load('FlycatcherIPM_CovA_Sub_KAT.RData')
+load('SPI-IPM_KAT.RData')
 KAT.IPM <- PFC.IPM
 
-load('FlycatcherIPM_CovA_Sub_NAG.RData')
+load('SPI-IPM_NAG.RData')
 NAG.IPM <- PFC.IPM
 
-load('FlycatcherIPM_CovA_Sub_NWA.RData')
+load('SPI-IPM_NWA.RData')
 NWA.IPM <- PFC.IPM
 
-load('FlycatcherIPM_CovA_Sub_OKE.RData')
+load('SPI-IPM_OKE.RData')
 OKE.IPM <- PFC.IPM
 
-load('FlycatcherIPM_CovA_Sub_TEI.RData')
+load('SPI-IPM_TEI.RData')
 TEI.IPM <- PFC.IPM
 
 
@@ -163,5 +163,5 @@ allPop.data <- dplyr::bind_rows(sum.data)
 allPop.data$Evidence <- ifelse(sign(allPop.data$r_lCI) == sign(allPop.data$r_uCI), '*', '-')
 
 ## Save as csv
-write.csv(allPop.data, '210826_TrendEstimates.csv', row.names = FALSE)
+write.csv(allPop.data, 'TrendEstimates.csv', row.names = FALSE)
 

@@ -15,7 +15,7 @@ mySeed <- 1
 PopID <- 'EDM'
 
 ## Source IPM setup code
-source('FlycatcherIPM_Setup_CovA.R')
+source('IPMSetup.R')
 
 
 ####################

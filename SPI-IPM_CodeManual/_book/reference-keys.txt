@@ -16,6 +16,8 @@ nest-survey-sampling-effort
 capture-probability-proxies
 IPMCon
 open-population-model-with-2-age-classes
+model-description
+code-implementation-including-demographic-stochasticity
 data-likelihoods
 nest-count-data-likelihood
 clutch-size-data-likelihoods

@@ -1,149 +1,474 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="" xml:lang="">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Chapter 2 IPM Construction | SPI-IPM Code Manual</title>
-<meta name="author" content="Chloé R. Nater">
-<meta name="description" content="2.1 Open population model with 2 age classes   2.2 Data likelihoods  2.2.1 Nest count data likelihood   2.2.2 Clutch size data likelihoods   2.2.3 Fledgling count data likelihoods   2.2.4...">
-<meta name="generator" content="bookdown 0.22.17 with bs4_book()">
-<meta property="og:title" content="Chapter 2 IPM Construction | SPI-IPM Code Manual">
-<meta property="og:type" content="book">
-<meta property="og:description" content="2.1 Open population model with 2 age classes   2.2 Data likelihoods  2.2.1 Nest count data likelihood   2.2.2 Clutch size data likelihoods   2.2.3 Fledgling count data likelihoods   2.2.4...">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Chapter 2 IPM Construction | SPI-IPM Code Manual">
-<meta name="twitter:description" content="2.1 Open population model with 2 age classes   2.2 Data likelihoods  2.2.1 Nest count data likelihood   2.2.2 Clutch size data likelihoods   2.2.3 Fledgling count data likelihoods   2.2.4...">
-<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.10/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.1/tabs.js"></script><script src="libs/bs3compat-0.2.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
-<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 2 IPM Construction | SPI-IPM Code Manual</title>
+  <meta name="description" content="TBA." />
+  <meta name="generator" content="bookdown 0.22.17 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 2 IPM Construction | SPI-IPM Code Manual" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="TBA." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 2 IPM Construction | SPI-IPM Code Manual" />
+  
+  <meta name="twitter:description" content="TBA." />
+  
+
+<meta name="author" content="Chloé R. Nater" />
+
+
+<meta name="date" content="2021-09-30" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="DataPrep.html"/>
+<link rel="next" href="TempVar.html"/>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
 </head>
-<body data-spy="scroll" data-target="#toc">
 
-<div class="container-fluid">
-<div class="row">
-  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+<body>
 
-    <div class="d-flex align-items-start justify-content-between">
-      <h1>
-        <a href="index.html" title="">SPI-IPM Code Manual</a>
-      </h1>
-      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
-    </div>
 
-    <div id="main-nav" class="collapse-lg">
-      <form role="search">
-        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
-</form>
 
-      <nav aria-label="Table of contents"><h2>Table of contents</h2>
-        <ul class="book-toc list-unstyled">
-<li><a class="" href="index.html">About this manual</a></li>
-<li><a class="" href="DataPrep.html"><span class="header-section-number">1</span> Preparing SPI-Birds data for Bayesian analysis</a></li>
-<li><a class="active" href="IPMCon.html"><span class="header-section-number">2</span> IPM Construction</a></li>
-<li><a class="" href="TempVar.html"><span class="header-section-number">3</span> Modelling temporal variation</a></li>
-<li><a class="" href="IPMImp.html"><span class="header-section-number">4</span> IPM Implementation</a></li>
-<li><a class="" href="ModelAssm.html"><span class="header-section-number">5</span> Model Assessment</a></li>
-<li><a class="" href="ResultsViz.html"><span class="header-section-number">6</span> Visualizing and interpreting direct IPM outputs</a></li>
-<li><a class="" href="AddAnalyses.html"><span class="header-section-number">7</span> Follow-up Analyses</a></li>
-<li><a class="" href="ExtOutlook.html"><span class="header-section-number">8</span> Useful extensions and outlook</a></li>
-<li><a class="" href="references.html">References</a></li>
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">SPI-IPM Code Manual</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>About this manual</a></li>
+<li class="chapter" data-level="1" data-path="DataPrep.html"><a href="DataPrep.html"><i class="fa fa-check"></i><b>1</b> Preparing SPI-Birds data for Bayesian analysis</a></li>
+<li class="chapter" data-level="2" data-path="IPMCon.html"><a href="IPMCon.html"><i class="fa fa-check"></i><b>2</b> IPM Construction</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="IPMCon.html"><a href="IPMCon.html#open-population-model-with-2-age-classes"><i class="fa fa-check"></i><b>2.1</b> Open population model with 2 age classes</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="IPMCon.html"><a href="IPMCon.html#model-description"><i class="fa fa-check"></i><b>2.1.1</b> Model description</a></li>
+<li class="chapter" data-level="2.1.2" data-path="IPMCon.html"><a href="IPMCon.html#code-implementation-including-demographic-stochasticity"><i class="fa fa-check"></i><b>2.1.2</b> Code implementation including demographic stochasticity</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="IPMCon.html"><a href="IPMCon.html#data-likelihoods"><i class="fa fa-check"></i><b>2.2</b> Data likelihoods</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="IPMCon.html"><a href="IPMCon.html#nest-count-data-likelihood"><i class="fa fa-check"></i><b>2.2.1</b> Nest count data likelihood</a></li>
+<li class="chapter" data-level="2.2.2" data-path="IPMCon.html"><a href="IPMCon.html#clutch-size-data-likelihoods"><i class="fa fa-check"></i><b>2.2.2</b> Clutch size data likelihoods</a></li>
+<li class="chapter" data-level="2.2.3" data-path="IPMCon.html"><a href="IPMCon.html#fledgling-count-data-likelihoods"><i class="fa fa-check"></i><b>2.2.3</b> Fledgling count data likelihoods</a></li>
+<li class="chapter" data-level="2.2.4" data-path="IPMCon.html"><a href="IPMCon.html#mark-recapture-data-likelihood"><i class="fa fa-check"></i><b>2.2.4</b> Mark-recapture data likelihood</a></li>
+<li class="chapter" data-level="2.2.5" data-path="IPMCon.html"><a href="IPMCon.html#immigrant-count-data-likelihood"><i class="fa fa-check"></i><b>2.2.5</b> Immigrant count data likelihood</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="IPMCon.html"><a href="IPMCon.html#priors-and-constraints"><i class="fa fa-check"></i><b>2.3</b> Priors and constraints</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="TempVar.html"><a href="TempVar.html"><i class="fa fa-check"></i><b>3</b> Modelling temporal variation</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="TempVar.html"><a href="TempVar.html#random-year-variation"><i class="fa fa-check"></i><b>3.1</b> Random year variation</a></li>
+<li class="chapter" data-level="3.2" data-path="TempVar.html"><a href="TempVar.html#temporal-covariates"><i class="fa fa-check"></i><b>3.2</b> Temporal covariates</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="TempVar.html"><a href="TempVar.html#continuous-variables"><i class="fa fa-check"></i><b>3.2.1</b> Continuous variables</a></li>
+<li class="chapter" data-level="3.2.2" data-path="TempVar.html"><a href="TempVar.html#categorical-variables"><i class="fa fa-check"></i><b>3.2.2</b> Categorical variables</a></li>
+<li class="chapter" data-level="3.2.3" data-path="TempVar.html"><a href="TempVar.html#imputation-of-missing-covariate-values"><i class="fa fa-check"></i><b>3.2.3</b> Imputation of missing covariate values</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="TempVar.html"><a href="TempVar.html#notes-on-covariate-selection"><i class="fa fa-check"></i><b>3.3</b> Notes on covariate selection</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="IPMImp.html"><a href="IPMImp.html"><i class="fa fa-check"></i><b>4</b> IPM Implementation</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="IPMImp.html"><a href="IPMImp.html#efficient-implementation-using-nimble"><i class="fa fa-check"></i><b>4.1</b> Efficient implementation using NIMBLE</a></li>
+<li class="chapter" data-level="4.2" data-path="IPMImp.html"><a href="IPMImp.html#simulation-of-initial-values"><i class="fa fa-check"></i><b>4.2</b> Simulation of initial values</a></li>
+<li class="chapter" data-level="4.3" data-path="IPMImp.html"><a href="IPMImp.html#test-runs-and-full-runs-chains-iterations-burn-in-and-thinning"><i class="fa fa-check"></i><b>4.3</b> Test runs and full runs: chains, iterations, burn-in, and thinning</a></li>
+<li class="chapter" data-level="4.4" data-path="IPMImp.html"><a href="IPMImp.html#trouble-shooting-implementation-issues"><i class="fa fa-check"></i><b>4.4</b> Trouble-shooting implementation issues</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="ModelAssm.html"><a href="ModelAssm.html"><i class="fa fa-check"></i><b>5</b> Model Assessment</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="ModelAssm.html"><a href="ModelAssm.html#assessing-chain-convergence"><i class="fa fa-check"></i><b>5.1</b> Assessing chain convergence</a></li>
+<li class="chapter" data-level="5.2" data-path="ModelAssm.html"><a href="ModelAssm.html#plotting-data-vs.-predictions"><i class="fa fa-check"></i><b>5.2</b> Plotting data vs. predictions</a></li>
+<li class="chapter" data-level="5.3" data-path="ModelAssm.html"><a href="ModelAssm.html#comparing-estimates-from-integrated-vs.-independent-analyses"><i class="fa fa-check"></i><b>5.3</b> Comparing estimates from integrated vs. independent analyses</a></li>
+<li class="chapter" data-level="5.4" data-path="ModelAssm.html"><a href="ModelAssm.html#reality-check-using-stochastic-simulations"><i class="fa fa-check"></i><b>5.4</b> “Reality check” using stochastic simulations</a></li>
+<li class="chapter" data-level="5.5" data-path="ModelAssm.html"><a href="ModelAssm.html#other-approaches"><i class="fa fa-check"></i><b>5.5</b> Other approaches</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="ResultsViz.html"><a href="ResultsViz.html"><i class="fa fa-check"></i><b>6</b> Visualizing and interpreting direct IPM outputs</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="ResultsViz.html"><a href="ResultsViz.html#population-trajectories"><i class="fa fa-check"></i><b>6.1</b> Population trajectories</a></li>
+<li class="chapter" data-level="6.2" data-path="ResultsViz.html"><a href="ResultsViz.html#within-population-variation-in-vital-rates"><i class="fa fa-check"></i><b>6.2</b> Within-population variation in vital rates</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="ResultsViz.html"><a href="ResultsViz.html#age-class-specific-averages"><i class="fa fa-check"></i><b>6.2.1</b> Age-class-specific averages</a></li>
+<li class="chapter" data-level="6.2.2" data-path="ResultsViz.html"><a href="ResultsViz.html#year-by-year-variation"><i class="fa fa-check"></i><b>6.2.2</b> Year-by-year variation</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="ResultsViz.html"><a href="ResultsViz.html#between-population-variation-in-vital-rates"><i class="fa fa-check"></i><b>6.3</b> Between-population variation in vital rates</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="ResultsViz.html"><a href="ResultsViz.html#population-specific-averages"><i class="fa fa-check"></i><b>6.3.1</b> Population-specific averages</a></li>
+<li class="chapter" data-level="6.3.2" data-path="ResultsViz.html"><a href="ResultsViz.html#year-by-year-variation-1"><i class="fa fa-check"></i><b>6.3.2</b> Year-by-year variation</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="ResultsViz.html"><a href="ResultsViz.html#covariate-effects"><i class="fa fa-check"></i><b>6.4</b> Covariate effects</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="AddAnalyses.html"><a href="AddAnalyses.html"><i class="fa fa-check"></i><b>7</b> Follow-up Analyses</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="AddAnalyses.html"><a href="AddAnalyses.html#testing-for-time-trends"><i class="fa fa-check"></i><b>7.1</b> Testing for time-trends</a></li>
+<li class="chapter" data-level="7.2" data-path="AddAnalyses.html"><a href="AddAnalyses.html#testing-for-density-dependence"><i class="fa fa-check"></i><b>7.2</b> Testing for density-dependence</a></li>
+<li class="chapter" data-level="7.3" data-path="AddAnalyses.html"><a href="AddAnalyses.html#investigating-cross-population-covariation"><i class="fa fa-check"></i><b>7.3</b> Investigating cross-population covariation</a></li>
+<li class="chapter" data-level="7.4" data-path="AddAnalyses.html"><a href="AddAnalyses.html#quantifying-demographic-contributions-to-short-term-population-dynamics"><i class="fa fa-check"></i><b>7.4</b> Quantifying demographic contributions to short term population dynamics</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="AddAnalyses.html"><a href="AddAnalyses.html#year-by-year-variation-in-population-growth-rate-random-design-ltre"><i class="fa fa-check"></i><b>7.4.1</b> Year-by-year variation in population growth rate (random design LTRE)</a></li>
+<li class="chapter" data-level="7.4.2" data-path="AddAnalyses.html"><a href="AddAnalyses.html#year-to-year-differences-in-population-growth-rate-fixed-design-ltre"><i class="fa fa-check"></i><b>7.4.2</b> Year-to-year differences in population growth rate (fixed design LTRE)</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="AddAnalyses.html"><a href="AddAnalyses.html#quantifying-demographic-contributions-to-long-term-population-trends"><i class="fa fa-check"></i><b>7.5</b> Quantifying demographic contributions to long-term population trends</a>
+<ul>
+<li class="chapter" data-level="7.5.1" data-path="AddAnalyses.html"><a href="AddAnalyses.html#differences-in-population-trajectories-between-time-periods-period-design-ltre"><i class="fa fa-check"></i><b>7.5.1</b> Differences in population trajectories between time periods (period design LTRE)</a></li>
+<li class="chapter" data-level="7.5.2" data-path="AddAnalyses.html"><a href="AddAnalyses.html#differences-in-population-trajectories-between-locations-period-design-ltre-with-time-by-space-substitution"><i class="fa fa-check"></i><b>7.5.2</b> Differences in population trajectories between locations (period design LTRE with time-by-space substitution)</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="ExtOutlook.html"><a href="ExtOutlook.html"><i class="fa fa-check"></i><b>8</b> Useful extensions and outlook</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
 </ul>
 
-        <div class="book-extra">
-          
-        </div>
       </nav>
-</div>
-  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="IPMCon" class="section level1" number="2">
-<h1>
-<span class="header-section-number">2</span> IPM Construction<a class="anchor" aria-label="anchor" href="#IPMCon"><i class="fas fa-link"></i></a>
-</h1>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">SPI-IPM Code Manual</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="IPMCon" class="section level1" number="2">
+<h1><span class="header-section-number">Chapter 2</span> IPM Construction</h1>
 <div id="open-population-model-with-2-age-classes" class="section level2" number="2.1">
-<h2>
-<span class="header-section-number">2.1</span> Open population model with 2 age classes<a class="anchor" aria-label="anchor" href="#open-population-model-with-2-age-classes"><i class="fas fa-link"></i></a>
-</h2>
+<h2><span class="header-section-number">2.1</span> Open population model with 2 age classes</h2>
+<div id="model-description" class="section level3" number="2.1.1">
+<h3><span class="header-section-number">2.1.1</span> Model description</h3>
+<p>Population dynamics are represented using a female-based age-structured open
+population model with a pre-breeding census in spring. At census, females are
+divided into two age classes: “yearlings” (1-year old birds hatched during the
+breeding season of the previous year) and “adults” (birds older than one year).
+The motivation underlying this distinction is that reproductive output often
+differs for these two age classes in passerine birds.
+The dynamics of the female segment of the population over the time-interval from
+census in year <span class="math inline">\(t\)</span> to census in year <span class="math inline">\(t+1\)</span> can be described with classic matrix
+notation <span class="citation">(<a href="#ref-Caswell2001" role="doc-biblioref">Caswell 2001</a>)</span> as:</p>
+<p><br />
+<span class="math display">\[N_{tot,t+1} = \begin{bmatrix} N_{Y,t+1} \\ N_{A,t+1} \end{bmatrix} =
+  \begin{bmatrix}
+0.5F_{Y,t}sJ_t &amp; 0.5F_{A,t}sJ_t \\
+sA_t &amp; sA_t
+\end{bmatrix}\begin{bmatrix} N_{Y,t} \\ N_{A,t} \end{bmatrix} +
+  \begin{bmatrix} Imm_{Y,t+1} \\ Imm_{A,t+1} \end{bmatrix}\]</span><br />
+</p>
+<p><span class="math inline">\(N_{tot,t+1}\)</span> represents the total number of yearling and adult females in the
+population upon arrival in the breeding areas in year t. The total female
+population size, <span class="math inline">\(N_{tot,t+1}\)</span>, is the sum of the numbers of yearling and adult
+females in the population in year <span class="math inline">\(t+1\)</span> (<span class="math inline">\(N_{Y,t+1}\)</span> and <span class="math inline">\(N_{A,t+1}\)</span>,
+respectively) and consists of local survivors and recruits from the previous
+breeding season, as well as immigrant yearling (<span class="math inline">\(Imm_{Y,t+1}\)</span>) and adult
+(<span class="math inline">\(Imm_{A,t+1}\)</span>) females.<br />
+</p>
+<p><span class="math inline">\(F_{a,t}\)</span> represents the expected number of fledglings produced by age class <span class="math inline">\(a\)</span>
+females during the breeding season in year <span class="math inline">\(t\)</span> and is the product of several
+vital rates. First, females in age class a may breed in a nestbox with
+probability <span class="math inline">\(pB_{a,t}\)</span> upon arrival to breeding areas in year <span class="math inline">\(t\)</span>. Each breeding
+female may then lay a clutch containing a certain number of eggs (expected
+number = <span class="math inline">\(CS_{a,t}\)</span>), and each egg within the clutch may hatch and survive to
+fledging. The probability of an egg hatching and surviving to fledging is
+divided into an age-independent probability of nest success (<span class="math inline">\(pNS_t\)</span>,
+probability of complete clutch failure = <span class="math inline">\(1-pNS_t\)</span>) and a survival probability
+of every egg/chick to fledging provided that the nest has not failed entirely
+(<span class="math inline">\(sN_{a,t}\)</span>, with <span class="math inline">\(a\)</span> = age of the mother). Consequently, the expected number of
+fledglings produced by age class <span class="math inline">\(a\)</span> females in year t is defined as:</p>
+<p><span class="math display">\[\begin{equation}
+F_{a,t}= pB_{a,t}\times CS_{a,t}\times pNS_{t}\times sN_{a,t}
+\end{equation}\]</span></p>
+<p>Fledglings that survive to the next breeding season and remain within the
+population (probability = <span class="math inline">\(sJ_t\)</span>) contribute to next year’s yearling class
+(<span class="math inline">\(N_{Y,t+1}\)</span>). Yearlings and adults that survive to the next breeding season and
+remain within the population (probability = <span class="math inline">\(sA_t\)</span>) become part of next year’s
+adult age class (<span class="math inline">\(N_{A,t+1}\)</span>).</p>
+</div>
+<div id="code-implementation-including-demographic-stochasticity" class="section level3" number="2.1.2">
+<h3><span class="header-section-number">2.1.2</span> Code implementation including demographic stochasticity</h3>
+<p>Population process models within IPMs are typically implemented as stochastic
+models that account for randomness in the outcomes of demographic processes at
+the individual level <span class="citation">(<span>“demographic stochasticity,”</span> <a href="#ref-Caswell2001" role="doc-biblioref">Caswell 2001</a>; <a href="#ref-kery2011" role="doc-biblioref">Kéry and Schaub 2011</a>)</span>.
+The model described here is no different, meaning that the numbers of breeders,
+fledglings, and survivors are treated as binomial and Poisson random variables.</p>
+<p>Reproduction is modelled via two sets of random variables: a binomial random
+variable representing the number of breeders in age class <span class="math inline">\(a\)</span> in year <span class="math inline">\(t\)</span>,
+<span class="math inline">\(B_{a,t}\)</span> and a Poisson random variable representing the
+number of fledlings produced by breeders of age class <span class="math inline">\(a\)</span> in year <span class="math inline">\(t\)</span>,
+<span class="math inline">\(Juv_{a,t}\)</span> . The implementation in the BUGS language used in the
+SPI-IPM code (<a href="https://github.com/SPI-Birds/SPI-IPM/blob/main/SPI-IPM_Code/02-04_IPM_Setup&amp;Run/IPMSetup.R"><code>IPMSetup.R</code></a>, lines 231-241) looks like:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="IPMCon.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (t <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>Tmax){</span>
+<span id="cb1-2"><a href="IPMCon.html#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(a <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>A){</span>
+<span id="cb1-3"><a href="IPMCon.html#cb1-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-4"><a href="IPMCon.html#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="do">## 1) Breeding decision</span></span>
+<span id="cb1-5"><a href="IPMCon.html#cb1-5" aria-hidden="true" tabindex="-1"></a>    B[a,t] <span class="sc">~</span> <span class="fu">dbin</span>(pB[a,t], N[a,t])</span>
+<span id="cb1-6"><a href="IPMCon.html#cb1-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-7"><a href="IPMCon.html#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="do">## 2) Offspring production</span></span>
+<span id="cb1-8"><a href="IPMCon.html#cb1-8" aria-hidden="true" tabindex="-1"></a>    Juv[a,t] <span class="sc">~</span> <span class="fu">dpois</span>(B[a,t]<span class="sc">*</span>CS[a,t]<span class="sc">*</span>pNS[t]<span class="sc">*</span>sN[a,t]<span class="sc">*</span><span class="fl">0.5</span>)</span>
+<span id="cb1-9"><a href="IPMCon.html#cb1-9" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-10"><a href="IPMCon.html#cb1-10" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Analogously, the numbers of local survivors – both fledglings surviving their
+first year and becoming yearlings, and yearlings and adults surviving to the
+next year – are implemented as binomial random variables (<a href="https://github.com/SPI-Birds/SPI-IPM/blob/main/SPI-IPM_Code/02-04_IPM_Setup&amp;Run/IPMSetup.R"><code>IPMSetup.R</code></a>, lines 243-255):</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="IPMCon.html#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (t <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(Tmax<span class="dv">-1</span>)){</span>
+<span id="cb2-2"><a href="IPMCon.html#cb2-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-3"><a href="IPMCon.html#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="do">## 3) Annual survival of local birds</span></span>
+<span id="cb2-4"><a href="IPMCon.html#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Juveniles -&gt; Yearlings</span></span>
+<span id="cb2-5"><a href="IPMCon.html#cb2-5" aria-hidden="true" tabindex="-1"></a>  localN[<span class="dv">1</span>,t<span class="sc">+</span><span class="dv">1</span>] <span class="sc">~</span> <span class="fu">dbin</span>(sJ[t], <span class="fu">sum</span>(Juv[<span class="dv">1</span><span class="sc">:</span>A,t]))</span>
+<span id="cb2-6"><a href="IPMCon.html#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Yearlings/Adults -&gt; adults</span></span>
+<span id="cb2-7"><a href="IPMCon.html#cb2-7" aria-hidden="true" tabindex="-1"></a>  localN[<span class="dv">2</span>,t<span class="sc">+</span><span class="dv">1</span>] <span class="sc">~</span> <span class="fu">dbin</span>(sA[t], <span class="fu">sum</span>(N[<span class="dv">1</span><span class="sc">:</span>A,t]))</span>
+<span id="cb2-8"><a href="IPMCon.html#cb2-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-9"><a href="IPMCon.html#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="do">## 4) Immigration</span></span>
+<span id="cb2-10"><a href="IPMCon.html#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(a <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>A){</span>
+<span id="cb2-11"><a href="IPMCon.html#cb2-11" aria-hidden="true" tabindex="-1"></a>    N[a,t<span class="sc">+</span><span class="dv">1</span>] <span class="ot">&lt;-</span> localN[a,t<span class="sc">+</span><span class="dv">1</span>] <span class="sc">+</span> Imm[a,t<span class="sc">+</span><span class="dv">1</span>]</span>
+<span id="cb2-12"><a href="IPMCon.html#cb2-12" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-13"><a href="IPMCon.html#cb2-13" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Immigrant numbers are also treated as outcomes of stochastic processes, and
+these are detailed in <a href="###%20Immigrant%20count%20data%20likelihood">2.2.5 Immigrant count data likelihood</a>.</p>
+</div>
 </div>
 <div id="data-likelihoods" class="section level2" number="2.2">
-<h2>
-<span class="header-section-number">2.2</span> Data likelihoods<a class="anchor" aria-label="anchor" href="#data-likelihoods"><i class="fas fa-link"></i></a>
-</h2>
+<h2><span class="header-section-number">2.2</span> Data likelihoods</h2>
+<p>IPMs obtain information on the population model’s parameters (population sizes
+and vital rates) from several different data sets. Information in each data set
+is channeled into model parameters via one or multiple data likelihoods.<br />
+The SPI-IPM contains five data modules consisting of a total of eight data
+likelihoods: nest count data (one likelihood), clutch size data (two likelihoods),
+fledgling count data (three likelihoods), mark-recapture data (one likelihood),
+and immigrant count data (one likelihood).
+The likelihoods contained in each data module are described in detail in the
+following sub-chapters. The underlying data sets are introduced in
+<a href="DataPrep.html#DataPrep">Chapter 1</a> of the manual.</p>
 <div id="nest-count-data-likelihood" class="section level3" number="2.2.1">
-<h3>
-<span class="header-section-number">2.2.1</span> Nest count data likelihood<a class="anchor" aria-label="anchor" href="#nest-count-data-likelihood"><i class="fas fa-link"></i></a>
-</h3>
+<h3><span class="header-section-number">2.2.1</span> Nest count data likelihood</h3>
 </div>
 <div id="clutch-size-data-likelihoods" class="section level3" number="2.2.2">
-<h3>
-<span class="header-section-number">2.2.2</span> Clutch size data likelihoods<a class="anchor" aria-label="anchor" href="#clutch-size-data-likelihoods"><i class="fas fa-link"></i></a>
-</h3>
+<h3><span class="header-section-number">2.2.2</span> Clutch size data likelihoods</h3>
 </div>
 <div id="fledgling-count-data-likelihoods" class="section level3" number="2.2.3">
-<h3>
-<span class="header-section-number">2.2.3</span> Fledgling count data likelihoods<a class="anchor" aria-label="anchor" href="#fledgling-count-data-likelihoods"><i class="fas fa-link"></i></a>
-</h3>
+<h3><span class="header-section-number">2.2.3</span> Fledgling count data likelihoods</h3>
 </div>
 <div id="mark-recapture-data-likelihood" class="section level3" number="2.2.4">
-<h3>
-<span class="header-section-number">2.2.4</span> Mark-recapture data likelihood<a class="anchor" aria-label="anchor" href="#mark-recapture-data-likelihood"><i class="fas fa-link"></i></a>
-</h3>
+<h3><span class="header-section-number">2.2.4</span> Mark-recapture data likelihood</h3>
 </div>
 <div id="immigrant-count-data-likelihood" class="section level3" number="2.2.5">
-<h3>
-<span class="header-section-number">2.2.5</span> Immigrant count data likelihood<a class="anchor" aria-label="anchor" href="#immigrant-count-data-likelihood"><i class="fas fa-link"></i></a>
-</h3>
+<h3><span class="header-section-number">2.2.5</span> Immigrant count data likelihood</h3>
 </div>
 </div>
 <div id="priors-and-constraints" class="section level2" number="2.3">
-<h2>
-<span class="header-section-number">2.3</span> Priors and constraints<a class="anchor" aria-label="anchor" href="#priors-and-constraints"><i class="fas fa-link"></i></a>
-</h2>
+<h2><span class="header-section-number">2.3</span> Priors and constraints</h2>
 
 </div>
 </div>
-  <div class="chapter-nav">
-<div class="prev"><a href="DataPrep.html"><span class="header-section-number">1</span> Preparing SPI-Birds data for Bayesian analysis</a></div>
-<div class="next"><a href="TempVar.html"><span class="header-section-number">3</span> Modelling temporal variation</a></div>
-</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
-    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
-      <ul class="nav navbar-nav">
-<li><a class="nav-link" href="#IPMCon"><span class="header-section-number">2</span> IPM Construction</a></li>
-<li><a class="nav-link" href="#open-population-model-with-2-age-classes"><span class="header-section-number">2.1</span> Open population model with 2 age classes</a></li>
-<li>
-<a class="nav-link" href="#data-likelihoods"><span class="header-section-number">2.2</span> Data likelihoods</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#nest-count-data-likelihood"><span class="header-section-number">2.2.1</span> Nest count data likelihood</a></li>
-<li><a class="nav-link" href="#clutch-size-data-likelihoods"><span class="header-section-number">2.2.2</span> Clutch size data likelihoods</a></li>
-<li><a class="nav-link" href="#fledgling-count-data-likelihoods"><span class="header-section-number">2.2.3</span> Fledgling count data likelihoods</a></li>
-<li><a class="nav-link" href="#mark-recapture-data-likelihood"><span class="header-section-number">2.2.4</span> Mark-recapture data likelihood</a></li>
-<li><a class="nav-link" href="#immigrant-count-data-likelihood"><span class="header-section-number">2.2.5</span> Immigrant count data likelihood</a></li>
-</ul>
-</li>
-<li><a class="nav-link" href="#priors-and-constraints"><span class="header-section-number">2.3</span> Priors and constraints</a></li>
-</ul>
-
-      <div class="book-extra">
-        <ul class="list-unstyled">
-          
-        </ul>
+<h3>References</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Caswell2001" class="csl-entry">
+Caswell, H. 2001. <em><span class="nocase">Matrix population models: construction, analysis, and interpretation</span></em>. Sunderland, Mass.: Sinauer Associates.
 </div>
-    </nav>
+<div id="ref-kery2011" class="csl-entry">
+Kéry, Marc, and Michael Schaub. 2011. <em>Bayesian Population Analysis Using WinBUGS: A Hierarchical Perspective</em>. Academic Press.
 </div>
-
 </div>
-</div> <!-- .container -->
+            </section>
 
-<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
-
-  <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>SPI-IPM Code Manual</strong>" was written by Chloé R. Nater. It was last built on 2021-08-19.</p>
+          </div>
+        </div>
+      </div>
+<a href="DataPrep.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="TempVar.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
   </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/02-IPMCon.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["SPI-IPM_CodeManual.pdf", "SPI-IPM_CodeManual.epub"],
+"search": {
+"engine": "lunr",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
 
-  <div class="col-12 col-md-6 mt-3">
-    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
-  </div>
-
-</div></div>
-</footer>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
+
 </html>

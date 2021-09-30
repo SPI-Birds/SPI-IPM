@@ -4,10 +4,115 @@
 
 ##	Open population model with 2 age classes
 
+### Model description
+Population dynamics are represented using a female-based age-structured open 
+population model with a pre-breeding census in spring. At census, females are 
+divided into two age classes: "yearlings" (1-year old birds hatched during the 
+breeding season of the previous year) and "adults" (birds older than one year). 
+The motivation underlying this distinction is that reproductive output often 
+differs for these two age classes in passerine birds. 
+The dynamics of the female segment of the population over the time-interval from
+census in year $t$ to census in year $t+1$ can be described with classic matrix
+notation [@Caswell2001] as:
 
+\
+$$N_{tot,t+1} = \begin{bmatrix} N_{Y,t+1} \\ N_{A,t+1} \end{bmatrix} =
+  \begin{bmatrix}
+0.5F_{Y,t}sJ_t & 0.5F_{A,t}sJ_t \\
+sA_t & sA_t
+\end{bmatrix}\begin{bmatrix} N_{Y,t} \\ N_{A,t} \end{bmatrix} +
+  \begin{bmatrix} Imm_{Y,t+1} \\ Imm_{A,t+1} \end{bmatrix}$$
+\
 
+$N_{tot,t+1}$ represents the total number of yearling and adult females in the 
+population upon arrival in the breeding areas in year t. The total female 
+population size, $N_{tot,t+1}$, is the sum of the numbers of yearling and adult 
+females in the population in year $t+1$ ($N_{Y,t+1}$ and $N_{A,t+1}$, 
+respectively) and consists of local survivors and recruits from the previous 
+breeding season, as well as immigrant yearling ($Imm_{Y,t+1}$) and adult 
+($Imm_{A,t+1}$) females. \
+
+$F_{a,t}$ represents the expected number of fledglings produced by age class $a$
+females during the breeding season in year $t$ and is the product of several 
+vital rates. First, females in age class a may breed in a nestbox with 
+probability $pB_{a,t}$ upon arrival to breeding areas in year $t$. Each breeding 
+female may then lay a clutch containing a certain number of eggs (expected 
+number = $CS_{a,t}$), and each egg within the clutch may hatch and survive to 
+fledging. The probability of an egg hatching and surviving to fledging is 
+divided into an age-independent probability of nest success ($pNS_t$, 
+probability of complete clutch failure = $1-pNS_t$) and a survival probability 
+of every egg/chick to fledging provided that the nest has not failed entirely 
+($sN_{a,t}$, with $a$ = age of the mother). Consequently, the expected number of
+fledglings produced by age class $a$ females in year t is defined as: 
+
+\begin{equation}
+F_{a,t}= pB_{a,t}\times CS_{a,t}\times pNS_{t}\times sN_{a,t}
+\end{equation}
+
+Fledglings that survive to the next breeding season and remain within the 
+population (probability = $sJ_t$) contribute to next year’s yearling class 
+($N_{Y,t+1}$). Yearlings and adults that survive to the next breeding season and
+remain within the population (probability = $sA_t$) become part of next year’s 
+adult age class ($N_{A,t+1}$).
+
+### Code implementation including demographic stochasticity
+Population process models within IPMs are typically implemented as stochastic
+models that account for randomness in the outcomes of demographic processes at
+the individual level ["demographic stochasticity", @Caswell2001; @kery2011].
+The model described here is no different, meaning that the numbers of breeders, 
+fledglings, and survivors are treated as binomial and Poisson random variables. 
+
+Reproduction is modelled via two sets of random variables: a binomial random
+variable representing the number of breeders in age class $a$ in year $t$, 
+$B_{a,t}$ and a Poisson random variable representing the 
+number of fledlings produced by breeders of age class $a$ in year $t$, 
+$Juv_{a,t}$ . The implementation in the BUGS language used in the 
+SPI-IPM code ([`IPMSetup.R`](https://github.com/SPI-Birds/SPI-IPM/blob/main/SPI-IPM_Code/02-04_IPM_Setup&Run/IPMSetup.R), lines 231-241) looks like: 
+```{r eval=FALSE}
+for (t in 1:Tmax){
+  for(a in 1:A){
+    
+    ## 1) Breeding decision
+    B[a,t] ~ dbin(pB[a,t], N[a,t])
+    
+    ## 2) Offspring production
+    Juv[a,t] ~ dpois(B[a,t]*CS[a,t]*pNS[t]*sN[a,t]*0.5)
+  }
+}
+```
+
+Analogously, the numbers of local survivors -- both fledglings surviving their
+first year and becoming yearlings, and yearlings and adults surviving to the 
+next year -- are implemented as binomial random variables ([`IPMSetup.R`](https://github.com/SPI-Birds/SPI-IPM/blob/main/SPI-IPM_Code/02-04_IPM_Setup&Run/IPMSetup.R), lines 243-255):
+```{r eval=FALSE}
+for (t in 1:(Tmax-1)){
+  
+  ## 3) Annual survival of local birds
+  # Juveniles -> Yearlings
+  localN[1,t+1] ~ dbin(sJ[t], sum(Juv[1:A,t]))
+  # Yearlings/Adults -> adults
+  localN[2,t+1] ~ dbin(sA[t], sum(N[1:A,t]))
+  
+  ## 4) Immigration
+  for(a in 1:A){
+    N[a,t+1] <- localN[a,t+1] + Imm[a,t+1]
+  }
+}
+``` 	  
+Immigrant numbers are also treated as outcomes of stochastic processes, and 
+these are detailed in [2.2.5 Immigrant count data likelihood](###	Immigrant count data likelihood).
+  
 ##	Data likelihoods
-
+IPMs obtain information on the population model's parameters (population sizes 
+and vital rates) from several different data sets. Information in each data set
+is channeled into model parameters via one or multiple data likelihoods. \
+The SPI-IPM contains five data modules consisting of a total of eight data
+likelihoods: nest count data (one likelihood), clutch size data (two likelihoods),
+fledgling count data (three likelihoods), mark-recapture data (one likelihood), 
+and immigrant count data (one likelihood). 
+The likelihoods contained in each data module are described in detail in the 
+following sub-chapters. The underlying data sets are introduced in 
+[Chapter 1](#DataPrep) of the manual.
 
 ###	Nest count data likelihood
 

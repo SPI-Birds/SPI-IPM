@@ -41,6 +41,46 @@
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
 \urlstyle{same} % disable monospaced font for URLs
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
 \usepackage{longtable,booktabs,array}
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
@@ -84,7 +124,7 @@
 
 \title{SPI-IPM Code Manual}
 \author{Chloé R. Nater}
-\date{2021-08-19}
+\date{2021-09-30}
 
 \begin{document}
 \maketitle
@@ -169,8 +209,126 @@ Quick recap of SPI-Birds standard format and overview over data types used in IP
 \hypertarget{open-population-model-with-2-age-classes}{%
 \section{Open population model with 2 age classes}\label{open-population-model-with-2-age-classes}}
 
+\hypertarget{model-description}{%
+\subsection{Model description}\label{model-description}}
+
+Population dynamics are represented using a female-based age-structured open
+population model with a pre-breeding census in spring. At census, females are
+divided into two age classes: ``yearlings'' (1-year old birds hatched during the
+breeding season of the previous year) and ``adults'' (birds older than one year).
+The motivation underlying this distinction is that reproductive output often
+differs for these two age classes in passerine birds.
+The dynamics of the female segment of the population over the time-interval from
+census in year \(t\) to census in year \(t+1\) can be described with classic matrix
+notation \citep{Caswell2001} as:\\
+
+\[N_{tot,t+1} = \begin{bmatrix} N_{Y,t+1} \\ N_{A,t+1} \end{bmatrix} =
+  \begin{bmatrix}
+0.5F_{Y,t}sJ_t & 0.5F_{A,t}sJ_t \\
+sA_t & sA_t
+\end{bmatrix}\begin{bmatrix} N_{Y,t} \\ N_{A,t} \end{bmatrix} +
+  \begin{bmatrix} Imm_{Y,t+1} \\ Imm_{A,t+1} \end{bmatrix}\]
+
+\(N_{tot,t+1}\) represents the total number of yearling and adult females in the
+population upon arrival in the breeding areas in year t. The total female
+population size, \(N_{tot,t+1}\), is the sum of the numbers of yearling and adult
+females in the population in year \(t+1\) (\(N_{Y,t+1}\) and \(N_{A,t+1}\),
+respectively) and consists of local survivors and recruits from the previous
+breeding season, as well as immigrant yearling (\(Imm_{Y,t+1}\)) and adult
+(\(Imm_{A,t+1}\)) females.\\
+
+\(F_{a,t}\) represents the expected number of fledglings produced by age class \(a\)
+females during the breeding season in year \(t\) and is the product of several
+vital rates. First, females in age class a may breed in a nestbox with
+probability \(pB_{a,t}\) upon arrival to breeding areas in year \(t\). Each breeding
+female may then lay a clutch containing a certain number of eggs (expected
+number = \(CS_{a,t}\)), and each egg within the clutch may hatch and survive to
+fledging. The probability of an egg hatching and surviving to fledging is
+divided into an age-independent probability of nest success (\(pNS_t\),
+probability of complete clutch failure = \(1-pNS_t\)) and a survival probability
+of every egg/chick to fledging provided that the nest has not failed entirely
+(\(sN_{a,t}\), with \(a\) = age of the mother). Consequently, the expected number of
+fledglings produced by age class \(a\) females in year t is defined as:
+
+\begin{equation}
+F_{a,t}= pB_{a,t}\times CS_{a,t}\times pNS_{t}\times sN_{a,t}
+\end{equation}\\
+
+Fledglings that survive to the next breeding season and remain within the
+population (probability = \(sJ_t\)) contribute to next year's yearling class
+(\(N_{Y,t+1}\)). Yearlings and adults that survive to the next breeding season and
+remain within the population (probability = \(sA_t\)) become part of next year's
+adult age class (\(N_{A,t+1}\)).
+
+\hypertarget{code-implementation-including-demographic-stochasticity}{%
+\subsection{Code implementation including demographic stochasticity}\label{code-implementation-including-demographic-stochasticity}}
+
+Population process models within IPMs are typically implemented as stochastic
+models that account for randomness in the outcomes of demographic processes at
+the individual level \citep[``demographic stochasticity'',][]{Caswell2001, kery2011}.
+The model described here is no different, meaning that the numbers of breeders,
+fledglings, and survivors are treated as binomial and Poisson random variables.
+
+Reproduction is modelled via two sets of random variables: a binomial random
+variable representing the number of breeders in age class \(a\) in year \(t\),
+\(B_{a,t}\) and a Poisson random variable representing the
+number of fledlings produced by breeders of age class \(a\) in year \(t\),
+\(Juv_{a,t}\) . The implementation in the BUGS language used in the
+SPI-IPM code (\href{https://github.com/SPI-Birds/SPI-IPM/blob/main/SPI-IPM_Code/02-04_IPM_Setup\&Run/IPMSetup.R}{\texttt{IPMSetup.R}}, lines 231-241) looks like:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{for}\NormalTok{ (t }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{Tmax)\{}
+  \ControlFlowTok{for}\NormalTok{(a }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{A)\{}
+    
+    \DocumentationTok{\#\# 1) Breeding decision}
+\NormalTok{    B[a,t] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dbin}\NormalTok{(pB[a,t], N[a,t])}
+    
+    \DocumentationTok{\#\# 2) Offspring production}
+\NormalTok{    Juv[a,t] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dpois}\NormalTok{(B[a,t]}\SpecialCharTok{*}\NormalTok{CS[a,t]}\SpecialCharTok{*}\NormalTok{pNS[t]}\SpecialCharTok{*}\NormalTok{sN[a,t]}\SpecialCharTok{*}\FloatTok{0.5}\NormalTok{)}
+\NormalTok{  \}}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+Analogously, the numbers of local survivors -- both fledglings surviving their
+first year and becoming yearlings, and yearlings and adults surviving to the
+next year -- are implemented as binomial random variables (\href{https://github.com/SPI-Birds/SPI-IPM/blob/main/SPI-IPM_Code/02-04_IPM_Setup\&Run/IPMSetup.R}{\texttt{IPMSetup.R}}, lines 243-255):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{for}\NormalTok{ (t }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{(Tmax}\DecValTok{{-}1}\NormalTok{))\{}
+  
+  \DocumentationTok{\#\# 3) Annual survival of local birds}
+  \CommentTok{\# Juveniles {-}\textgreater{} Yearlings}
+\NormalTok{  localN[}\DecValTok{1}\NormalTok{,t}\SpecialCharTok{+}\DecValTok{1}\NormalTok{] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dbin}\NormalTok{(sJ[t], }\FunctionTok{sum}\NormalTok{(Juv[}\DecValTok{1}\SpecialCharTok{:}\NormalTok{A,t]))}
+  \CommentTok{\# Yearlings/Adults {-}\textgreater{} adults}
+\NormalTok{  localN[}\DecValTok{2}\NormalTok{,t}\SpecialCharTok{+}\DecValTok{1}\NormalTok{] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dbin}\NormalTok{(sA[t], }\FunctionTok{sum}\NormalTok{(N[}\DecValTok{1}\SpecialCharTok{:}\NormalTok{A,t]))}
+  
+  \DocumentationTok{\#\# 4) Immigration}
+  \ControlFlowTok{for}\NormalTok{(a }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{A)\{}
+\NormalTok{    N[a,t}\SpecialCharTok{+}\DecValTok{1}\NormalTok{] }\OtherTok{\textless{}{-}}\NormalTok{ localN[a,t}\SpecialCharTok{+}\DecValTok{1}\NormalTok{] }\SpecialCharTok{+}\NormalTok{ Imm[a,t}\SpecialCharTok{+}\DecValTok{1}\NormalTok{]}
+\NormalTok{  \}}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+Immigrant numbers are also treated as outcomes of stochastic processes, and
+these are detailed in \protect\hyperlink{ux5cux23ux5cux23ux5cux2520Immigrantux5cux2520countux5cux2520dataux5cux2520likelihood}{2.2.5 Immigrant count data likelihood}.
+
 \hypertarget{data-likelihoods}{%
 \section{Data likelihoods}\label{data-likelihoods}}
+
+IPMs obtain information on the population model's parameters (population sizes
+and vital rates) from several different data sets. Information in each data set
+is channeled into model parameters via one or multiple data likelihoods.\\
+The SPI-IPM contains five data modules consisting of a total of eight data
+likelihoods: nest count data (one likelihood), clutch size data (two likelihoods),
+fledgling count data (three likelihoods), mark-recapture data (one likelihood),
+and immigrant count data (one likelihood).
+The likelihoods contained in each data module are described in detail in the
+following sub-chapters. The underlying data sets are introduced in
+\protect\hyperlink{DataPrep}{Chapter 1} of the manual.
 
 \hypertarget{nest-count-data-likelihood}{%
 \subsection{Nest count data likelihood}\label{nest-count-data-likelihood}}

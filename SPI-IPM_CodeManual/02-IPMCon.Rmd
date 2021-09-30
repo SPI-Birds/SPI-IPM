@@ -80,8 +80,10 @@ for (t in 1:Tmax){
   }
 }
 ```
+In the code, the age indeces $a=1$ and $a=A=2$ correspond to yearlings and 
+adults, respectively. 
 
-Analogously, the numbers of local survivors -- both fledglings surviving their
+Analogous to breeders, the numbers of local survivors -- both fledglings surviving their
 first year and becoming yearlings, and yearlings and adults surviving to the 
 next year -- are implemented as binomial random variables ([`IPMSetup.R`](https://github.com/SPI-Birds/SPI-IPM/blob/main/SPI-IPM_Code/02-04_IPM_Setup&Run/IPMSetup.R), lines 243-255):
 ```{r eval=FALSE}
@@ -115,10 +117,146 @@ following sub-chapters. The underlying data sets are introduced in
 [Chapter 1](#DataPrep) of the manual.
 
 ###	Nest count data likelihood
+The population model defines the true size of the female segment of the breeding 
+population in any year $t$ via the year- and age-specific number of breeding 
+females:
+
+\begin{equation}
+B_{a,t}  \sim Binomial(N_{a,t}, pB_{a,t})
+\end{equation}
+
+The total size of the female breeding population (the sum of $B_{a,t}$  over all 
+age classes) in year $t$ is expected to correspond closely with the observed 
+number of first clutches laid in any year ($NestCount_t$). 
+The breeding population count thus contains information about both breeding 
+probability ($pB_{a,t}$) and population size ($N_{a,t}$) and its likelihood can 
+be defined as:
+
+\begin{equation}
+NestCount_t  \sim Poisson((B_{Y,t} + B_{A,t}) \times NS\_Data_t)
+\end{equation}
+
+Here, the year-specific variable $NS\_Data_t$ is a correction factor introduced
+for dealing with years in which no nest survey data was collected 
+($NestCount_t = 0$ due to lack of sampling). $NS\_Data_t$ is set to 0 for years 
+without data collection, and to 1 in all other years. 
+
+The likelihood is written almost identically in the code, the only difference
+being the use the `sum()` function over age classes $1$ to $A=2$ when 
+specifying the Poisson distribution (this provides more flexibility for 
+extending the model to more than two age classes): 
+```{r eval=FALSE}
+for(t in 1:Tmax){
+  NestCount[t] ~ dpois(sum(B[1:A,t])*NS_Data[t])
+}
+``` 
 
 ###	Clutch size data likelihoods
+The counting of incubated eggs provides information about both individual-level 
+clutch size ($CS_{a,t}$) and reproductive output at the population level. 
+Consequently, two separate likelihoods can be specified for within the clutch
+size data module. 
+
+Each individual clutch size observation can be treated as the outcome of a 
+Poisson process with an expected value of $CS_{a,t}$ (where $a$ is the age of 
+the female that laid the clutch, and $t$ the year in which the clutch was laid).
+In the code, the likelihood is formulated for each clutch size observation $x$ 
+(out of a total of $CS\_X$ observations) and includes nested indexing of the
+expectation using data on female age (`CS_FAge`) and year (`CS_year`):
+```{r eval=FALSE}
+for(x in 1:CS_X){
+	ClutchSize[x] ~ dpois(CS[CS_FAge[x], CS_year[x]])
+}
+``` 
+Since both year and female age need to be part of the provided data, the 
+individual-level clutch size likelihood can only be used with complete 
+observations, i.e. clutches for which both number of eggs and age of the mother
+are known (year should always be known). 
+
+For the population-level likelihood, on the other hand, data on clutch sizes can
+be included irrespective of whether the age of the mother is known. The total 
+number of eggs counted in all nests laid in year $t$ can be described as:
+
+\begin{equation}
+EggNoTot_t \sim Poisson(sum(B_{Y:A,t} \times CS_{Y:A,t}) \times p_t^{EggNo})
+\end{equation}
+
+Since the product $B_{a,t}CS_{a,t}$ corresponds to all eggs laid in all 
+nests/nestboxes within the study site, another correction factor ($p_t^{EggNo}$) 
+is needed to account for the fact that eggs may not have been counted in all 
+surveyed nests with breeding activity in each year. $p_t^{EggNo}$ 
+(`EggNoSP[t]` in code) thus contains information of the year-specific proportion
+of surveyed nests for which the numbers of eggs were counted. 
+
+In code, the likelihood for the number of eggs at the population is written as:
+```{r eval=FALSE}
+for(t in 1:Tmax){
+
+	# Expected "true" egg number (by mother age class)
+	EggNo.ex[1:A,t] <- B[1:A,t]*CS[1:A,t]
+
+	# Observed egg number (corrected by data availaility)
+	EggNoTot[t] ~ dpois(sum(EggNo.ex[1:A,t])*EggNoSP[t])
+
+}
+```
 
 ###	Fledgling count data likelihoods
+Analogous to observations of clutch size, counts of fledglings contain 
+information on reproduction at both individual and population level.
+Distributions of number of fledglings produced from a clutch are often 0-inflated
+because incidents of harsh weather, predation, adandonment, etc. may result in 
+complete loss of entire clutches. To account for this, we split data on fledgling
+numbers and formulated separate likelihoods for the survival of the clutch as
+a whole (probability of a nest not failing completely, $pNS_t$) and for each 
+chick subsequently surviving to fledgling (probability $sN_{a,t}$). \
+Whether or not a clutch succeeded (i.e. at least one chick survived to fledging,
+`anyFledged`) was coded using 1 (success) and 0 (failure) and modelled as the 
+outcome of a Bernoulli process with a year-dependent success probability $pNS_t$: 
+```{r eval=FALSE}
+for(x in 1:F_X){
+  anyFledged[x] ~ dbern(pNS[F_year[x]])
+}
+```
+
+For the subset of successful clutches, the number of fledglings produced
+(`NoFledged`) was modelled as a binomial random variable with each egg laid in 
+the clutch (`NoLaid`) having a probability of $sN_{a,t}$ (where $a$ = age of the
+mother) to survive and fledge: 
+```{r eval=FALSE}
+for(x in 1:NoF_X){
+	NoFledged[x] ~ dbin(sN[NoF_FAge[x], NoF_year[x]], NoLaid[x])
+}
+```
+
+At the population level, both processes (nest success and survival to fledging
+conditional on nest success) were combined into a single Poisson 
+likelihood describing the total number of fledglings counted in the population
+in a given year $t$ as the product of the number of breeding females, clutch
+size, nest success, and survival to fledging: 
+
+\begin{equation}
+FledgedTot_t  \sim Poisson(sum(B_{Y:A,t}\times CS_{Y:A,t}\times pNS_t\times sN_{Y:A,t}) \times p_t^{Fledged})
+\end{equation}
+
+As in the clutch size data module ([Chapter 2.2.2](###	Clutch size data likelihoods)), 
+a correction factor quantifying the proportion of nests for which data is 
+availeble ($p_t^{Fledged}$, `FledgedSP[t]` in code) is used to account for 
+missing records of fledgling numbers. 
+
+In the code, calculation of the expected number of fledglings is based on the
+expected number of eggs as calculated in the clutch size data module 
+([Chapter 2.2.2](###	Clutch size data likelihoods)):
+```{r eval=FALSE}
+for(t in 1:Tmax){
+
+	# Expected "true" fledgling number (by mother age class)
+	Fledged.ex[1:A,t] <- EggNo.ex[1:A,t]*pNS[t]*sN[1:A,t]
+
+	# Observed egg number (corrected by data availaility)
+	FledgedTot[t] ~ dpois(sum(Fledged.ex[1:A,t])*FledgedSP[t])
+}
+```
 
 ###	Mark-recapture data likelihood
 

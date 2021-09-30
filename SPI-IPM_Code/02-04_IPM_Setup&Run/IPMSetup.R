@@ -504,14 +504,7 @@ PFC.IPMcode <- nimbleCode({
 		# Observed egg number (corrected by data availaility)
 		FledgedTot[t] ~ dpois(sum(Fledged.ex[1:A,t])*FledgedSP[t])
 
-		# Alternative:
-		#FledgedTot[t] ~ dbin(sN[t], LaidTot[t])
-
 	}
-
-	# NOTES:
-	# The alternative likelihood is subsantially simpler, but only possible if we assume
-	# survival to fledging to be independent of mother age
 
 
 	#------------------------------#

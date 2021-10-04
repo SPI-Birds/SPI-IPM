@@ -218,7 +218,7 @@ size data module.</p>
 Poisson process with an expected value of <span class="math inline">\(CS_{a,t}\)</span> (where <span class="math inline">\(a\)</span> is the age of
 the female that laid the clutch, and <span class="math inline">\(t\)</span> the year in which the clutch was laid).
 In the code, the likelihood is formulated for each clutch size observation <span class="math inline">\(x\)</span>
-(out of a total of <span class="math inline">\(CS\_X\)</span> observations) and includes nested indexing of the
+(out of a total of <code>CS_X</code> observations) and includes nested indexing of the
 expectation using data on female age (<code>CS_FAge</code>) and year (<code>CS_year</code>):</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw">for</span><span class="op">(</span><span class="va">x</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">CS_X</span><span class="op">)</span><span class="op">{</span>
@@ -291,8 +291,7 @@ FledgedTot_t  \sim Poisson(sum(B_{Y:A,t}\times CS_{Y:A,t}\times pNS_t\times sN_{
 a correction factor quantifying the proportion of nests for which data is
 availeble (<span class="math inline">\(p_t^{Fledged}\)</span>, <code>FledgedSP[t]</code> in code) is used to account for
 missing records of fledgling numbers.</p>
-<p>In the code, calculation of the expected number of fledglings is based on the
-expected number of eggs as calculated in the clutch size data module
+<p>In the code, calculation of the expected number of fledglings is based on the expected number of eggs as calculated in the clutch size data module
 (<a href="###%20Clutch%20size%20data%20likelihoods">Chapter 2.2.2</a>):</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw">for</span><span class="op">(</span><span class="va">t</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">Tmax</span><span class="op">)</span><span class="op">{</span>
@@ -308,6 +307,21 @@ expected number of eggs as calculated in the clutch size data module
 <h3>
 <span class="header-section-number">2.2.4</span> Mark-recapture data likelihood<a class="anchor" aria-label="anchor" href="#mark-recapture-data-likelihood"><i class="fas fa-link"></i></a>
 </h3>
+<p>IIn the SPI-IPM, capture histories of marked birds are analysed using an age-specific Cormack-Jolly-Seber (CJS) model (<span class="citation">(<a href="references.html#ref-cormack1964" role="doc-biblioref">Cormack 1964</a>; <a href="references.html#ref-jolly1965" role="doc-biblioref">Jolly 1965</a>; <a href="references.html#ref-seber1965" role="doc-biblioref">Seber 1965</a>)</span>), which allows estimation of parameters associated with both annual survival and the (re-)capturing process.<br>
+The survival parameters <span class="math inline">\(sJ_t\)</span> and <span class="math inline">\(sA_t\)</span> describe the probability of surviving from one breeding season to the next for fledglings/juveniles and adult females, respectively. Since field based sexing fledglings is not possible in the hatch year, first-year survival in the CJS likelihood was set to <span class="math inline">\(0.5sJ_t\)</span>, representing the probability that a fledgling is female and survives (recaptures of adult males were removed from the capture histories).<br>
+The time- and age-dependent recapture parameters <span class="math inline">\(p_{Age,t}^{Recap}\)</span> describe the probability that an age class <span class="math inline">\(a\)</span> individual is recaptured and identified during the breeding season of year <span class="math inline">\(t\)</span> given that it survived the time interval <span class="math inline">\(t-1\)</span> to <span class="math inline">\(t\)</span>. For many of the bird populations included in SPI-Birds, (re-)captures of birds are carried out at the nestboxes during the breeding season only. Consequently, two conditions need to be met for a (re-)capture besides the individual being alive: 1) the individual breeds in a nestbox (as non-breeders and birds breeding in natural cavities are not captured) and 2) the individual is actually captured and marked/identified while breeding in a nestbox. The recapture probability is therefore the product of the probability of breeding in a nestbox (<span class="math inline">\(pB_{Age,t}\)</span>) and the probability of capture and identification given breeding in a nestbox (<span class="math inline">\(p_t^{CapB}\)</span>): <span class="math inline">\(p_{Age,t}^{Recap}=pB_{Age,t}\times p_t^{CapB}\)</span>.
+The parameters <span class="math inline">\(pB_{Age,t}\)</span> and <span class="math inline">\(p_t^{CapB}\)</span> are confounded, and auxiliary data on one of them is required to separately estimate them. Here, raw data on the annual proportions of surveyed nests for which the identity of the breeding female was recorded (as a result of ringing or recapture) is used to approximated <span class="math inline">\(p_t^{CapB}\)</span>, allowing the CJS model to estimate age- and time-specific breeding probabilities (<span class="math inline">\(pB_{Age,t}\)</span>).<br>
+CJS models in Bayesian frameworks have traditionally been implemented either as latent states models with Bernouilli likelihoods or as multinomial likelihoods for data re-formatted as ´m-arrays’ <span class="citation">(<a href="references.html#ref-gimenez2007" role="doc-biblioref">Gimenez et al. 2007</a>; <a href="references.html#ref-kery2011" role="doc-biblioref">Kéry and Schaub 2011</a>)</span>. The former typically results in long runtimes and high computational costs, while the improved efficiency of the latter is tied to an implementation that suffers from being neither particularly intuitive nor user-friendly. To avoid these pitfalls, the CJS model in the SPI-IPM is implemented using a marginalized likelihood (that integrates over all latent states) applied to unique (not individual) capture histories only <span class="citation">(following <a href="references.html#ref-turek2016" role="doc-biblioref">Turek, de Valpine, and Paciorek 2016</a>)</span>:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co">## Likelihood with custom distribution</span>
+<span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">n.CH</span><span class="op">)</span><span class="op">{</span>
+
+  <span class="va">y.sum</span><span class="op">[</span><span class="va">i</span>, <span class="va">first.sum</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">:</span><span class="va">last.sum</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">~</span> <span class="fu">dCJS_vv_sum</span><span class="op">(</span>
+      probSurvive <span class="op">=</span> <span class="va">phi.CH</span><span class="op">[</span><span class="va">i</span>, <span class="va">first.sum</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">:</span><span class="va">last.sum</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>,
+      probCapture <span class="op">=</span> <span class="va">p.CH</span><span class="op">[</span><span class="va">i</span>, <span class="va">first.sum</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">:</span><span class="va">last.sum</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>,
+      len <span class="op">=</span> <span class="va">last.sum</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">-</span><span class="va">first.sum</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">+</span><span class="fl">1</span>,
+      mult <span class="op">=</span> <span class="va">CHs.count</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span>
+    <span class="op">}</span></code></pre></div>
 </div>
 <div id="immigrant-count-data-likelihood" class="section level3" number="2.2.5">
 <h3>
@@ -361,7 +375,7 @@ expected number of eggs as calculated in the clutch size data module
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>SPI-IPM Code Manual</strong>" was written by Chloé R. Nater. It was last built on 2021-09-30.</p>
+    <p>"<strong>SPI-IPM Code Manual</strong>" was written by Chloé R. Nater. It was last built on 2021-10-04.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

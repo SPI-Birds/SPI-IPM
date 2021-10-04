@@ -379,7 +379,6 @@ PFC.IPMcode <- nimbleCode({
 	  }
 	  p.CH[i,first.sum[i]] <- 1
 	}
-	p.ind[1:n.CH,1] <- 1
 
 	## Likelihood with custom distribution
 	for (i in 1:n.CH){

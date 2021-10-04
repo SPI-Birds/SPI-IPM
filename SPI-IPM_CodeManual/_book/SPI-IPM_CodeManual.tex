@@ -124,7 +124,7 @@
 
 \title{SPI-IPM Code Manual}
 \author{Chloé R. Nater}
-\date{2021-09-30}
+\date{2021-10-04}
 
 \begin{document}
 \maketitle
@@ -386,7 +386,7 @@ Each individual clutch size observation can be treated as the outcome of a
 Poisson process with an expected value of \(CS_{a,t}\) (where \(a\) is the age of
 the female that laid the clutch, and \(t\) the year in which the clutch was laid).
 In the code, the likelihood is formulated for each clutch size observation \(x\)
-(out of a total of \(CS\_X\) observations) and includes nested indexing of the
+(out of a total of \texttt{CS\_X} observations) and includes nested indexing of the
 expectation using data on female age (\texttt{CS\_FAge}) and year (\texttt{CS\_year}):
 
 \begin{Shaded}
@@ -484,8 +484,7 @@ a correction factor quantifying the proportion of nests for which data is
 availeble (\(p_t^{Fledged}\), \texttt{FledgedSP{[}t{]}} in code) is used to account for
 missing records of fledgling numbers.
 
-In the code, calculation of the expected number of fledglings is based on the
-expected number of eggs as calculated in the clutch size data module
+In the code, calculation of the expected number of fledglings is based on the expected number of eggs as calculated in the clutch size data module
 (\protect\hyperlink{ux5cux23ux5cux23ux5cux2520Clutchux5cux2520sizeux5cux2520dataux5cux2520likelihoods}{Chapter 2.2.2}):
 
 \begin{Shaded}
@@ -503,6 +502,26 @@ expected number of eggs as calculated in the clutch size data module
 
 \hypertarget{mark-recapture-data-likelihood}{%
 \subsection{Mark-recapture data likelihood}\label{mark-recapture-data-likelihood}}
+
+IIn the SPI-IPM, capture histories of marked birds are analysed using an age-specific Cormack-Jolly-Seber (CJS) model (\citep{cormack1964, jolly1965, seber1965}), which allows estimation of parameters associated with both annual survival and the (re-)capturing process.\\
+The survival parameters \(sJ_t\) and \(sA_t\) describe the probability of surviving from one breeding season to the next for fledglings/juveniles and adult females, respectively. Since field based sexing fledglings is not possible in the hatch year, first-year survival in the CJS likelihood was set to \(0.5sJ_t\), representing the probability that a fledgling is female and survives (recaptures of adult males were removed from the capture histories).\\
+The time- and age-dependent recapture parameters \(p_{Age,t}^{Recap}\) describe the probability that an age class \(a\) individual is recaptured and identified during the breeding season of year \(t\) given that it survived the time interval \(t-1\) to \(t\). For many of the bird populations included in SPI-Birds, (re-)captures of birds are carried out at the nestboxes during the breeding season only. Consequently, two conditions need to be met for a (re-)capture besides the individual being alive: 1) the individual breeds in a nestbox (as non-breeders and birds breeding in natural cavities are not captured) and 2) the individual is actually captured and marked/identified while breeding in a nestbox. The recapture probability is therefore the product of the probability of breeding in a nestbox (\(pB_{Age,t}\)) and the probability of capture and identification given breeding in a nestbox (\(p_t^{CapB}\)): \(p_{Age,t}^{Recap}=pB_{Age,t}\times p_t^{CapB}\).
+The parameters \(pB_{Age,t}\) and \(p_t^{CapB}\) are confounded, and auxiliary data on one of them is required to separately estimate them. Here, raw data on the annual proportions of surveyed nests for which the identity of the breeding female was recorded (as a result of ringing or recapture) is used to approximated \(p_t^{CapB}\), allowing the CJS model to estimate age- and time-specific breeding probabilities (\(pB_{Age,t}\)).\\
+CJS models in Bayesian frameworks have traditionally been implemented either as latent states models with Bernouilli likelihoods or as multinomial likelihoods for data re-formatted as ´m-arrays' \citep{gimenez2007, kery2011}. The former typically results in long runtimes and high computational costs, while the improved efficiency of the latter is tied to an implementation that suffers from being neither particularly intuitive nor user-friendly. To avoid these pitfalls, the CJS model in the SPI-IPM is implemented using a marginalized likelihood (that integrates over all latent states) applied to unique (not individual) capture histories only \citep[following][]{turek2016}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Likelihood with custom distribution}
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{n.CH)\{}
+
+\NormalTok{  y.sum[i, first.sum[i]}\SpecialCharTok{:}\NormalTok{last.sum[i]] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dCJS\_vv\_sum}\NormalTok{(}
+      \AttributeTok{probSurvive =}\NormalTok{ phi.CH[i, first.sum[i]}\SpecialCharTok{:}\NormalTok{last.sum[i]],}
+      \AttributeTok{probCapture =}\NormalTok{ p.CH[i, first.sum[i]}\SpecialCharTok{:}\NormalTok{last.sum[i]],}
+      \AttributeTok{len =}\NormalTok{ last.sum[i]}\SpecialCharTok{{-}}\NormalTok{first.sum[i]}\SpecialCharTok{+}\DecValTok{1}\NormalTok{,}
+      \AttributeTok{mult =}\NormalTok{ CHs.count[i])}
+\NormalTok{    \}}
+\end{Highlighting}
+\end{Shaded}
 
 \hypertarget{immigrant-count-data-likelihood}{%
 \subsection{Immigrant count data likelihood}\label{immigrant-count-data-likelihood}}

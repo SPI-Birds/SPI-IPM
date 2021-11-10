@@ -181,12 +181,7 @@ number of eggs counted in all nests laid in year $t$ can be described as:
 EggNoTot_t \sim Poisson(sum(B_{Y:A,t} \times CS_{Y:A,t}) \times p_t^{EggNo})
 \end{equation}
 
-Since the product $B_{a,t}CS_{a,t}$ corresponds to all eggs laid in all 
-nests/nestboxes within the study site, another correction factor ($p_t^{EggNo}$) 
-is needed to account for the fact that eggs may not have been counted in all 
-surveyed nests with breeding activity in each year. $p_t^{EggNo}$ 
-(`EggNoSP[t]` in code) thus contains information of the year-specific proportion
-of surveyed nests for which the numbers of eggs were counted. 
+Since the product $B_{a,t} \times CS_{a,t}$ corresponds to all eggs laid in all nests/nestboxes within the study site, another correction factor ($p_t^{EggNo}$) is needed to account for the fact that eggs may not have been counted in all surveyed nests with breeding activity in each year. $p_t^{EggNo}$ (`EggNoSP[t]` in code) thus contains information of the year-specific proportionof surveyed nests for which the numbers of eggs were counted. 
 
 In code, the likelihood for the number of eggs at the population is written as:
 ```{r eval=FALSE}
@@ -258,11 +253,14 @@ for(t in 1:Tmax){
 ```
 
 ###	Mark-recapture data likelihood
-IIn the SPI-IPM, capture histories of marked birds are analysed using an age-specific Cormack-Jolly-Seber (CJS) model ([@cormack1964; @jolly1965; @seber1965]), which allows estimation of parameters associated with both annual survival and the (re-)capturing process. \
-The survival parameters $sJ_t$ and $sA_t$ describe the probability of surviving from one breeding season to the next for fledglings/juveniles and adult females, respectively. Since field based sexing fledglings is not possible in the hatch year, first-year survival in the CJS likelihood was set to $0.5sJ_t$, representing the probability that a fledgling is female and survives (recaptures of adult males were removed from the capture histories).\
-The time- and age-dependent recapture parameters $p_{Age,t}^{Recap}$ describe the probability that an age class $a$ individual is recaptured and identified during the breeding season of year $t$ given that it survived the time interval $t-1$ to $t$. For many of the bird populations included in SPI-Birds, (re-)captures of birds are carried out at the nestboxes during the breeding season only. Consequently, two conditions need to be met for a (re-)capture besides the individual being alive: 1) the individual breeds in a nestbox (as non-breeders and birds breeding in natural cavities are not captured) and 2) the individual is actually captured and marked/identified while breeding in a nestbox. The recapture probability is therefore the product of the probability of breeding in a nestbox ($pB_{Age,t}$) and the probability of capture and identification given breeding in a nestbox ($p_t^{CapB}$): $p_{Age,t}^{Recap}=pB_{Age,t}\times p_t^{CapB}$. 
+In the SPI-IPM, capture histories of marked birds are analysed using an age-specific Cormack-Jolly-Seber (CJS) model [@cormack1964; @jolly1965; @seber1965], which allows estimation of parameters associated with both annual survival and the (re-)capturing process. \
+The survival parameters $sJ_t$ and $sA_t$ describe the probability of surviving from one breeding season to the next for fledglings/juveniles and adult females, respectively. Since field-based sexing fledglings is not possible in the hatch year, first-year survival in the CJS likelihood was set to $0.5sJ_t$, representing the probability that a fledgling is female and survives (recaptures of adult males were removed from the capture histories).\
+The time- and age-dependent recapture parameters $p_{Age,t}^{Recap}$ describe the probability that an age class $a$ individual is recaptured and identified during the breeding season of year $t$ given that it survived the time interval $t-1$ to $t$. For many of the bird populations included in SPI-Birds, (re-)captures of birds are carried out at the nestboxes during the breeding season only. Consequently, two conditions need to be met for a (re-)capture besides the individual being alive: 1) the individual breeds in a nestbox (as non-breeders and birds breeding in natural cavities are not captured) and 2) the individual is actually captured and marked/identified while breeding in a nestbox. The recapture probability is therefore the product of the probability of breeding in a nestbox ($pB_{Age,t}$) and the probability of capture and identification given breeding in a nestbox ($p_t^{CapB}$):
+\begin{equation}
+  p_{Age,t}^{Recap}=pB_{Age,t}\times p_t^{CapB}
+\end{equation}
 The parameters $pB_{Age,t}$ and $p_t^{CapB}$ are confounded, and auxiliary data on one of them is required to separately estimate them. Here, raw data on the annual proportions of surveyed nests for which the identity of the breeding female was recorded (as a result of ringing or recapture) is used to approximated $p_t^{CapB}$, allowing the CJS model to estimate age- and time-specific breeding probabilities ($pB_{Age,t}$). \
-CJS models in Bayesian frameworks have traditionally been implemented either as latent states models with Bernouilli likelihoods or as multinomial likelihoods for data re-formatted as ´m-arrays' [@gimenez2007; @kery2011].  The former typically results in long runtimes and high computational costs, while the improved efficiency of the latter is tied to an implementation that suffers from being neither particularly intuitive nor user-friendly. To avoid these pitfalls, the CJS model in the SPI-IPM is implemented using a marginalized likelihood (that integrates over all latent states) applied to unique (not individual) capture histories only [following @turek2016]:
+CJS models in Bayesian frameworks have traditionally been implemented either as latent states models with Bernouilli likelihoods or as multinomial likelihoods for data re-formatted as "m-arrays" [@gimenez2007; @kery2011].  The former typically results in long runtimes and high computational costs, while the improved efficiency of the latter is tied to an implementation that suffers from being neither particularly intuitive nor user-friendly. To avoid these pitfalls, the CJS model in the SPI-IPM is implemented using a much more efficient marginalized likelihood (that integrates over all latent states) that can be applied to unique (not individual) capture histories only [following @turek2016]:
 ```{r eval=FALSE}
 ## Likelihood with custom distribution
 for (i in 1:n.CH){
@@ -274,10 +272,45 @@ for (i in 1:n.CH){
 	  mult = CHs.count[i])
 	}
 ```
+In practice, this involves the use of a custom distribution `dCJS_vv_sum`, and more information on the likelihood and its implementation using NIMBLE is provided in [Chapter 4.1 (Efficient implementation using NIMBLE)](##	Efficient implementation using NIMBLE).
 
 ###	Immigrant count data likelihood
+In many nestbox studies, chick ringing is an exhaustive effort and it is not unreasonable to assume that all chicks hatched in nestboxes within a study population are ringed before fledging. Similarly, assuming that females captured in nestboxes are breeding (or attempting to breed) is often not far from the truth. If those two assumptions are largely met, then the annual numbers of newly ringed adult females ($ImmNoObs_t$) can provide information about immigration or -- more specifically -- about the latent number of newly immigrated females breeding in nestboxes each year ($ImmNoTot_t$). Typically, age will be unknown for immigrant females (unless they were marked as chicks elsewhere) and hence there is no age index on $ImmNoObs_t$ and $ImmNoTot_t$. In `SPI-IPM`, we use a Poisson observation model to describe the relationship between observed and true numbers of breeding immigrant females: 
+\begin{equation}
+  ImmNoObs_t \sim Poisson(ImmNoTot_t \times p_t^{ImmDetect})
+\end{equation}
+The expected value represents the true number of female breeding immigrants in year $t$ ($ImmNoTot_t$) corrected by an annual probability of detecting (= ringing) such individuals ($p_t^{ImmDetect}$). In most nestbox studies, ringing and recapturing of breeding birds are conducted in tandem as part of the same protocol, and we can consequently approximate adult ringing probability using recapture probability (as used in the likelihood for capture histories): $p_t^{ImmDetect} = p_t^{CapB}$). In a few exceptional years in some datasets, however, adult birds may have been ringed, but no recaptures recorded (i.e. $p_t^{CapB}=0$ but $p_t^{ImmDetect}>0$). These cases call for estimation of (or, in other words, accounting for the uncertainty in) the corresponding $p_t^{ImmDetect}>0$. As long as such cases are relatively few, this can be accommodated by specifying a non-informative prior for the unknown value^[For estimating only a subset of values within a vector/array (= partially observed variables), data (here `PropImmDetect[t]`) is provided including `NA` for unknown values and initial values are provided for the corresponding indeces (with initial values matching indeces of known data points being set to `NA`). Handling partially observed variables is discussed some more under [3.2.3 Imputation of missing covariate values](### Imputation of missing covariate values)]:
+```{r eval=FALSE}
+## Immigrant detection (= marking) probability
+  for(t in 1:Tmax){
+    PropImmDetect[t] ~ dunif(0, 1)
+  }
+```
 
+The latent number of breeding immigrants, informed by data as outlined above, is estimated as pooled across age classes ($ImmNoTot_t$), but the since the population model in `SPI-IPM` is age structured $ImmNoTot_t = ImmB_{Y,t} +ImmB_{A,t}$, where $ImmB_{Y,t}$ and $ImmB_{A,t}$ the numbers of breeding yearling and adult immigrants, respectively. These quantities are linked to the total numbers of immigrants in each age class (breeding and non-breeding), $Imm_{a,t}$, that appear in the age-structured population model ([Chapter 2.1](##	Open population model with 2 age classes) through age-specific breeding probabilities. 
+By assuming equal breeding probabilities for locally recruited and newly immigrated females, we can use the breeding probabilities estimated via the mark-recapture likelihood ($pB_{a,t}$) to make the connection:
+\begin{equation}
+  ImmB_{a,t} \sim Binomial(Imm_{a,t}, pB_{a,t})
+\end{equation}
 
+In the code, the sub-model for immigration contains both the likelihood for the immigrant count data pooled across ages and the relationship between breeding immigrant females and all immigrant females in both age classes:  
+```{r eval=FALSE}
+## Likelihood for the number/age distribution of immigrant females
+for (t in 2:Tmax){
+
+  # Latent true number of breeding immigrants (count observation model)
+  ImmNoObs[t] ~ dpois(sum(ImmB[1:A,t])*PropImmDetect[t])
+
+  # Number of breeding immigrants per age class
+  for(a in 1:A){
+    ImmB[a,t] ~ dbin(pB[a,t], Imm[a,t])
+  }
+}
+
+ImmNoObs[1] <- 0
+ImmB[1:A,1] <- 0
+```
+Note that various immigrant numbers are set to 0 at $t=1$ since there is no way of distinguishing between locally-born and newly immigrated birds in the first year of study. 
 
 ##	Priors and constraints
 

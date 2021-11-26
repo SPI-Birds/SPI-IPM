@@ -4,16 +4,16 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Chapter 4 IPM Implementation | SPI-IPM Code Manual</title>
+<title>Chapter 6 IPM Implementation | SPI-IPM Code Manual</title>
 <meta name="author" content="Chloé R. Nater">
-<meta name="description" content="4.1 Efficient implementation using NIMBLE We use the fantastic nimble package (Valpine et al. 2017)!  4.2 Simulation of initial values   4.3 Test runs and full runs: chains, iterations, burn-in,...">
+<meta name="description" content="6.1 Efficient implementation using NIMBLE We use the fantastic nimble package (Valpine et al. 2017)!  6.2 Simulation of initial values   6.3 Test runs and full runs: chains, iterations, burn-in,...">
 <meta name="generator" content="bookdown 0.24 with bs4_book()">
-<meta property="og:title" content="Chapter 4 IPM Implementation | SPI-IPM Code Manual">
+<meta property="og:title" content="Chapter 6 IPM Implementation | SPI-IPM Code Manual">
 <meta property="og:type" content="book">
-<meta property="og:description" content="4.1 Efficient implementation using NIMBLE We use the fantastic nimble package (Valpine et al. 2017)!  4.2 Simulation of initial values   4.3 Test runs and full runs: chains, iterations, burn-in,...">
+<meta property="og:description" content="6.1 Efficient implementation using NIMBLE We use the fantastic nimble package (Valpine et al. 2017)!  6.2 Simulation of initial values   6.3 Test runs and full runs: chains, iterations, burn-in,...">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Chapter 4 IPM Implementation | SPI-IPM Code Manual">
-<meta name="twitter:description" content="4.1 Efficient implementation using NIMBLE We use the fantastic nimble package (Valpine et al. 2017)!  4.2 Simulation of initial values   4.3 Test runs and full runs: chains, iterations, burn-in,...">
+<meta name="twitter:title" content="Chapter 6 IPM Implementation | SPI-IPM Code Manual">
+<meta name="twitter:description" content="6.1 Efficient implementation using NIMBLE We use the fantastic nimble package (Valpine et al. 2017)!  6.2 Simulation of initial values   6.3 Test runs and full runs: chains, iterations, burn-in,...">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
@@ -43,11 +43,13 @@
 <li><a class="" href="DataPrep.html"><span class="header-section-number">1</span> Preparing SPI-Birds data for Bayesian analysis</a></li>
 <li><a class="" href="IPMCon.html"><span class="header-section-number">2</span> IPM Construction</a></li>
 <li><a class="" href="TempVar.html"><span class="header-section-number">3</span> Modelling temporal variation</a></li>
-<li><a class="active" href="IPMImp.html"><span class="header-section-number">4</span> IPM Implementation</a></li>
-<li><a class="" href="ModelAssm.html"><span class="header-section-number">5</span> Model Assessment</a></li>
-<li><a class="" href="ResultsViz.html"><span class="header-section-number">6</span> Visualizing and interpreting direct IPM outputs</a></li>
-<li><a class="" href="AddAnalyses.html"><span class="header-section-number">7</span> Follow-up Analyses</a></li>
-<li><a class="" href="ExtOutlook.html"><span class="header-section-number">8</span> Useful extensions and outlook</a></li>
+<li><a class="" href="notes-on-covariate-selection.html"><span class="header-section-number">4</span> ## Notes on covariate selection</a></li>
+<li><a class="" href="tba-later.html"><span class="header-section-number">5</span> [TBA later]</a></li>
+<li><a class="active" href="IPMImp.html"><span class="header-section-number">6</span> IPM Implementation</a></li>
+<li><a class="" href="ModelAssm.html"><span class="header-section-number">7</span> Model Assessment</a></li>
+<li><a class="" href="ResultsViz.html"><span class="header-section-number">8</span> Visualizing and interpreting direct IPM outputs</a></li>
+<li><a class="" href="AddAnalyses.html"><span class="header-section-number">9</span> Follow-up Analyses</a></li>
+<li><a class="" href="ExtOutlook.html"><span class="header-section-number">10</span> Useful extensions and outlook</a></li>
 <li><a class="" href="references.html">References</a></li>
 </ul>
 
@@ -58,42 +60,42 @@
 </div>
   </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="IPMImp" class="section level1">
 <h1>
-<span class="header-section-number">4</span> IPM Implementation<a class="anchor" aria-label="anchor" href="#IPMImp"><i class="fas fa-link"></i></a>
+<span class="header-section-number">6</span> IPM Implementation<a class="anchor" aria-label="anchor" href="#IPMImp"><i class="fas fa-link"></i></a>
 </h1>
 <div id="efficient-implementation-using-nimble" class="section level2">
 <h2>
-<span class="header-section-number">4.1</span> Efficient implementation using NIMBLE<a class="anchor" aria-label="anchor" href="#efficient-implementation-using-nimble"><i class="fas fa-link"></i></a>
+<span class="header-section-number">6.1</span> Efficient implementation using NIMBLE<a class="anchor" aria-label="anchor" href="#efficient-implementation-using-nimble"><i class="fas fa-link"></i></a>
 </h2>
 <p>We use the fantastic <strong>nimble</strong> package <span class="citation">(Valpine et al. <a href="references.html#ref-devalpine2017" role="doc-biblioref">2017</a>)</span>!</p>
 </div>
 <div id="simulation-of-initial-values" class="section level2">
 <h2>
-<span class="header-section-number">4.2</span> Simulation of initial values<a class="anchor" aria-label="anchor" href="#simulation-of-initial-values"><i class="fas fa-link"></i></a>
+<span class="header-section-number">6.2</span> Simulation of initial values<a class="anchor" aria-label="anchor" href="#simulation-of-initial-values"><i class="fas fa-link"></i></a>
 </h2>
 </div>
 <div id="test-runs-and-full-runs-chains-iterations-burn-in-and-thinning" class="section level2">
 <h2>
-<span class="header-section-number">4.3</span> Test runs and full runs: chains, iterations, burn-in, and thinning<a class="anchor" aria-label="anchor" href="#test-runs-and-full-runs-chains-iterations-burn-in-and-thinning"><i class="fas fa-link"></i></a>
+<span class="header-section-number">6.3</span> Test runs and full runs: chains, iterations, burn-in, and thinning<a class="anchor" aria-label="anchor" href="#test-runs-and-full-runs-chains-iterations-burn-in-and-thinning"><i class="fas fa-link"></i></a>
 </h2>
 </div>
 <div id="trouble-shooting-implementation-issues" class="section level2">
 <h2>
-<span class="header-section-number">4.4</span> Trouble-shooting implementation issues<a class="anchor" aria-label="anchor" href="#trouble-shooting-implementation-issues"><i class="fas fa-link"></i></a>
+<span class="header-section-number">6.4</span> Trouble-shooting implementation issues<a class="anchor" aria-label="anchor" href="#trouble-shooting-implementation-issues"><i class="fas fa-link"></i></a>
 </h2>
 
 </div>
 </div>
   <div class="chapter-nav">
-<div class="prev"><a href="TempVar.html"><span class="header-section-number">3</span> Modelling temporal variation</a></div>
-<div class="next"><a href="ModelAssm.html"><span class="header-section-number">5</span> Model Assessment</a></div>
+<div class="prev"><a href="tba-later.html"><span class="header-section-number">5</span> [TBA later]</a></div>
+<div class="next"><a href="ModelAssm.html"><span class="header-section-number">7</span> Model Assessment</a></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
-<li><a class="nav-link" href="#IPMImp"><span class="header-section-number">4</span> IPM Implementation</a></li>
-<li><a class="nav-link" href="#efficient-implementation-using-nimble"><span class="header-section-number">4.1</span> Efficient implementation using NIMBLE</a></li>
-<li><a class="nav-link" href="#simulation-of-initial-values"><span class="header-section-number">4.2</span> Simulation of initial values</a></li>
-<li><a class="nav-link" href="#test-runs-and-full-runs-chains-iterations-burn-in-and-thinning"><span class="header-section-number">4.3</span> Test runs and full runs: chains, iterations, burn-in, and thinning</a></li>
-<li><a class="nav-link" href="#trouble-shooting-implementation-issues"><span class="header-section-number">4.4</span> Trouble-shooting implementation issues</a></li>
+<li><a class="nav-link" href="#IPMImp"><span class="header-section-number">6</span> IPM Implementation</a></li>
+<li><a class="nav-link" href="#efficient-implementation-using-nimble"><span class="header-section-number">6.1</span> Efficient implementation using NIMBLE</a></li>
+<li><a class="nav-link" href="#simulation-of-initial-values"><span class="header-section-number">6.2</span> Simulation of initial values</a></li>
+<li><a class="nav-link" href="#test-runs-and-full-runs-chains-iterations-burn-in-and-thinning"><span class="header-section-number">6.3</span> Test runs and full runs: chains, iterations, burn-in, and thinning</a></li>
+<li><a class="nav-link" href="#trouble-shooting-implementation-issues"><span class="header-section-number">6.4</span> Trouble-shooting implementation issues</a></li>
 </ul>
 
       <div class="book-extra">

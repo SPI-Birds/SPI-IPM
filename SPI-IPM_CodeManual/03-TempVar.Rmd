@@ -1,8 +1,62 @@
 # Modelling temporal variation {#TempVar}
 
+Vital rates are expected to vary among years due to changes in environmental
+conditions. `SPI-IPM` is set up to account for among-year variation in 
+different (age-specific) vital rates $X_{a,t}$ using fixed effects of
+supplied environmental covariates ($cov1_t$, $cov2_t$,...) and year random effects ($\epsilon_t^X$). The resulting generalized linear
+mixed-models for time- and age-specific vital rates therefore take the following
+form:
+\begin{equation}
+  link(X_{a,t}) = link(\mu_a^X) + \beta_{cov1}^X\times cov1_t + \beta_{cov2}^X\times cov2_t + ... + \epsilon_t^X
+\end{equation}
+Here, $\mu_a^X$ is the age-specific average vital rate (intercept) and $\beta_{cov1}$
+and $\beta_{cov2}$ are the slopes for the effects of covariates $cov1$ and $cov2$
+on the link scale, respectively. 
+The link function depends on the vital rate,  and is set to logit for breeding 
+probabilities ($pB_{a,t}$), nest success probabilities ($pNS_t$), and survival
+probabilities ($sN_{a,t}$, $sJ_t$, $sA_t$) and log for clutch size ($CS_{a,t}$).
+
 
 ##	Random year variation
+The random year effects included in the basic implementation of `SPI-IPM` are 
+assumed to be normally distributed such that
+\begin{equation}
+  \epsilon_{t}^X \sim Normal(0, \sigma^X)
+\end{equation}
+where $\sigma^X$ is the standard deviation of random year effects on vital rate
+$X_{a,t}$. 
+The random effects in the basic implementation are also age-independent, meaning
+that $\epsilon_t^X$ is included in the equations for both the yearling vital 
+rate $X_{Y,t}$ and the adults vital rate $X_{A,t}$. The exception are the annual
+survival rates for juveniles ($sJ_t$) and ($sA_t$), which both have separate
+random effects because the drivers of survival variation are expected to vary 
+between those two age classes, and the basic implementation includes an 
+additional covariate effect $sJ_t$ only:
+```{r eval=FALSE}
+## Age- and time-dependent survival probabilities
+logit(sJ[1:Tmax]) <- logit(Mu.sJ) + beta3.sJ*cov3[1:Tmax] + epsilon.sJ[1:Tmax]
+logit(sA[1:Tmax]) <- logit(Mu.sA) + epsilon.sA[1:Tmax]
 
+## Temporal random effects
+for(t in 1:Tmax){
+	 epsilon.sJ[t] ~ dnorm(0, sd = sigma.sJ)
+	 epsilon.sA[t] ~ dnorm(0, sd = sigma.sA)
+}
+
+```
+All random effects are treated as independent (= not correlated) in the basic 
+implementation of the model, but the inclusion of correlation of random effects
+across age-classes and/or vital rates is straightforward to implement^[Wheter or
+not formally including random effects correlations is useful or not depends on
+the biological questions of interest and the amoung of data available. When 
+testing a model with correlated random effects for juvenile and adult survival 
+on seven datasets from breeding populations of pied flycatchers in the UK, I
+found that estimates did not differ from those obtained from a model with 
+independent random effects, and the posterior distribution for the correlation
+coefficient was so wide that no inference on strength or direction of the 
+correlation was possible.] using e.g.
+multivariate normal distributions or approaches similar to the one used in 
+@nater2020.
 
 ##	Temporal covariates
 
@@ -13,5 +67,6 @@
 ###	Imputation of missing covariate values
 
 
-##	Notes on covariate selection
+# ##	Notes on covariate selection 
+# [TBA later]
 

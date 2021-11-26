@@ -4,16 +4,16 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Chapter 6 Visualizing and interpreting direct IPM outputs | SPI-IPM Code Manual</title>
+<title>Chapter 8 Visualizing and interpreting direct IPM outputs | SPI-IPM Code Manual</title>
 <meta name="author" content="Chloé R. Nater">
-<meta name="description" content="6.1 Population trajectories   6.2 Within-population variation in vital rates  6.2.1 Age-class-specific averages   6.2.2 Year-by-year variation   6.3 Between-population variation in vital rates ...">
+<meta name="description" content="8.1 Population trajectories   8.2 Within-population variation in vital rates  8.2.1 Age-class-specific averages   8.2.2 Year-by-year variation   8.3 Between-population variation in vital rates ...">
 <meta name="generator" content="bookdown 0.24 with bs4_book()">
-<meta property="og:title" content="Chapter 6 Visualizing and interpreting direct IPM outputs | SPI-IPM Code Manual">
+<meta property="og:title" content="Chapter 8 Visualizing and interpreting direct IPM outputs | SPI-IPM Code Manual">
 <meta property="og:type" content="book">
-<meta property="og:description" content="6.1 Population trajectories   6.2 Within-population variation in vital rates  6.2.1 Age-class-specific averages   6.2.2 Year-by-year variation   6.3 Between-population variation in vital rates ...">
+<meta property="og:description" content="8.1 Population trajectories   8.2 Within-population variation in vital rates  8.2.1 Age-class-specific averages   8.2.2 Year-by-year variation   8.3 Between-population variation in vital rates ...">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Chapter 6 Visualizing and interpreting direct IPM outputs | SPI-IPM Code Manual">
-<meta name="twitter:description" content="6.1 Population trajectories   6.2 Within-population variation in vital rates  6.2.1 Age-class-specific averages   6.2.2 Year-by-year variation   6.3 Between-population variation in vital rates ...">
+<meta name="twitter:title" content="Chapter 8 Visualizing and interpreting direct IPM outputs | SPI-IPM Code Manual">
+<meta name="twitter:description" content="8.1 Population trajectories   8.2 Within-population variation in vital rates  8.2.1 Age-class-specific averages   8.2.2 Year-by-year variation   8.3 Between-population variation in vital rates ...">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
@@ -43,11 +43,13 @@
 <li><a class="" href="DataPrep.html"><span class="header-section-number">1</span> Preparing SPI-Birds data for Bayesian analysis</a></li>
 <li><a class="" href="IPMCon.html"><span class="header-section-number">2</span> IPM Construction</a></li>
 <li><a class="" href="TempVar.html"><span class="header-section-number">3</span> Modelling temporal variation</a></li>
-<li><a class="" href="IPMImp.html"><span class="header-section-number">4</span> IPM Implementation</a></li>
-<li><a class="" href="ModelAssm.html"><span class="header-section-number">5</span> Model Assessment</a></li>
-<li><a class="active" href="ResultsViz.html"><span class="header-section-number">6</span> Visualizing and interpreting direct IPM outputs</a></li>
-<li><a class="" href="AddAnalyses.html"><span class="header-section-number">7</span> Follow-up Analyses</a></li>
-<li><a class="" href="ExtOutlook.html"><span class="header-section-number">8</span> Useful extensions and outlook</a></li>
+<li><a class="" href="notes-on-covariate-selection.html"><span class="header-section-number">4</span> ## Notes on covariate selection</a></li>
+<li><a class="" href="tba-later.html"><span class="header-section-number">5</span> [TBA later]</a></li>
+<li><a class="" href="IPMImp.html"><span class="header-section-number">6</span> IPM Implementation</a></li>
+<li><a class="" href="ModelAssm.html"><span class="header-section-number">7</span> Model Assessment</a></li>
+<li><a class="active" href="ResultsViz.html"><span class="header-section-number">8</span> Visualizing and interpreting direct IPM outputs</a></li>
+<li><a class="" href="AddAnalyses.html"><span class="header-section-number">9</span> Follow-up Analyses</a></li>
+<li><a class="" href="ExtOutlook.html"><span class="header-section-number">10</span> Useful extensions and outlook</a></li>
 <li><a class="" href="references.html">References</a></li>
 </ul>
 
@@ -58,71 +60,71 @@
 </div>
   </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="ResultsViz" class="section level1">
 <h1>
-<span class="header-section-number">6</span> Visualizing and interpreting direct IPM outputs<a class="anchor" aria-label="anchor" href="#ResultsViz"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8</span> Visualizing and interpreting direct IPM outputs<a class="anchor" aria-label="anchor" href="#ResultsViz"><i class="fas fa-link"></i></a>
 </h1>
 <div id="population-trajectories" class="section level2">
 <h2>
-<span class="header-section-number">6.1</span> Population trajectories<a class="anchor" aria-label="anchor" href="#population-trajectories"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8.1</span> Population trajectories<a class="anchor" aria-label="anchor" href="#population-trajectories"><i class="fas fa-link"></i></a>
 </h2>
 </div>
 <div id="within-population-variation-in-vital-rates" class="section level2">
 <h2>
-<span class="header-section-number">6.2</span> Within-population variation in vital rates<a class="anchor" aria-label="anchor" href="#within-population-variation-in-vital-rates"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8.2</span> Within-population variation in vital rates<a class="anchor" aria-label="anchor" href="#within-population-variation-in-vital-rates"><i class="fas fa-link"></i></a>
 </h2>
 <div id="age-class-specific-averages" class="section level3">
 <h3>
-<span class="header-section-number">6.2.1</span> Age-class-specific averages<a class="anchor" aria-label="anchor" href="#age-class-specific-averages"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8.2.1</span> Age-class-specific averages<a class="anchor" aria-label="anchor" href="#age-class-specific-averages"><i class="fas fa-link"></i></a>
 </h3>
 </div>
 <div id="year-by-year-variation" class="section level3">
 <h3>
-<span class="header-section-number">6.2.2</span> Year-by-year variation<a class="anchor" aria-label="anchor" href="#year-by-year-variation"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8.2.2</span> Year-by-year variation<a class="anchor" aria-label="anchor" href="#year-by-year-variation"><i class="fas fa-link"></i></a>
 </h3>
 </div>
 </div>
 <div id="between-population-variation-in-vital-rates" class="section level2">
 <h2>
-<span class="header-section-number">6.3</span> Between-population variation in vital rates<a class="anchor" aria-label="anchor" href="#between-population-variation-in-vital-rates"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8.3</span> Between-population variation in vital rates<a class="anchor" aria-label="anchor" href="#between-population-variation-in-vital-rates"><i class="fas fa-link"></i></a>
 </h2>
 <div id="population-specific-averages" class="section level3">
 <h3>
-<span class="header-section-number">6.3.1</span> Population-specific averages<a class="anchor" aria-label="anchor" href="#population-specific-averages"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8.3.1</span> Population-specific averages<a class="anchor" aria-label="anchor" href="#population-specific-averages"><i class="fas fa-link"></i></a>
 </h3>
 </div>
 <div id="year-by-year-variation-1" class="section level3">
 <h3>
-<span class="header-section-number">6.3.2</span> Year-by-year variation<a class="anchor" aria-label="anchor" href="#year-by-year-variation-1"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8.3.2</span> Year-by-year variation<a class="anchor" aria-label="anchor" href="#year-by-year-variation-1"><i class="fas fa-link"></i></a>
 </h3>
 </div>
 </div>
 <div id="covariate-effects" class="section level2">
 <h2>
-<span class="header-section-number">6.4</span> Covariate effects<a class="anchor" aria-label="anchor" href="#covariate-effects"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8.4</span> Covariate effects<a class="anchor" aria-label="anchor" href="#covariate-effects"><i class="fas fa-link"></i></a>
 </h2>
 
 </div>
 </div>
   <div class="chapter-nav">
-<div class="prev"><a href="ModelAssm.html"><span class="header-section-number">5</span> Model Assessment</a></div>
-<div class="next"><a href="AddAnalyses.html"><span class="header-section-number">7</span> Follow-up Analyses</a></div>
+<div class="prev"><a href="ModelAssm.html"><span class="header-section-number">7</span> Model Assessment</a></div>
+<div class="next"><a href="AddAnalyses.html"><span class="header-section-number">9</span> Follow-up Analyses</a></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
-<li><a class="nav-link" href="#ResultsViz"><span class="header-section-number">6</span> Visualizing and interpreting direct IPM outputs</a></li>
-<li><a class="nav-link" href="#population-trajectories"><span class="header-section-number">6.1</span> Population trajectories</a></li>
+<li><a class="nav-link" href="#ResultsViz"><span class="header-section-number">8</span> Visualizing and interpreting direct IPM outputs</a></li>
+<li><a class="nav-link" href="#population-trajectories"><span class="header-section-number">8.1</span> Population trajectories</a></li>
 <li>
-<a class="nav-link" href="#within-population-variation-in-vital-rates"><span class="header-section-number">6.2</span> Within-population variation in vital rates</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#age-class-specific-averages"><span class="header-section-number">6.2.1</span> Age-class-specific averages</a></li>
-<li><a class="nav-link" href="#year-by-year-variation"><span class="header-section-number">6.2.2</span> Year-by-year variation</a></li>
+<a class="nav-link" href="#within-population-variation-in-vital-rates"><span class="header-section-number">8.2</span> Within-population variation in vital rates</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#age-class-specific-averages"><span class="header-section-number">8.2.1</span> Age-class-specific averages</a></li>
+<li><a class="nav-link" href="#year-by-year-variation"><span class="header-section-number">8.2.2</span> Year-by-year variation</a></li>
 </ul>
 </li>
 <li>
-<a class="nav-link" href="#between-population-variation-in-vital-rates"><span class="header-section-number">6.3</span> Between-population variation in vital rates</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#population-specific-averages"><span class="header-section-number">6.3.1</span> Population-specific averages</a></li>
-<li><a class="nav-link" href="#year-by-year-variation-1"><span class="header-section-number">6.3.2</span> Year-by-year variation</a></li>
+<a class="nav-link" href="#between-population-variation-in-vital-rates"><span class="header-section-number">8.3</span> Between-population variation in vital rates</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#population-specific-averages"><span class="header-section-number">8.3.1</span> Population-specific averages</a></li>
+<li><a class="nav-link" href="#year-by-year-variation-1"><span class="header-section-number">8.3.2</span> Year-by-year variation</a></li>
 </ul>
 </li>
-<li><a class="nav-link" href="#covariate-effects"><span class="header-section-number">6.4</span> Covariate effects</a></li>
+<li><a class="nav-link" href="#covariate-effects"><span class="header-section-number">8.4</span> Covariate effects</a></li>
 </ul>
 
       <div class="book-extra">

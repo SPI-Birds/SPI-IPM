@@ -313,4 +313,84 @@ ImmB[1:A,1] <- 0
 Note that various immigrant numbers are set to 0 at $t=1$ since there is no way of distinguishing between locally-born and newly immigrated birds in the first year of study. 
 
 ##	Priors and constraints
+In the model description above, all vital rate parameters, as well as initial
+population size and immigrant numbers, appear as fully time- and age-dependent
+parameters (i.e. indexed by $t$ = year and $a$ = age class). `SPI-IPM` is a 
+hierarchical model, meaning it also describes how demographic quantities vary
+across time and age classes and requires priors for the parameters defining
+these underlying processes. The priors in the model's standard implementation 
+are all non- or only weakly informative, but they can easily be replaced with
+more informative priors if required (see e.g. Chapter [8.2](##	Including additional data and informative priors)).
 
+Time- and age-dependence in all vital rates is expressed using generalized 
+mixed-effect models. The exact model structure for each vital rate, 
+including link function, is described in detail in Chapter [3](# Modelling temporal variation). Irrespective of the vital rate, the basic model parameters fall into 
+three categories: (age-specific) intercepts representing time-average vital 
+rates ($\mu$), slope parameters for the effects of temporal covariates ($\beta$),
+and standard deviations describing the distribution of random year effects 
+($\sigma$).
+The intercept parameters $\mu$ are defined on the natural scale to allow for 
+more intuitive setting of priors. As such, non-informative Uniform(0,1) priors
+can be used for the $\mu$ of all vital rates representing probabilities 
+($\mu_a^{pB}$, $\mu^{pNS}$, $\mu_a^{sN}$, $\mu^{sJ}$, and $\mu^{sA}$). For the
+age-specific average clutch size ($\mu_a^{CS}$), we use a Uniform(0,10) prior. 
+This latter prior is not completely uninformative, as it sets an upper limit of
+10 eggs for the average clutch size (this is reasonable for pied flycatchers
+\textit{Ficedula hypoleuca} for which `SPI-IPM` was initially developed, but
+may have to be adjusted for species that lay larger clutches).
+All slope parameters $\beta$ are given Uniform(-5,5) priors, and all $\sigma$
+parameters (except for the one linked to immigration, $\sigma_a^{Imm}$) are 
+given Uniform(0,10) priors. 
+
+Priors and constraints are also required for the initial population size, i.e.
+$N_{Y,1}$ and $N_{A,1}$ since the population process model only begins 
+predicting $N$ from the second year ($t=2$) onward. Immigrant numbers have their
+own set of priors (see below), and since $N_{a,t} = localN_{a,t} + Imm_{a,t}$,
+priors have to be set for $localN_{a,1}$ specifically. `SPI-IPM` uses what is
+essentially a discrete uniform prior for initial local population size:
+```{r eval=FALSE}
+     ## Initial population sizes
+
+     for(a in 1:A){
+     	localN[a,1] ~ dcat(DU.prior[1:N1.limit])
+      N[a,1] <- localN[a,1] + Imm[a,1]
+     }
+
+     DU.prior[1:N1.limit] <- 1/N1.limit
+```
+Here, `N1.limit` is a user-specified maximum possible number of local females in 
+any age class at the first time-step. The discrete uniform distribution is 
+approximated using a categorical distribution in which each integer number between
+1 and `N1.limit` has the same probability (`1/N1.limit`) of occurring. 
+This approach is equivalent to using a regular Uniform(0,`N1.limit`) distribution
+and subsequently rounding it. 
+
+The final set of priors and constraints in the model are for immigrant numbers
+$Imm_{Y,t}$ and $Imm_{A,t}$. At the first time-step ($t=1$), immigrant numbers
+are set to 0 (since there is no way of distinguishing previously local and
+newly immigrated individuals in the first year of a study). Numbers at any
+subsequent time-step are assumed to follow a 0-truncated normal distribution 
+with age-specific mean $AvgImm_a$ (`AvgImm[a]`) and standard deviation 
+$\sigma_a^{Imm}$ (`sigma.Imm[a])`):
+```{r eval=FALSE}
+     ## Latent number of all immigrants (breeding & non-breeding) per age class
+     Imm[1:A,1] <- 0
+
+     for(t in 2:Tmax){
+       for(a in 1:A){
+
+         ImmCont[a,t] ~ T(dnorm(AvgImm[a], sd = sigma.Imm[a]), 0, Inf)
+         Imm[a,t] <- round(ImmCont[a,t])
+       }
+     }
+```
+The rounding function ensures that immigrant numbers are integers. 
+Priors are then required for $AvgImm_a$ and $\sigma_a^{Imm}$, and these are
+given as uniform distributions with values ranging from 0 to (a multiple of) a
+user-specified maximum possible number of immigrant females in any age class:
+```{r eval=FALSE}
+for(a in 1:A){
+  AvgImm[a] ~ dunif(0, AvgImm.limit)
+  sigma.Imm[a] ~ dunif(0, AvgImm.limit*10)
+}
+```

@@ -7,17 +7,17 @@
 <title>Chapter 7 Follow-up Analyses | SPI-IPM Code Manual</title>
 <meta name="author" content="Chloé R. Nater">
 <meta name="description" content="7.1 Testing for time-trends   7.2 Testing for density-dependence   7.3 Investigating cross-population covariation   7.4 Quantifying demographic contributions to short term population dynamics ...">
-<meta name="generator" content="bookdown 0.22.17 with bs4_book()">
+<meta name="generator" content="bookdown 0.24 with bs4_book()">
 <meta property="og:title" content="Chapter 7 Follow-up Analyses | SPI-IPM Code Manual">
 <meta property="og:type" content="book">
 <meta property="og:description" content="7.1 Testing for time-trends   7.2 Testing for density-dependence   7.3 Investigating cross-population covariation   7.4 Quantifying demographic contributions to short term population dynamics ...">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Chapter 7 Follow-up Analyses | SPI-IPM Code Manual">
 <meta name="twitter:description" content="7.1 Testing for time-trends   7.2 Testing for density-dependence   7.3 Investigating cross-population covariation   7.4 Quantifying demographic contributions to short term population dynamics ...">
-<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.10/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.1/tabs.js"></script><script src="libs/bs3compat-0.2.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
-<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -56,50 +56,50 @@
         </div>
       </nav>
 </div>
-  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="AddAnalyses" class="section level1" number="7">
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="AddAnalyses" class="section level1">
 <h1>
 <span class="header-section-number">7</span> Follow-up Analyses<a class="anchor" aria-label="anchor" href="#AddAnalyses"><i class="fas fa-link"></i></a>
 </h1>
-<div id="testing-for-time-trends" class="section level2" number="7.1">
+<div id="testing-for-time-trends" class="section level2">
 <h2>
 <span class="header-section-number">7.1</span> Testing for time-trends<a class="anchor" aria-label="anchor" href="#testing-for-time-trends"><i class="fas fa-link"></i></a>
 </h2>
 </div>
-<div id="testing-for-density-dependence" class="section level2" number="7.2">
+<div id="testing-for-density-dependence" class="section level2">
 <h2>
 <span class="header-section-number">7.2</span> Testing for density-dependence<a class="anchor" aria-label="anchor" href="#testing-for-density-dependence"><i class="fas fa-link"></i></a>
 </h2>
 </div>
-<div id="investigating-cross-population-covariation" class="section level2" number="7.3">
+<div id="investigating-cross-population-covariation" class="section level2">
 <h2>
 <span class="header-section-number">7.3</span> Investigating cross-population covariation<a class="anchor" aria-label="anchor" href="#investigating-cross-population-covariation"><i class="fas fa-link"></i></a>
 </h2>
 </div>
-<div id="quantifying-demographic-contributions-to-short-term-population-dynamics" class="section level2" number="7.4">
+<div id="quantifying-demographic-contributions-to-short-term-population-dynamics" class="section level2">
 <h2>
 <span class="header-section-number">7.4</span> Quantifying demographic contributions to short term population dynamics<a class="anchor" aria-label="anchor" href="#quantifying-demographic-contributions-to-short-term-population-dynamics"><i class="fas fa-link"></i></a>
 </h2>
-<div id="year-by-year-variation-in-population-growth-rate-random-design-ltre" class="section level3" number="7.4.1">
+<div id="year-by-year-variation-in-population-growth-rate-random-design-ltre" class="section level3">
 <h3>
 <span class="header-section-number">7.4.1</span> Year-by-year variation in population growth rate (random design LTRE)<a class="anchor" aria-label="anchor" href="#year-by-year-variation-in-population-growth-rate-random-design-ltre"><i class="fas fa-link"></i></a>
 </h3>
 </div>
-<div id="year-to-year-differences-in-population-growth-rate-fixed-design-ltre" class="section level3" number="7.4.2">
+<div id="year-to-year-differences-in-population-growth-rate-fixed-design-ltre" class="section level3">
 <h3>
 <span class="header-section-number">7.4.2</span> Year-to-year differences in population growth rate (fixed design LTRE)<a class="anchor" aria-label="anchor" href="#year-to-year-differences-in-population-growth-rate-fixed-design-ltre"><i class="fas fa-link"></i></a>
 </h3>
 </div>
 </div>
-<div id="quantifying-demographic-contributions-to-long-term-population-trends" class="section level2" number="7.5">
+<div id="quantifying-demographic-contributions-to-long-term-population-trends" class="section level2">
 <h2>
 <span class="header-section-number">7.5</span> Quantifying demographic contributions to long-term population trends<a class="anchor" aria-label="anchor" href="#quantifying-demographic-contributions-to-long-term-population-trends"><i class="fas fa-link"></i></a>
 </h2>
-<div id="differences-in-population-trajectories-between-time-periods-period-design-ltre" class="section level3" number="7.5.1">
+<div id="differences-in-population-trajectories-between-time-periods-period-design-ltre" class="section level3">
 <h3>
 <span class="header-section-number">7.5.1</span> Differences in population trajectories between time periods (period design LTRE)<a class="anchor" aria-label="anchor" href="#differences-in-population-trajectories-between-time-periods-period-design-ltre"><i class="fas fa-link"></i></a>
 </h3>
 </div>
-<div id="differences-in-population-trajectories-between-locations-period-design-ltre-with-time-by-space-substitution" class="section level3" number="7.5.2">
+<div id="differences-in-population-trajectories-between-locations-period-design-ltre-with-time-by-space-substitution" class="section level3">
 <h3>
 <span class="header-section-number">7.5.2</span> Differences in population trajectories between locations (period design LTRE with time-by-space substitution)<a class="anchor" aria-label="anchor" href="#differences-in-population-trajectories-between-locations-period-design-ltre-with-time-by-space-substitution"><i class="fas fa-link"></i></a>
 </h3>
@@ -145,7 +145,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>SPI-IPM Code Manual</strong>" was written by Chloé R. Nater. It was last built on 2021-11-10.</p>
+    <p>"<strong>SPI-IPM Code Manual</strong>" was written by Chloé R. Nater. It was last built on 2021-11-26.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

@@ -43,13 +43,11 @@
 <li><a class="" href="DataPrep.html"><span class="header-section-number">1</span> Preparing SPI-Birds data for Bayesian analysis</a></li>
 <li><a class="" href="IPMCon.html"><span class="header-section-number">2</span> IPM Construction</a></li>
 <li><a class="active" href="TempVar.html"><span class="header-section-number">3</span> Modelling temporal variation</a></li>
-<li><a class="" href="notes-on-covariate-selection.html"><span class="header-section-number">4</span> ## Notes on covariate selection</a></li>
-<li><a class="" href="tba-later.html"><span class="header-section-number">5</span> [TBA later]</a></li>
-<li><a class="" href="IPMImp.html"><span class="header-section-number">6</span> IPM Implementation</a></li>
-<li><a class="" href="ModelAssm.html"><span class="header-section-number">7</span> Model Assessment</a></li>
-<li><a class="" href="ResultsViz.html"><span class="header-section-number">8</span> Visualizing and interpreting direct IPM outputs</a></li>
-<li><a class="" href="AddAnalyses.html"><span class="header-section-number">9</span> Follow-up Analyses</a></li>
-<li><a class="" href="ExtOutlook.html"><span class="header-section-number">10</span> Useful extensions and outlook</a></li>
+<li><a class="" href="IPMImp.html"><span class="header-section-number">4</span> IPM Implementation</a></li>
+<li><a class="" href="ModelAssm.html"><span class="header-section-number">5</span> Model Assessment</a></li>
+<li><a class="" href="ResultsViz.html"><span class="header-section-number">6</span> Visualizing and interpreting direct IPM outputs</a></li>
+<li><a class="" href="AddAnalyses.html"><span class="header-section-number">7</span> Follow-up Analyses</a></li>
+<li><a class="" href="ExtOutlook.html"><span class="header-section-number">8</span> Useful extensions and outlook</a></li>
 <li><a class="" href="references.html">References</a></li>
 </ul>
 
@@ -123,27 +121,161 @@ multivariate normal distributions or approaches similar to the one used in
 <h2>
 <span class="header-section-number">3.2</span> Temporal covariates<a class="anchor" aria-label="anchor" href="#temporal-covariates"><i class="fas fa-link"></i></a>
 </h2>
+<p>The basic implementation of <code>SPI-IPM</code> features an example covariate model
+structure that was motivated by an analysis of populations of pied flycatcher
+(Ficedula hypoleuca)) breeding in the UK. It involves three different
+covariates (<span class="math inline">\(cov1\)</span>, <span class="math inline">\(cov2\)</span>, and <span class="math inline">\(cov3\)</span>) that are assumed to affect nest success
+probability (<span class="math inline">\(pNS_{t}\)</span>), nestling survival (<span class="math inline">\(sN_{a,t}\)</span>), and juvenile survival
+(<span class="math inline">\(sJ_t\)</span>). However, it is very straightforward to alter the code to fit whatever
+alternative covariate structure is suitable for your particular analysis since
+the inclusion different/additional continuous and categorical covariates always
+works according to the same principles <span class="citation">(see also Kéry and Schaub <a href="references.html#ref-kery2011" role="doc-biblioref">2011</a>)</span>. All covariates are
+need to be passed to <code>SPI-IPM</code> as vectors or arrays.</p>
 <div id="continuous-variables" class="section level3">
 <h3>
 <span class="header-section-number">3.2.1</span> Continuous variables<a class="anchor" aria-label="anchor" href="#continuous-variables"><i class="fas fa-link"></i></a>
 </h3>
+<p>Continuous variables are included as covariate effects using a specific slope
+parameter (<span class="math inline">\(\beta\)</span>). Temporal effects then take the form
+<span class="math inline">\(\beta_{cov1}\times cov1_t\)</span>, where <span class="math inline">\(\beta_{cov1}\)</span> is an estimated parameter
+quantifying strength and direction of the effect and <span class="math inline">\(cov1_t\)</span> is the value of
+covariate <span class="math inline">\(cov1\)</span> at time <span class="math inline">\(t\)</span>.
+In (generalized) linear mixed effects models as they are used in <code>SPI-IPM</code>,
+effects of several different covariates can just be added up on the link scale.
+For <span class="math inline">\(pNS_t\)</span>, for example, this codes as<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;Note that the implementation of this
+in &lt;code&gt;IPMSetup.R&lt;/code&gt; looks slightly different as it uses a vectorized formulation
+(calculations done over all time-steps simultaneously instead of using a
+for-loop). Vectorized calculations are a nifty feature available in NIMBLE (but
+not BUGS and JAGS); more on this in Chapter &lt;a href="##%20Efficient%20implementation%20using%20NIMBLE"&gt;4.1&lt;/a&gt;.&lt;/p&gt;'><sup>3</sup></a>:</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw">for</span><span class="op">(</span><span class="va">t</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">Tmax</span><span class="op">)</span><span class="op">{</span>
+  <span class="fu">logit</span><span class="op">(</span><span class="va">pNS</span><span class="op">[</span><span class="va">t</span><span class="op">]</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu">logit</span><span class="op">(</span><span class="va">Mu.pNS</span><span class="op">)</span> <span class="op">+</span> <span class="va">beta1.pNS</span><span class="op">*</span><span class="va">cov1</span><span class="op">[</span><span class="va">t</span><span class="op">]</span> <span class="op">+</span> <span class="va">beta2.pNS</span><span class="op">*</span><span class="va">cov2</span><span class="op">[</span><span class="va">t</span><span class="op">]</span> <span class="op">+</span> <span class="va">epsilon.pNS</span><span class="op">[</span><span class="va">t</span><span class="op">]</span>
+<span class="op">}</span></code></pre></div>
+<p>The basic implementation of <code>SPI-IPM</code> includes the following covariate models:
+<span class="math display">\[\begin{align*}
+  &amp; logit(pNS_t) = logit(\mu^{pNS}) + \beta_{cov1}^{pNS}\times cov1_t + \beta_{cov2}^{pNS} \times cov2_t + \epsilon_t^{pNS} \\
+  &amp; logit(sN_{a,t}) = logit(\mu_a^{pNS}) + \beta_{cov1}^{sN}\times cov1_t + \beta_{cov2}^{sN} \times cov2_t + \epsilon_t^{sN} \\
+  &amp; logit(sJ_t) = logit(\mu^{sJ}) + \beta_{cov3}^{sJ}\times cov3_t + \epsilon_t^{sJ}
+\end{align*}\]</span>
+All covariates are continuous annual variables that have been standardized and
+centered (mean = 0, sd = 1) prior to analysis.
+<span class="math inline">\(cov1\)</span> and <span class="math inline">\(cov2\)</span> represent environmental conditions during the incubation and
+nestling period and hence influence nest success (<span class="math inline">\(pNS_t\)</span>) and nestling survival
+(<span class="math inline">\(sN_{a,t}\)</span>). In the case of the latter, covariates are further assumed to have
+the same magnitude of effect on the nests of yearling and adult females (i.e.
+the <span class="math inline">\(\beta\)</span> parameters are independent of age). <span class="math inline">\(cov3\)</span>, on the other hand,
+symbolizes environmental conditions after fledging which impact juvenile annual
+survival (<span class="math inline">\(sJ_t\)</span>). No covariate effects are included for the other vital rates.</p>
 </div>
 <div id="categorical-variables" class="section level3">
 <h3>
 <span class="header-section-number">3.2.2</span> Categorical variables<a class="anchor" aria-label="anchor" href="#categorical-variables"><i class="fas fa-link"></i></a>
 </h3>
+<p>The basic <code>SPI-IPM</code> does not include any categorical covariates, but since such
+covariates may be relevant to a wide range of questions (e.g. some of the points
+raised in Chapter <a href="##%20Adapting%20the%20population%20model%20for%20your%20species/population">8.2</a>),
+I briefly illustrate how they could be included into vital rate models.</p>
+<p>Generally, there are two approaches to modelling categorical covariates in this
+context.</p>
+<p>The first approach works analogous to the approach for continuous covariates,
+i.e. it uses the form <span class="math inline">\(\beta_{cov}\times cov_t\)</span>. This is most relevant for
+binary categorical covariates that symbolize some sort of “on-off” process. An
+example of this would be if you would like to model the effect of an experimental
+treatment that has been performed in some years (<span class="math inline">\(cov_t = 1\)</span>) but not others
+(<span class="math inline">\(cov_t = 0\)</span>). Your binary covariate then works as a “switch” that determines
+whether or not the effect of the experimental treatment (<span class="math inline">\(\beta_{cov}\)</span>) applied
+in a given year <span class="math inline">\(t\)</span> or not since <span class="math inline">\(link(X_t) = link(\mu^X) + \beta_{cov_t}\times cov_t\)</span> becomes <span class="math inline">\(link(\mu^X) + \beta_{cov_t}\)</span> when <span class="math inline">\(cov_t = 1\)</span> and <span class="math inline">\(link(\mu^X)\)</span>
+when <span class="math inline">\(cov_t = 0\)</span>.</p>
+<p>The second approach works via (nested) indexing and is more flexible since it
+can technically account for any number of levels in your categorical covariate.
+This can be relevant, for example, for categories of years (“good”, “average”,
+“bad”), habitat types (“deciduous forest”, “coniferous forest”), or individuals
+(“male”, “female”).
+The approach still uses <span class="math inline">\(\beta\)</span> parameters, but instead of multiplying the
+<span class="math inline">\(\beta\)</span> with the covariate value, we index the <span class="math inline">\(\beta\)</span> by the covariate value
+such that <span class="math inline">\(\beta_1\)</span> corresponds to the effect of category 1 (<span class="math inline">\(cat = 1\)</span>),
+<span class="math inline">\(\beta_2\)</span> corresponds to the effect of category 2 (<span class="math inline">\(cat = 2\)</span>), and so on:</p>
+<p><span class="math display">\[\begin{equation}
+  link(X_{cat}) = link(\mu^X) + \beta_{cat}
+\end{equation}\]</span>
+Priors then need to be provided for each category-specific <span class="math inline">\(\beta\)</span>.</p>
+<p>In practice, <code>SPI-IPM</code> still requires vital rates <span class="math inline">\(X\)</span> to be indexed by age class
+and year (at least with the population model described in Chapter <a href="#%20IPM%20Construction">2</a>).
+That’s where nested indexing becomes relevant.
+The relationship of a vital rate <span class="math inline">\(X_{a,t}\)</span> with a categorical year covariate can,
+for example, be coded as follows:</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw">for</span><span class="op">(</span><span class="va">a</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">A</span><span class="op">)</span><span class="op">{</span>
+  <span class="kw">for</span><span class="op">(</span><span class="va">t</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">Tmax</span><span class="op">)</span><span class="op">{</span>
+      <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">X</span><span class="op">[</span><span class="va">a</span>,<span class="va">t</span><span class="op">]</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">Mu.X</span><span class="op">[</span><span class="va">a</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span> <span class="va">beta</span><span class="op">[</span><span class="va">cov</span><span class="op">[</span><span class="va">t</span><span class="op">]</span><span class="op">]</span>
+  <span class="op">}</span>
+  <span class="va">Mu.X</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">dunif</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span>
+  <span class="va">beta</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">dunif</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>, <span class="fl">5</span><span class="op">)</span>
+<span class="op">}</span></code></pre></div>
+<p>where <code>cov[t]</code> is a vector of integer numbers that represent the different year
+categories.</p>
+<p>Introducing categorical effects that rely on additional structure beyond year
+and age (for example effects of sex or location) requires changing the underlying
+population model. Such extensions are currently not implemented in <code>SPI-IPM</code>,
+but see Chapter <a href="#%20Useful%20extensions%20and%20outlook">8</a> for some perspectives.</p>
 </div>
 <div id="imputation-of-missing-covariate-values" class="section level3">
 <h3>
 <span class="header-section-number">3.2.3</span> Imputation of missing covariate values<a class="anchor" aria-label="anchor" href="#imputation-of-missing-covariate-values"><i class="fas fa-link"></i></a>
 </h3>
+<p>Perhaps you have been wondering about how to deal with NAs in your covariate
+data? The good news is that <code>SPI-IPM</code> (just like any other Bayesian
+hierarchical model) can accommodate NAs in both continuous and categorical
+covariates. The (perhaps) less good news is that how well it works really
+depends on how large a proportion of your covariate data is NA.</p>
+<p>There are three practical requirements for working with partially observed
+covariate data:</p>
+<ol style="list-style-type: decimal">
+<li><p>Your covariate data containing numbers for your observed covariate values and NAs for your unobserved/unknown covariate values</p></li>
+<li><p>Initial values with the same dimensions as your covariate data containing
+numbers in the positions of NA covariate values and NAs in the positions of
+observed covariate values.</p></li>
+<li><p>A model describing the distribution of missing covariate values.</p></li>
+</ol>
+<p>Numbers 1. and 2. are pretty self-explanatory (but see Chapter <a href="##%20Simulation%20of%20initial%20values">4.2</a> for more information on sampling initial values).
+Number 3. is going to depend on what type of covariate data you are dealing with.</p>
+<p>The basic implementation of <code>SPI-IPM</code> is set up to be able to deal with NA
+values in the continuous temporal covariates <span class="math inline">\(cov1\)</span>, <span class="math inline">\(cov2\)</span>, and <span class="math inline">\(cov3\)</span>. These
+covariates are assumed to have been standardized and centered, i.e. they should
+more or less follow a <span class="math inline">\(Normal(mean= 0, sd = 1)\)</span> distribution. If we assume that
+the observed and unobserved covariate values follow the same distribution (i.e.
+the missing values are a random subset of all values), this can be used to
+specify the process model for the missing covariates in the code:</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw">for</span><span class="op">(</span><span class="va">t</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">Tmax</span><span class="op">)</span><span class="op">{</span>
+  <span class="va">cov1</span><span class="op">[</span><span class="va">t</span><span class="op">]</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">dnorm</a></span><span class="op">(</span><span class="fl">0</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
+  <span class="va">cov2</span><span class="op">[</span><span class="va">t</span><span class="op">]</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">dnorm</a></span><span class="op">(</span><span class="fl">0</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
+  <span class="va">cov3</span><span class="op">[</span><span class="va">t</span><span class="op">]</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">dnorm</a></span><span class="op">(</span><span class="fl">0</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
+<span class="op">}</span></code></pre></div>
+<p>There are numerous alternatives for specifying distributions of missing values
+in continous covariates, and they can be accommodated by changing the above
+section in the code.</p>
+<p>The number of candidate distributions are a bit more limited when there are
+missing values in categorical covariates.
+Chapter <a href="###%20Including%20partially%20observed%20age%20information">8.2.1</a> outlines an
+example for dealing with partially missing information on individual age. It
+may also be helpful to remember that models with partially observed categorical
+variables are essentially “mixture models” including auxiliary data about the
+underlying distribution.</p>
 </div>
+</div>
+<div id="notes-on-covariate-selection" class="section level2">
+<h2>
+<span class="header-section-number">3.3</span> Notes on covariate selection<a class="anchor" aria-label="anchor" href="#notes-on-covariate-selection"><i class="fas fa-link"></i></a>
+</h2>
+<p>[TBA later]</p>
+
 </div>
 </div>
 
   <div class="chapter-nav">
 <div class="prev"><a href="IPMCon.html"><span class="header-section-number">2</span> IPM Construction</a></div>
-<div class="next"><a href="notes-on-covariate-selection.html"><span class="header-section-number">4</span> ## Notes on covariate selection</a></div>
+<div class="next"><a href="IPMImp.html"><span class="header-section-number">4</span> IPM Implementation</a></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
@@ -156,6 +288,7 @@ multivariate normal distributions or approaches similar to the one used in
 <li><a class="nav-link" href="#imputation-of-missing-covariate-values"><span class="header-section-number">3.2.3</span> Imputation of missing covariate values</a></li>
 </ul>
 </li>
+<li><a class="nav-link" href="#notes-on-covariate-selection"><span class="header-section-number">3.3</span> Notes on covariate selection</a></li>
 </ul>
 
       <div class="book-extra">
@@ -172,7 +305,7 @@ multivariate normal distributions or approaches similar to the one used in
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>SPI-IPM Code Manual</strong>" was written by Chloé R. Nater. It was last built on 2021-11-26.</p>
+    <p>"<strong>SPI-IPM Code Manual</strong>" was written by Chloé R. Nater. It was last built on 2021-11-27.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

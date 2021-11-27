@@ -4,16 +4,16 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Chapter 10 Useful extensions and outlook | SPI-IPM Code Manual</title>
+<title>Chapter 8 Useful extensions and outlook | SPI-IPM Code Manual</title>
 <meta name="author" content="Chloé R. Nater">
-<meta name="description" content="10.1 Adapting the population model for your species/population  10.1.1 Accounting for multiple broods per bird per year   10.1.2 Altering age structure   10.1.3 Individual heterogeneity beyond...">
+<meta name="description" content="8.1 Adapting the population model for your species/population  8.1.1 Accounting for multiple broods per bird per year   8.1.2 Altering age structure   8.1.3 Individual heterogeneity beyond age:...">
 <meta name="generator" content="bookdown 0.24 with bs4_book()">
-<meta property="og:title" content="Chapter 10 Useful extensions and outlook | SPI-IPM Code Manual">
+<meta property="og:title" content="Chapter 8 Useful extensions and outlook | SPI-IPM Code Manual">
 <meta property="og:type" content="book">
-<meta property="og:description" content="10.1 Adapting the population model for your species/population  10.1.1 Accounting for multiple broods per bird per year   10.1.2 Altering age structure   10.1.3 Individual heterogeneity beyond...">
+<meta property="og:description" content="8.1 Adapting the population model for your species/population  8.1.1 Accounting for multiple broods per bird per year   8.1.2 Altering age structure   8.1.3 Individual heterogeneity beyond age:...">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Chapter 10 Useful extensions and outlook | SPI-IPM Code Manual">
-<meta name="twitter:description" content="10.1 Adapting the population model for your species/population  10.1.1 Accounting for multiple broods per bird per year   10.1.2 Altering age structure   10.1.3 Individual heterogeneity beyond...">
+<meta name="twitter:title" content="Chapter 8 Useful extensions and outlook | SPI-IPM Code Manual">
+<meta name="twitter:description" content="8.1 Adapting the population model for your species/population  8.1.1 Accounting for multiple broods per bird per year   8.1.2 Altering age structure   8.1.3 Individual heterogeneity beyond age:...">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
@@ -43,13 +43,11 @@
 <li><a class="" href="DataPrep.html"><span class="header-section-number">1</span> Preparing SPI-Birds data for Bayesian analysis</a></li>
 <li><a class="" href="IPMCon.html"><span class="header-section-number">2</span> IPM Construction</a></li>
 <li><a class="" href="TempVar.html"><span class="header-section-number">3</span> Modelling temporal variation</a></li>
-<li><a class="" href="notes-on-covariate-selection.html"><span class="header-section-number">4</span> ## Notes on covariate selection</a></li>
-<li><a class="" href="tba-later.html"><span class="header-section-number">5</span> [TBA later]</a></li>
-<li><a class="" href="IPMImp.html"><span class="header-section-number">6</span> IPM Implementation</a></li>
-<li><a class="" href="ModelAssm.html"><span class="header-section-number">7</span> Model Assessment</a></li>
-<li><a class="" href="ResultsViz.html"><span class="header-section-number">8</span> Visualizing and interpreting direct IPM outputs</a></li>
-<li><a class="" href="AddAnalyses.html"><span class="header-section-number">9</span> Follow-up Analyses</a></li>
-<li><a class="active" href="ExtOutlook.html"><span class="header-section-number">10</span> Useful extensions and outlook</a></li>
+<li><a class="" href="IPMImp.html"><span class="header-section-number">4</span> IPM Implementation</a></li>
+<li><a class="" href="ModelAssm.html"><span class="header-section-number">5</span> Model Assessment</a></li>
+<li><a class="" href="ResultsViz.html"><span class="header-section-number">6</span> Visualizing and interpreting direct IPM outputs</a></li>
+<li><a class="" href="AddAnalyses.html"><span class="header-section-number">7</span> Follow-up Analyses</a></li>
+<li><a class="active" href="ExtOutlook.html"><span class="header-section-number">8</span> Useful extensions and outlook</a></li>
 <li><a class="" href="references.html">References</a></li>
 </ul>
 
@@ -60,102 +58,102 @@
 </div>
   </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="ExtOutlook" class="section level1">
 <h1>
-<span class="header-section-number">10</span> Useful extensions and outlook<a class="anchor" aria-label="anchor" href="#ExtOutlook"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8</span> Useful extensions and outlook<a class="anchor" aria-label="anchor" href="#ExtOutlook"><i class="fas fa-link"></i></a>
 </h1>
 <div id="adapting-the-population-model-for-your-speciespopulation" class="section level2">
 <h2>
-<span class="header-section-number">10.1</span> Adapting the population model for your species/population<a class="anchor" aria-label="anchor" href="#adapting-the-population-model-for-your-speciespopulation"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8.1</span> Adapting the population model for your species/population<a class="anchor" aria-label="anchor" href="#adapting-the-population-model-for-your-speciespopulation"><i class="fas fa-link"></i></a>
 </h2>
 <div id="accounting-for-multiple-broods-per-bird-per-year" class="section level3">
 <h3>
-<span class="header-section-number">10.1.1</span> Accounting for multiple broods per bird per year<a class="anchor" aria-label="anchor" href="#accounting-for-multiple-broods-per-bird-per-year"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8.1.1</span> Accounting for multiple broods per bird per year<a class="anchor" aria-label="anchor" href="#accounting-for-multiple-broods-per-bird-per-year"><i class="fas fa-link"></i></a>
 </h3>
 </div>
 <div id="altering-age-structure" class="section level3">
 <h3>
-<span class="header-section-number">10.1.2</span> Altering age structure<a class="anchor" aria-label="anchor" href="#altering-age-structure"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8.1.2</span> Altering age structure<a class="anchor" aria-label="anchor" href="#altering-age-structure"><i class="fas fa-link"></i></a>
 </h3>
 </div>
 <div id="individual-heterogeneity-beyond-age-sex-traits-and-more" class="section level3">
 <h3>
-<span class="header-section-number">10.1.3</span> Individual heterogeneity beyond age: sex, traits, and more<a class="anchor" aria-label="anchor" href="#individual-heterogeneity-beyond-age-sex-traits-and-more"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8.1.3</span> Individual heterogeneity beyond age: sex, traits, and more<a class="anchor" aria-label="anchor" href="#individual-heterogeneity-beyond-age-sex-traits-and-more"><i class="fas fa-link"></i></a>
 </h3>
 </div>
 </div>
 <div id="including-additional-data-and-informative-priors" class="section level2">
 <h2>
-<span class="header-section-number">10.2</span> Including additional data and informative priors<a class="anchor" aria-label="anchor" href="#including-additional-data-and-informative-priors"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8.2</span> Including additional data and informative priors<a class="anchor" aria-label="anchor" href="#including-additional-data-and-informative-priors"><i class="fas fa-link"></i></a>
 </h2>
 <div id="including-partially-observed-age-information" class="section level3">
 <h3>
-<span class="header-section-number">10.2.1</span> Including partially observed age information<a class="anchor" aria-label="anchor" href="#including-partially-observed-age-information"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8.2.1</span> Including partially observed age information<a class="anchor" aria-label="anchor" href="#including-partially-observed-age-information"><i class="fas fa-link"></i></a>
 </h3>
 </div>
 <div id="making-the-most-of-auxiliary-knowledge-about-immigrantsdispersers" class="section level3">
 <h3>
-<span class="header-section-number">10.2.2</span> Making the most of auxiliary knowledge about immigrants/dispersers<a class="anchor" aria-label="anchor" href="#making-the-most-of-auxiliary-knowledge-about-immigrantsdispersers"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8.2.2</span> Making the most of auxiliary knowledge about immigrants/dispersers<a class="anchor" aria-label="anchor" href="#making-the-most-of-auxiliary-knowledge-about-immigrantsdispersers"><i class="fas fa-link"></i></a>
 </h3>
 </div>
 <div id="letting-published-values-help-with-estimation-when-data-is-sparse" class="section level3">
 <h3>
-<span class="header-section-number">10.2.3</span> Letting published values help with estimation when data is sparse<a class="anchor" aria-label="anchor" href="#letting-published-values-help-with-estimation-when-data-is-sparse"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8.2.3</span> Letting published values help with estimation when data is sparse<a class="anchor" aria-label="anchor" href="#letting-published-values-help-with-estimation-when-data-is-sparse"><i class="fas fa-link"></i></a>
 </h3>
 </div>
 </div>
 <div id="building-on-the-multi-population-perspective" class="section level2">
 <h2>
-<span class="header-section-number">10.3</span> Building on the multi-population perspective<a class="anchor" aria-label="anchor" href="#building-on-the-multi-population-perspective"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8.3</span> Building on the multi-population perspective<a class="anchor" aria-label="anchor" href="#building-on-the-multi-population-perspective"><i class="fas fa-link"></i></a>
 </h2>
 <div id="joint-analysis-of-data-from-several-populations" class="section level3">
 <h3>
-<span class="header-section-number">10.3.1</span> Joint analysis of data from several populations<a class="anchor" aria-label="anchor" href="#joint-analysis-of-data-from-several-populations"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8.3.1</span> Joint analysis of data from several populations<a class="anchor" aria-label="anchor" href="#joint-analysis-of-data-from-several-populations"><i class="fas fa-link"></i></a>
 </h3>
 </div>
 <div id="modelling-cross-population-covariation" class="section level3">
 <h3>
-<span class="header-section-number">10.3.2</span> Modelling cross-population covariation<a class="anchor" aria-label="anchor" href="#modelling-cross-population-covariation"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8.3.2</span> Modelling cross-population covariation<a class="anchor" aria-label="anchor" href="#modelling-cross-population-covariation"><i class="fas fa-link"></i></a>
 </h3>
 </div>
 <div id="estimating-hyper-parameters-in-large-scale-analyses" class="section level3">
 <h3>
-<span class="header-section-number">10.3.3</span> Estimating hyper-parameters in large-scale analyses<a class="anchor" aria-label="anchor" href="#estimating-hyper-parameters-in-large-scale-analyses"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8.3.3</span> Estimating hyper-parameters in large-scale analyses<a class="anchor" aria-label="anchor" href="#estimating-hyper-parameters-in-large-scale-analyses"><i class="fas fa-link"></i></a>
 </h3>
 </div>
 <div id="unlocking-the-secrets-of-dispersal" class="section level3">
 <h3>
-<span class="header-section-number">10.3.4</span> Unlocking the secrets of dispersal<a class="anchor" aria-label="anchor" href="#unlocking-the-secrets-of-dispersal"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8.3.4</span> Unlocking the secrets of dispersal<a class="anchor" aria-label="anchor" href="#unlocking-the-secrets-of-dispersal"><i class="fas fa-link"></i></a>
 </h3>
 
 </div>
 </div>
 </div>
   <div class="chapter-nav">
-<div class="prev"><a href="AddAnalyses.html"><span class="header-section-number">9</span> Follow-up Analyses</a></div>
+<div class="prev"><a href="AddAnalyses.html"><span class="header-section-number">7</span> Follow-up Analyses</a></div>
 <div class="next"><a href="references.html">References</a></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
-<li><a class="nav-link" href="#ExtOutlook"><span class="header-section-number">10</span> Useful extensions and outlook</a></li>
+<li><a class="nav-link" href="#ExtOutlook"><span class="header-section-number">8</span> Useful extensions and outlook</a></li>
 <li>
-<a class="nav-link" href="#adapting-the-population-model-for-your-speciespopulation"><span class="header-section-number">10.1</span> Adapting the population model for your species/population</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#accounting-for-multiple-broods-per-bird-per-year"><span class="header-section-number">10.1.1</span> Accounting for multiple broods per bird per year</a></li>
-<li><a class="nav-link" href="#altering-age-structure"><span class="header-section-number">10.1.2</span> Altering age structure</a></li>
-<li><a class="nav-link" href="#individual-heterogeneity-beyond-age-sex-traits-and-more"><span class="header-section-number">10.1.3</span> Individual heterogeneity beyond age: sex, traits, and more</a></li>
+<a class="nav-link" href="#adapting-the-population-model-for-your-speciespopulation"><span class="header-section-number">8.1</span> Adapting the population model for your species/population</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#accounting-for-multiple-broods-per-bird-per-year"><span class="header-section-number">8.1.1</span> Accounting for multiple broods per bird per year</a></li>
+<li><a class="nav-link" href="#altering-age-structure"><span class="header-section-number">8.1.2</span> Altering age structure</a></li>
+<li><a class="nav-link" href="#individual-heterogeneity-beyond-age-sex-traits-and-more"><span class="header-section-number">8.1.3</span> Individual heterogeneity beyond age: sex, traits, and more</a></li>
 </ul>
 </li>
 <li>
-<a class="nav-link" href="#including-additional-data-and-informative-priors"><span class="header-section-number">10.2</span> Including additional data and informative priors</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#including-partially-observed-age-information"><span class="header-section-number">10.2.1</span> Including partially observed age information</a></li>
-<li><a class="nav-link" href="#making-the-most-of-auxiliary-knowledge-about-immigrantsdispersers"><span class="header-section-number">10.2.2</span> Making the most of auxiliary knowledge about immigrants/dispersers</a></li>
-<li><a class="nav-link" href="#letting-published-values-help-with-estimation-when-data-is-sparse"><span class="header-section-number">10.2.3</span> Letting published values help with estimation when data is sparse</a></li>
+<a class="nav-link" href="#including-additional-data-and-informative-priors"><span class="header-section-number">8.2</span> Including additional data and informative priors</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#including-partially-observed-age-information"><span class="header-section-number">8.2.1</span> Including partially observed age information</a></li>
+<li><a class="nav-link" href="#making-the-most-of-auxiliary-knowledge-about-immigrantsdispersers"><span class="header-section-number">8.2.2</span> Making the most of auxiliary knowledge about immigrants/dispersers</a></li>
+<li><a class="nav-link" href="#letting-published-values-help-with-estimation-when-data-is-sparse"><span class="header-section-number">8.2.3</span> Letting published values help with estimation when data is sparse</a></li>
 </ul>
 </li>
 <li>
-<a class="nav-link" href="#building-on-the-multi-population-perspective"><span class="header-section-number">10.3</span> Building on the multi-population perspective</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#joint-analysis-of-data-from-several-populations"><span class="header-section-number">10.3.1</span> Joint analysis of data from several populations</a></li>
-<li><a class="nav-link" href="#modelling-cross-population-covariation"><span class="header-section-number">10.3.2</span> Modelling cross-population covariation</a></li>
-<li><a class="nav-link" href="#estimating-hyper-parameters-in-large-scale-analyses"><span class="header-section-number">10.3.3</span> Estimating hyper-parameters in large-scale analyses</a></li>
-<li><a class="nav-link" href="#unlocking-the-secrets-of-dispersal"><span class="header-section-number">10.3.4</span> Unlocking the secrets of dispersal</a></li>
+<a class="nav-link" href="#building-on-the-multi-population-perspective"><span class="header-section-number">8.3</span> Building on the multi-population perspective</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#joint-analysis-of-data-from-several-populations"><span class="header-section-number">8.3.1</span> Joint analysis of data from several populations</a></li>
+<li><a class="nav-link" href="#modelling-cross-population-covariation"><span class="header-section-number">8.3.2</span> Modelling cross-population covariation</a></li>
+<li><a class="nav-link" href="#estimating-hyper-parameters-in-large-scale-analyses"><span class="header-section-number">8.3.3</span> Estimating hyper-parameters in large-scale analyses</a></li>
+<li><a class="nav-link" href="#unlocking-the-secrets-of-dispersal"><span class="header-section-number">8.3.4</span> Unlocking the secrets of dispersal</a></li>
 </ul>
 </li>
 </ul>
@@ -174,7 +172,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>SPI-IPM Code Manual</strong>" was written by Chloé R. Nater. It was last built on 2021-11-26.</p>
+    <p>"<strong>SPI-IPM Code Manual</strong>" was written by Chloé R. Nater. It was last built on 2021-11-27.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

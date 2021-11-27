@@ -270,7 +270,7 @@ for (i in 1:n.CH){
 	  probCapture = p.CH[i, first.sum[i]:last.sum[i]],
 	  len = last.sum[i]-first.sum[i]+1,
 	  mult = CHs.count[i])
-	}
+}
 ```
 In practice, this involves the use of a custom distribution `dCJS_vv_sum`, and more information on the likelihood and its implementation using NIMBLE is provided in [Chapter 4.1 (Efficient implementation using NIMBLE)](##	Efficient implementation using NIMBLE).
 
@@ -282,9 +282,9 @@ In many nestbox studies, chick ringing is an exhaustive effort and it is not unr
 The expected value represents the true number of female breeding immigrants in year $t$ ($ImmNoTot_t$) corrected by an annual probability of detecting (= ringing) such individuals ($p_t^{ImmDetect}$). In most nestbox studies, ringing and recapturing of breeding birds are conducted in tandem as part of the same protocol, and we can consequently approximate adult ringing probability using recapture probability (as used in the likelihood for capture histories): $p_t^{ImmDetect} = p_t^{CapB}$). In a few exceptional years in some datasets, however, adult birds may have been ringed, but no recaptures recorded (i.e. $p_t^{CapB}=0$ but $p_t^{ImmDetect}>0$). These cases call for estimation of (or, in other words, accounting for the uncertainty in) the corresponding $p_t^{ImmDetect}>0$. As long as such cases are relatively few, this can be accommodated by specifying a non-informative prior for the unknown value^[For estimating only a subset of values within a vector/array (= partially observed variables), data (here `PropImmDetect[t]`) is provided including `NA` for unknown values and initial values are provided for the corresponding indeces (with initial values matching indeces of known data points being set to `NA`). Handling partially observed variables is discussed some more under [3.2.3 Imputation of missing covariate values](### Imputation of missing covariate values)]:
 ```{r eval=FALSE}
 ## Immigrant detection (= marking) probability
-  for(t in 1:Tmax){
-    PropImmDetect[t] ~ dunif(0, 1)
-  }
+for(t in 1:Tmax){
+  PropImmDetect[t] ~ dunif(0, 1)
+}
 ```
 
 The latent number of breeding immigrants, informed by data as outlined above, is estimated as pooled across age classes ($ImmNoTot_t$), but the since the population model in `SPI-IPM` is age structured $ImmNoTot_t = ImmB_{Y,t} +ImmB_{A,t}$, where $ImmB_{Y,t}$ and $ImmB_{A,t}$ the numbers of breeding yearling and adult immigrants, respectively. These quantities are linked to the total numbers of immigrants in each age class (breeding and non-breeding), $Imm_{a,t}$, that appear in the age-structured population model ([Chapter 2.1](##	Open population model with 2 age classes) through age-specific breeding probabilities. 
@@ -349,14 +349,14 @@ own set of priors (see below), and since $N_{a,t} = localN_{a,t} + Imm_{a,t}$,
 priors have to be set for $localN_{a,1}$ specifically. `SPI-IPM` uses what is
 essentially a discrete uniform prior for initial local population size:
 ```{r eval=FALSE}
-     ## Initial population sizes
+## Initial population sizes
 
-     for(a in 1:A){
-     	localN[a,1] ~ dcat(DU.prior[1:N1.limit])
-      N[a,1] <- localN[a,1] + Imm[a,1]
-     }
+for(a in 1:A){
+  localN[a,1] ~ dcat(DU.prior[1:N1.limit])
+  N[a,1] <- localN[a,1] + Imm[a,1]
+}
 
-     DU.prior[1:N1.limit] <- 1/N1.limit
+DU.prior[1:N1.limit] <- 1/N1.limit
 ```
 Here, `N1.limit` is a user-specified maximum possible number of local females in 
 any age class at the first time-step. The discrete uniform distribution is 
@@ -373,16 +373,16 @@ subsequent time-step are assumed to follow a 0-truncated normal distribution
 with age-specific mean $AvgImm_a$ (`AvgImm[a]`) and standard deviation 
 $\sigma_a^{Imm}$ (`sigma.Imm[a])`):
 ```{r eval=FALSE}
-     ## Latent number of all immigrants (breeding & non-breeding) per age class
-     Imm[1:A,1] <- 0
+## Latent number of all immigrants (breeding & non-breeding) per age class
+Imm[1:A,1] <- 0
 
-     for(t in 2:Tmax){
-       for(a in 1:A){
+for(t in 2:Tmax){
+  for(a in 1:A){
 
-         ImmCont[a,t] ~ T(dnorm(AvgImm[a], sd = sigma.Imm[a]), 0, Inf)
-         Imm[a,t] <- round(ImmCont[a,t])
-       }
-     }
+    ImmCont[a,t] ~ T(dnorm(AvgImm[a], sd = sigma.Imm[a]), 0, Inf)
+    Imm[a,t] <- round(ImmCont[a,t])
+  }
+}
 ```
 The rounding function ensures that immigrant numbers are integers. 
 Priors are then required for $AvgImm_a$ and $\sigma_a^{Imm}$, and these are

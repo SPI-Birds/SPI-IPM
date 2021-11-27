@@ -319,7 +319,7 @@ CJS models in Bayesian frameworks have traditionally been implemented either as 
       probCapture <span class="op">=</span> <span class="va">p.CH</span><span class="op">[</span><span class="va">i</span>, <span class="va">first.sum</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">:</span><span class="va">last.sum</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>,
       len <span class="op">=</span> <span class="va">last.sum</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">-</span><span class="va">first.sum</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">+</span><span class="fl">1</span>,
       mult <span class="op">=</span> <span class="va">CHs.count</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span>
-    <span class="op">}</span></code></pre></div>
+<span class="op">}</span></code></pre></div>
 <p>In practice, this involves the use of a custom distribution <code>dCJS_vv_sum</code>, and more information on the likelihood and its implementation using NIMBLE is provided in <a href="##%20Efficient%20implementation%20using%20NIMBLE">Chapter 4.1 (Efficient implementation using NIMBLE)</a>.</p>
 </div>
 <div id="immigrant-count-data-likelihood" class="section level3">
@@ -333,9 +333,9 @@ CJS models in Bayesian frameworks have traditionally been implemented either as 
 The expected value represents the true number of female breeding immigrants in year <span class="math inline">\(t\)</span> (<span class="math inline">\(ImmNoTot_t\)</span>) corrected by an annual probability of detecting (= ringing) such individuals (<span class="math inline">\(p_t^{ImmDetect}\)</span>). In most nestbox studies, ringing and recapturing of breeding birds are conducted in tandem as part of the same protocol, and we can consequently approximate adult ringing probability using recapture probability (as used in the likelihood for capture histories): <span class="math inline">\(p_t^{ImmDetect} = p_t^{CapB}\)</span>). In a few exceptional years in some datasets, however, adult birds may have been ringed, but no recaptures recorded (i.e. <span class="math inline">\(p_t^{CapB}=0\)</span> but <span class="math inline">\(p_t^{ImmDetect}&gt;0\)</span>). These cases call for estimation of (or, in other words, accounting for the uncertainty in) the corresponding <span class="math inline">\(p_t^{ImmDetect}&gt;0\)</span>. As long as such cases are relatively few, this can be accommodated by specifying a non-informative prior for the unknown value<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;For estimating only a subset of values within a vector/array (= partially observed variables), data (here &lt;code&gt;PropImmDetect[t]&lt;/code&gt;) is provided including &lt;code&gt;NA&lt;/code&gt; for unknown values and initial values are provided for the corresponding indeces (with initial values matching indeces of known data points being set to &lt;code&gt;NA&lt;/code&gt;). Handling partially observed variables is discussed some more under &lt;a href="###%20Imputation%20of%20missing%20covariate%20values"&gt;3.2.3 Imputation of missing covariate values&lt;/a&gt;&lt;/p&gt;'><sup>1</sup></a>:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## Immigrant detection (= marking) probability</span>
-  <span class="kw">for</span><span class="op">(</span><span class="va">t</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">Tmax</span><span class="op">)</span><span class="op">{</span>
-    <span class="va">PropImmDetect</span><span class="op">[</span><span class="va">t</span><span class="op">]</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">dunif</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>
-  <span class="op">}</span></code></pre></div>
+<span class="kw">for</span><span class="op">(</span><span class="va">t</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">Tmax</span><span class="op">)</span><span class="op">{</span>
+  <span class="va">PropImmDetect</span><span class="op">[</span><span class="va">t</span><span class="op">]</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">dunif</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>
+<span class="op">}</span></code></pre></div>
 <p>The latent number of breeding immigrants, informed by data as outlined above, is estimated as pooled across age classes (<span class="math inline">\(ImmNoTot_t\)</span>), but the since the population model in <code>SPI-IPM</code> is age structured <span class="math inline">\(ImmNoTot_t = ImmB_{Y,t} +ImmB_{A,t}\)</span>, where <span class="math inline">\(ImmB_{Y,t}\)</span> and <span class="math inline">\(ImmB_{A,t}\)</span> the numbers of breeding yearling and adult immigrants, respectively. These quantities are linked to the total numbers of immigrants in each age class (breeding and non-breeding), <span class="math inline">\(Imm_{a,t}\)</span>, that appear in the age-structured population model (<a href="##%20Open%20population%20model%20with%202%20age%20classes">Chapter 2.1</a> through age-specific breeding probabilities.
 By assuming equal breeding probabilities for locally recruited and newly immigrated females, we can use the breeding probabilities estimated via the mark-recapture likelihood (<span class="math inline">\(pB_{a,t}\)</span>) to make the connection:
 <span class="math display">\[\begin{equation}
@@ -398,14 +398,14 @@ own set of priors (see below), and since <span class="math inline">\(N_{a,t} = l
 priors have to be set for <span class="math inline">\(localN_{a,1}\)</span> specifically. <code>SPI-IPM</code> uses what is
 essentially a discrete uniform prior for initial local population size:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R">     <span class="co">## Initial population sizes</span>
+<code class="sourceCode R"><span class="co">## Initial population sizes</span>
 
-     <span class="kw">for</span><span class="op">(</span><span class="va">a</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">A</span><span class="op">)</span><span class="op">{</span>
-        <span class="va">localN</span><span class="op">[</span><span class="va">a</span>,<span class="fl">1</span><span class="op">]</span> <span class="op">~</span> <span class="fu">dcat</span><span class="op">(</span><span class="va">DU.prior</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">N1.limit</span><span class="op">]</span><span class="op">)</span>
-      <span class="va">N</span><span class="op">[</span><span class="va">a</span>,<span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">localN</span><span class="op">[</span><span class="va">a</span>,<span class="fl">1</span><span class="op">]</span> <span class="op">+</span> <span class="va">Imm</span><span class="op">[</span><span class="va">a</span>,<span class="fl">1</span><span class="op">]</span>
-     <span class="op">}</span>
+<span class="kw">for</span><span class="op">(</span><span class="va">a</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">A</span><span class="op">)</span><span class="op">{</span>
+  <span class="va">localN</span><span class="op">[</span><span class="va">a</span>,<span class="fl">1</span><span class="op">]</span> <span class="op">~</span> <span class="fu">dcat</span><span class="op">(</span><span class="va">DU.prior</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">N1.limit</span><span class="op">]</span><span class="op">)</span>
+  <span class="va">N</span><span class="op">[</span><span class="va">a</span>,<span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">localN</span><span class="op">[</span><span class="va">a</span>,<span class="fl">1</span><span class="op">]</span> <span class="op">+</span> <span class="va">Imm</span><span class="op">[</span><span class="va">a</span>,<span class="fl">1</span><span class="op">]</span>
+<span class="op">}</span>
 
-     <span class="va">DU.prior</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">N1.limit</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">/</span><span class="va">N1.limit</span></code></pre></div>
+<span class="va">DU.prior</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">N1.limit</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">/</span><span class="va">N1.limit</span></code></pre></div>
 <p>Here, <code>N1.limit</code> is a user-specified maximum possible number of local females in
 any age class at the first time-step. The discrete uniform distribution is
 approximated using a categorical distribution in which each integer number between
@@ -420,16 +420,16 @@ subsequent time-step are assumed to follow a 0-truncated normal distribution
 with age-specific mean <span class="math inline">\(AvgImm_a\)</span> (<code>AvgImm[a]</code>) and standard deviation
 <span class="math inline">\(\sigma_a^{Imm}\)</span> (<code>sigma.Imm[a])</code>):</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R">     <span class="co">## Latent number of all immigrants (breeding &amp; non-breeding) per age class</span>
-     <span class="va">Imm</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">A</span>,<span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span>
+<code class="sourceCode R"><span class="co">## Latent number of all immigrants (breeding &amp; non-breeding) per age class</span>
+<span class="va">Imm</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">A</span>,<span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span>
 
-     <span class="kw">for</span><span class="op">(</span><span class="va">t</span> <span class="kw">in</span> <span class="fl">2</span><span class="op">:</span><span class="va">Tmax</span><span class="op">)</span><span class="op">{</span>
-       <span class="kw">for</span><span class="op">(</span><span class="va">a</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">A</span><span class="op">)</span><span class="op">{</span>
+<span class="kw">for</span><span class="op">(</span><span class="va">t</span> <span class="kw">in</span> <span class="fl">2</span><span class="op">:</span><span class="va">Tmax</span><span class="op">)</span><span class="op">{</span>
+  <span class="kw">for</span><span class="op">(</span><span class="va">a</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">A</span><span class="op">)</span><span class="op">{</span>
 
-         <span class="va">ImmCont</span><span class="op">[</span><span class="va">a</span>,<span class="va">t</span><span class="op">]</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/logical.html">T</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">dnorm</a></span><span class="op">(</span><span class="va">AvgImm</span><span class="op">[</span><span class="va">a</span><span class="op">]</span>, sd <span class="op">=</span> <span class="va">sigma.Imm</span><span class="op">[</span><span class="va">a</span><span class="op">]</span><span class="op">)</span>, <span class="fl">0</span>, <span class="cn">Inf</span><span class="op">)</span>
-         <span class="va">Imm</span><span class="op">[</span><span class="va">a</span>,<span class="va">t</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">ImmCont</span><span class="op">[</span><span class="va">a</span>,<span class="va">t</span><span class="op">]</span><span class="op">)</span>
-       <span class="op">}</span>
-     <span class="op">}</span></code></pre></div>
+    <span class="va">ImmCont</span><span class="op">[</span><span class="va">a</span>,<span class="va">t</span><span class="op">]</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/logical.html">T</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">dnorm</a></span><span class="op">(</span><span class="va">AvgImm</span><span class="op">[</span><span class="va">a</span><span class="op">]</span>, sd <span class="op">=</span> <span class="va">sigma.Imm</span><span class="op">[</span><span class="va">a</span><span class="op">]</span><span class="op">)</span>, <span class="fl">0</span>, <span class="cn">Inf</span><span class="op">)</span>
+    <span class="va">Imm</span><span class="op">[</span><span class="va">a</span>,<span class="va">t</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">ImmCont</span><span class="op">[</span><span class="va">a</span>,<span class="va">t</span><span class="op">]</span><span class="op">)</span>
+  <span class="op">}</span>
+<span class="op">}</span></code></pre></div>
 <p>The rounding function ensures that immigrant numbers are integers.
 Priors are then required for <span class="math inline">\(AvgImm_a\)</span> and <span class="math inline">\(\sigma_a^{Imm}\)</span>, and these are
 given as uniform distributions with values ranging from 0 to (a multiple of) a
@@ -482,7 +482,7 @@ user-specified maximum possible number of immigrant females in any age class:</p
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>SPI-IPM Code Manual</strong>" was written by Chloé R. Nater. It was last built on 2021-11-26.</p>
+    <p>"<strong>SPI-IPM Code Manual</strong>" was written by Chloé R. Nater. It was last built on 2021-11-27.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

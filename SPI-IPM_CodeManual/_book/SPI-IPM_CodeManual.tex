@@ -120,7 +120,7 @@
 
 \title{SPI-IPM Code Manual}
 \author{Chloé R. Nater}
-\date{2021-11-26}
+\date{2021-11-27}
 
 \begin{document}
 \maketitle
@@ -512,7 +512,7 @@ CJS models in Bayesian frameworks have traditionally been implemented either as 
       \DataTypeTok{probCapture =}\NormalTok{ p.CH[i, first.sum[i]}\OperatorTok{:}\NormalTok{last.sum[i]],}
       \DataTypeTok{len =}\NormalTok{ last.sum[i]}\OperatorTok{-}\NormalTok{first.sum[i]}\OperatorTok{+}\DecValTok{1}\NormalTok{,}
       \DataTypeTok{mult =}\NormalTok{ CHs.count[i])}
-\NormalTok{    \}}
+\NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
 
@@ -530,9 +530,9 @@ The expected value represents the true number of female breeding immigrants in y
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{## Immigrant detection (= marking) probability}
-  \ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{Tmax)\{}
-\NormalTok{    PropImmDetect[t] }\OperatorTok{~}\StringTok{ }\KeywordTok{dunif}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{)}
-\NormalTok{  \}}
+\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{Tmax)\{}
+\NormalTok{  PropImmDetect[t] }\OperatorTok{~}\StringTok{ }\KeywordTok{dunif}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{)}
+\NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
 
@@ -606,14 +606,14 @@ essentially a discrete uniform prior for initial local population size:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-     \CommentTok{## Initial population sizes}
+\CommentTok{## Initial population sizes}
 
-     \ControlFlowTok{for}\NormalTok{(a }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{A)\{}
-\NormalTok{        localN[a,}\DecValTok{1}\NormalTok{] }\OperatorTok{~}\StringTok{ }\KeywordTok{dcat}\NormalTok{(DU.prior[}\DecValTok{1}\OperatorTok{:}\NormalTok{N1.limit])}
-\NormalTok{      N[a,}\DecValTok{1}\NormalTok{] <-}\StringTok{ }\NormalTok{localN[a,}\DecValTok{1}\NormalTok{] }\OperatorTok{+}\StringTok{ }\NormalTok{Imm[a,}\DecValTok{1}\NormalTok{]}
-\NormalTok{     \}}
+\ControlFlowTok{for}\NormalTok{(a }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{A)\{}
+\NormalTok{  localN[a,}\DecValTok{1}\NormalTok{] }\OperatorTok{~}\StringTok{ }\KeywordTok{dcat}\NormalTok{(DU.prior[}\DecValTok{1}\OperatorTok{:}\NormalTok{N1.limit])}
+\NormalTok{  N[a,}\DecValTok{1}\NormalTok{] <-}\StringTok{ }\NormalTok{localN[a,}\DecValTok{1}\NormalTok{] }\OperatorTok{+}\StringTok{ }\NormalTok{Imm[a,}\DecValTok{1}\NormalTok{]}
+\NormalTok{\}}
 
-\NormalTok{     DU.prior[}\DecValTok{1}\OperatorTok{:}\NormalTok{N1.limit] <-}\StringTok{ }\DecValTok{1}\OperatorTok{/}\NormalTok{N1.limit}
+\NormalTok{DU.prior[}\DecValTok{1}\OperatorTok{:}\NormalTok{N1.limit] <-}\StringTok{ }\DecValTok{1}\OperatorTok{/}\NormalTok{N1.limit}
 \end{Highlighting}
 \end{Shaded}
 
@@ -634,16 +634,16 @@ with age-specific mean \(AvgImm_a\) (\texttt{AvgImm{[}a{]}}) and standard deviat
 
 \begin{Shaded}
 \begin{Highlighting}[]
-     \CommentTok{## Latent number of all immigrants (breeding & non-breeding) per age class}
-\NormalTok{     Imm[}\DecValTok{1}\OperatorTok{:}\NormalTok{A,}\DecValTok{1}\NormalTok{] <-}\StringTok{ }\DecValTok{0}
+\CommentTok{## Latent number of all immigrants (breeding & non-breeding) per age class}
+\NormalTok{Imm[}\DecValTok{1}\OperatorTok{:}\NormalTok{A,}\DecValTok{1}\NormalTok{] <-}\StringTok{ }\DecValTok{0}
 
-     \ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{2}\OperatorTok{:}\NormalTok{Tmax)\{}
-       \ControlFlowTok{for}\NormalTok{(a }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{A)\{}
+\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{2}\OperatorTok{:}\NormalTok{Tmax)\{}
+  \ControlFlowTok{for}\NormalTok{(a }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{A)\{}
 
-\NormalTok{         ImmCont[a,t] }\OperatorTok{~}\StringTok{ }\KeywordTok{T}\NormalTok{(}\KeywordTok{dnorm}\NormalTok{(AvgImm[a], }\DataTypeTok{sd =}\NormalTok{ sigma.Imm[a]), }\DecValTok{0}\NormalTok{, }\OtherTok{Inf}\NormalTok{)}
-\NormalTok{         Imm[a,t] <-}\StringTok{ }\KeywordTok{round}\NormalTok{(ImmCont[a,t])}
-\NormalTok{       \}}
-\NormalTok{     \}}
+\NormalTok{    ImmCont[a,t] }\OperatorTok{~}\StringTok{ }\KeywordTok{T}\NormalTok{(}\KeywordTok{dnorm}\NormalTok{(AvgImm[a], }\DataTypeTok{sd =}\NormalTok{ sigma.Imm[a]), }\DecValTok{0}\NormalTok{, }\OtherTok{Inf}\NormalTok{)}
+\NormalTok{    Imm[a,t] <-}\StringTok{ }\KeywordTok{round}\NormalTok{(ImmCont[a,t])}
+\NormalTok{  \}}
+\NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
 
@@ -664,23 +664,245 @@ user-specified maximum possible number of immigrant females in any age class:
 \hypertarget{TempVar}{%
 \chapter{Modelling temporal variation}\label{TempVar}}
 
+Vital rates are expected to vary among years due to changes in environmental
+conditions. \texttt{SPI-IPM} is set up to account for among-year variation in
+different (age-specific) vital rates \(X_{a,t}\) using fixed effects of
+supplied environmental covariates (\(cov1_t\), \(cov2_t\),\ldots) and year random effects (\(\epsilon_t^X\)). The resulting generalized linear
+mixed-models for time- and age-specific vital rates therefore take the following
+form:
+\begin{equation}
+  link(X_{a,t}) = link(\mu_a^X) + \beta_{cov1}^X\times cov1_t + \beta_{cov2}^X\times cov2_t + ... + \epsilon_t^X
+\end{equation}
+Here, \(\mu_a^X\) is the age-specific average vital rate (intercept) and \(\beta_{cov1}\)
+and \(\beta_{cov2}\) are the slopes for the effects of covariates \(cov1\) and \(cov2\)
+on the link scale, respectively.
+The link function depends on the vital rate, and is set to logit for breeding
+probabilities (\(pB_{a,t}\)), nest success probabilities (\(pNS_t\)), and survival
+probabilities (\(sN_{a,t}\), \(sJ_t\), \(sA_t\)) and log for clutch size (\(CS_{a,t}\)).
+
 \hypertarget{random-year-variation}{%
 \section{Random year variation}\label{random-year-variation}}
+
+The random year effects included in the basic implementation of \texttt{SPI-IPM} are
+assumed to be normally distributed such that
+\begin{equation}
+  \epsilon_{t}^X \sim Normal(0, \sigma^X)
+\end{equation}
+where \(\sigma^X\) is the standard deviation of random year effects on vital rate
+\(X_{a,t}\).
+The random effects in the basic implementation are also age-independent, meaning
+that \(\epsilon_t^X\) is included in the equations for both the yearling vital
+rate \(X_{Y,t}\) and the adults vital rate \(X_{A,t}\). The exception are the annual
+survival rates for juveniles (\(sJ_t\)) and (\(sA_t\)), which both have separate
+random effects because the drivers of survival variation are expected to vary
+between those two age classes, and the basic implementation includes an
+additional covariate effect \(sJ_t\) only:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Age- and time-dependent survival probabilities}
+\KeywordTok{logit}\NormalTok{(sJ[}\DecValTok{1}\OperatorTok{:}\NormalTok{Tmax]) <-}\StringTok{ }\KeywordTok{logit}\NormalTok{(Mu.sJ) }\OperatorTok{+}\StringTok{ }\NormalTok{beta3.sJ}\OperatorTok{*}\NormalTok{cov3[}\DecValTok{1}\OperatorTok{:}\NormalTok{Tmax] }\OperatorTok{+}\StringTok{ }\NormalTok{epsilon.sJ[}\DecValTok{1}\OperatorTok{:}\NormalTok{Tmax]}
+\KeywordTok{logit}\NormalTok{(sA[}\DecValTok{1}\OperatorTok{:}\NormalTok{Tmax]) <-}\StringTok{ }\KeywordTok{logit}\NormalTok{(Mu.sA) }\OperatorTok{+}\StringTok{ }\NormalTok{epsilon.sA[}\DecValTok{1}\OperatorTok{:}\NormalTok{Tmax]}
+
+\CommentTok{## Temporal random effects}
+\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{Tmax)\{}
+\NormalTok{     epsilon.sJ[t] }\OperatorTok{~}\StringTok{ }\KeywordTok{dnorm}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DataTypeTok{sd =}\NormalTok{ sigma.sJ)}
+\NormalTok{     epsilon.sA[t] }\OperatorTok{~}\StringTok{ }\KeywordTok{dnorm}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DataTypeTok{sd =}\NormalTok{ sigma.sA)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+All random effects are treated as independent (= not correlated) in the basic
+implementation of the model, but the inclusion of correlation of random effects
+across age-classes and/or vital rates is straightforward to implement\footnote{Wheter or
+  not formally including random effects correlations is useful or not depends on
+  the biological questions of interest and the amoung of data available. When
+  testing a model with correlated random effects for juvenile and adult survival
+  on seven datasets from breeding populations of pied flycatchers in the UK, I
+  found that estimates did not differ from those obtained from a model with
+  independent random effects, and the posterior distribution for the correlation
+  coefficient was so wide that no inference on strength or direction of the
+  correlation was possible.} using e.g.
+multivariate normal distributions or approaches similar to the one used in
+\citet{nater2020}.
 
 \hypertarget{temporal-covariates}{%
 \section{Temporal covariates}\label{temporal-covariates}}
 
+The basic implementation of \texttt{SPI-IPM} features an example covariate model
+structure that was motivated by an analysis of populations of pied flycatcher
+(\textit(Ficedula hypoleuca)) breeding in the UK. It involves three different
+covariates (\(cov1\), \(cov2\), and \(cov3\)) that are assumed to affect nest success
+probability (\(pNS_{t}\)), nestling survival (\(sN_{a,t}\)), and juvenile survival
+(\(sJ_t\)). However, it is very straightforward to alter the code to fit whatever
+alternative covariate structure is suitable for your particular analysis since
+the inclusion different/additional continuous and categorical covariates always
+works according to the same principles \citep[see also][]{kery2011}. All covariates are
+need to be passed to \texttt{SPI-IPM} as vectors or arrays.
+
 \hypertarget{continuous-variables}{%
 \subsection{Continuous variables}\label{continuous-variables}}
+
+Continuous variables are included as covariate effects using a specific slope
+parameter (\(\beta\)). Temporal effects then take the form
+\(\beta_{cov1}\times cov1_t\), where \(\beta_{cov1}\) is an estimated parameter
+quantifying strength and direction of the effect and \(cov1_t\) is the value of
+covariate \(cov1\) at time \(t\).
+In (generalized) linear mixed effects models as they are used in \texttt{SPI-IPM},
+effects of several different covariates can just be added up on the link scale.
+For \(pNS_t\), for example, this codes as\footnote{Note that the implementation of this
+  in \texttt{IPMSetup.R} looks slightly different as it uses a vectorized formulation
+  (calculations done over all time-steps simultaneously instead of using a
+  for-loop). Vectorized calculations are a nifty feature available in NIMBLE (but
+  not BUGS and JAGS); more on this in Chapter \protect\hyperlink{ux5cux23ux5cux2520Efficientux5cux2520implementationux5cux2520usingux5cux2520NIMBLE}{4.1}.}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{Tmax)\{}
+  \KeywordTok{logit}\NormalTok{(pNS[t]) <-}\StringTok{ }\KeywordTok{logit}\NormalTok{(Mu.pNS) }\OperatorTok{+}\StringTok{ }\NormalTok{beta1.pNS}\OperatorTok{*}\NormalTok{cov1[t] }\OperatorTok{+}\StringTok{ }\NormalTok{beta2.pNS}\OperatorTok{*}\NormalTok{cov2[t] }\OperatorTok{+}\StringTok{ }\NormalTok{epsilon.pNS[t]}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+The basic implementation of \texttt{SPI-IPM} includes the following covariate models:
+\begin{align*}
+  & logit(pNS_t) = logit(\mu^{pNS}) + \beta_{cov1}^{pNS}\times cov1_t + \beta_{cov2}^{pNS} \times cov2_t + \epsilon_t^{pNS} \\
+  & logit(sN_{a,t}) = logit(\mu_a^{pNS}) + \beta_{cov1}^{sN}\times cov1_t + \beta_{cov2}^{sN} \times cov2_t + \epsilon_t^{sN} \\
+  & logit(sJ_t) = logit(\mu^{sJ}) + \beta_{cov3}^{sJ}\times cov3_t + \epsilon_t^{sJ}
+\end{align*}
+All covariates are continuous annual variables that have been standardized and
+centered (mean = 0, sd = 1) prior to analysis.
+\(cov1\) and \(cov2\) represent environmental conditions during the incubation and
+nestling period and hence influence nest success (\(pNS_t\)) and nestling survival
+(\(sN_{a,t}\)). In the case of the latter, covariates are further assumed to have
+the same magnitude of effect on the nests of yearling and adult females (i.e.
+the \(\beta\) parameters are independent of age). \(cov3\), on the other hand,
+symbolizes environmental conditions after fledging which impact juvenile annual
+survival (\(sJ_t\)). No covariate effects are included for the other vital rates.
 
 \hypertarget{categorical-variables}{%
 \subsection{Categorical variables}\label{categorical-variables}}
 
+The basic \texttt{SPI-IPM} does not include any categorical covariates, but since such
+covariates may be relevant to a wide range of questions (e.g.~some of the points
+raised in Chapter \protect\hyperlink{ux5cux23ux5cux2520Adaptingux5cux2520theux5cux2520populationux5cux2520modelux5cux2520forux5cux2520yourux5cux2520speciesux2fpopulation}{8.2}),
+I briefly illustrate how they could be included into vital rate models.
+
+Generally, there are two approaches to modelling categorical covariates in this
+context.
+
+The first approach works analogous to the approach for continuous covariates,
+i.e.~it uses the form \(\beta_{cov}\times cov_t\). This is most relevant for
+binary categorical covariates that symbolize some sort of ``on-off'' process. An
+example of this would be if you would like to model the effect of an experimental
+treatment that has been performed in some years (\(cov_t = 1\)) but not others
+(\(cov_t = 0\)). Your binary covariate then works as a ``switch'' that determines
+whether or not the effect of the experimental treatment (\(\beta_{cov}\)) applied
+in a given year \(t\) or not since \(link(X_t) = link(\mu^X) + \beta_{cov_t}\times cov_t\) becomes \(link(\mu^X) + \beta_{cov_t}\) when \(cov_t = 1\) and \(link(\mu^X)\)
+when \(cov_t = 0\).
+
+The second approach works via (nested) indexing and is more flexible since it
+can technically account for any number of levels in your categorical covariate.
+This can be relevant, for example, for categories of years (``good'', ``average'',
+``bad''), habitat types (``deciduous forest'', ``coniferous forest''), or individuals
+(``male'', ``female'').
+The approach still uses \(\beta\) parameters, but instead of multiplying the
+\(\beta\) with the covariate value, we index the \(\beta\) by the covariate value
+such that \(\beta_1\) corresponds to the effect of category 1 (\(cat = 1\)),
+\(\beta_2\) corresponds to the effect of category 2 (\(cat = 2\)), and so on:
+
+\begin{equation}
+  link(X_{cat}) = link(\mu^X) + \beta_{cat}
+\end{equation}
+Priors then need to be provided for each category-specific \(\beta\).
+
+In practice, \texttt{SPI-IPM} still requires vital rates \(X\) to be indexed by age class
+and year (at least with the population model described in Chapter \protect\hyperlink{ux5cux2520IPMux5cux2520Construction}{2}).
+That's where nested indexing becomes relevant.
+The relationship of a vital rate \(X_{a,t}\) with a categorical year covariate can,
+for example, be coded as follows:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{for}\NormalTok{(a }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{A)\{}
+  \ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{Tmax)\{}
+      \KeywordTok{log}\NormalTok{(X[a,t]) <-}\StringTok{ }\KeywordTok{log}\NormalTok{(Mu.X[a]) }\OperatorTok{+}\StringTok{ }\NormalTok{beta[cov[t]]}
+\NormalTok{  \}}
+\NormalTok{  Mu.X }\OperatorTok{~}\StringTok{ }\KeywordTok{dunif}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{10}\NormalTok{)}
+\NormalTok{  beta }\OperatorTok{~}\StringTok{ }\KeywordTok{dunif}\NormalTok{(}\OperatorTok{-}\DecValTok{5}\NormalTok{, }\DecValTok{5}\NormalTok{)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+where \texttt{cov{[}t{]}} is a vector of integer numbers that represent the different year
+categories.
+
+Introducing categorical effects that rely on additional structure beyond year
+and age (for example effects of sex or location) requires changing the underlying
+population model. Such extensions are currently not implemented in \texttt{SPI-IPM},
+but see Chapter \protect\hyperlink{ux5cux2520Usefulux5cux2520extensionsux5cux2520andux5cux2520outlook}{8} for some perspectives.
+
 \hypertarget{imputation-of-missing-covariate-values}{%
 \subsection{Imputation of missing covariate values}\label{imputation-of-missing-covariate-values}}
 
+Perhaps you have been wondering about how to deal with NAs in your covariate
+data? The good news is that \texttt{SPI-IPM} (just like any other Bayesian
+hierarchical model) can accommodate NAs in both continuous and categorical
+covariates. The (perhaps) less good news is that how well it works really
+depends on how large a proportion of your covariate data is NA.
+
+There are three practical requirements for working with partially observed
+covariate data:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Your covariate data containing numbers for your observed covariate values and NAs for your unobserved/unknown covariate values
+\item
+  Initial values with the same dimensions as your covariate data containing
+  numbers in the positions of NA covariate values and NAs in the positions of
+  observed covariate values.
+\item
+  A model describing the distribution of missing covariate values.
+\end{enumerate}
+
+Numbers 1. and 2. are pretty self-explanatory (but see Chapter \protect\hyperlink{ux5cux23ux5cux2520Simulationux5cux2520ofux5cux2520initialux5cux2520values}{4.2} for more information on sampling initial values).
+Number 3. is going to depend on what type of covariate data you are dealing with.
+
+The basic implementation of \texttt{SPI-IPM} is set up to be able to deal with NA
+values in the continuous temporal covariates \(cov1\), \(cov2\), and \(cov3\). These
+covariates are assumed to have been standardized and centered, i.e.~they should
+more or less follow a \(Normal(mean= 0, sd = 1)\) distribution. If we assume that
+the observed and unobserved covariate values follow the same distribution (i.e.
+the missing values are a random subset of all values), this can be used to
+specify the process model for the missing covariates in the code:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{Tmax)\{}
+\NormalTok{  cov1[t] }\OperatorTok{~}\StringTok{ }\KeywordTok{dnorm}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DataTypeTok{sd =} \DecValTok{1}\NormalTok{)}
+\NormalTok{  cov2[t] }\OperatorTok{~}\StringTok{ }\KeywordTok{dnorm}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DataTypeTok{sd =} \DecValTok{1}\NormalTok{)}
+\NormalTok{  cov3[t] }\OperatorTok{~}\StringTok{ }\KeywordTok{dnorm}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DataTypeTok{sd =} \DecValTok{1}\NormalTok{)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+There are numerous alternatives for specifying distributions of missing values
+in continous covariates, and they can be accommodated by changing the above
+section in the code.
+
+The number of candidate distributions are a bit more limited when there are
+missing values in categorical covariates.
+Chapter \protect\hyperlink{ux5cux23ux5cux23ux5cux2520Includingux5cux2520partiallyux5cux2520observedux5cux2520ageux5cux2520information}{8.2.1} outlines an
+example for dealing with partially missing information on individual age. It
+may also be helpful to remember that models with partially observed categorical
+variables are essentially ``mixture models'' including auxiliary data about the
+underlying distribution.
+
 \hypertarget{notes-on-covariate-selection}{%
 \section{Notes on covariate selection}\label{notes-on-covariate-selection}}
+
+{[}TBA later{]}
 
 \hypertarget{IPMImp}{%
 \chapter{IPM Implementation}\label{IPMImp}}

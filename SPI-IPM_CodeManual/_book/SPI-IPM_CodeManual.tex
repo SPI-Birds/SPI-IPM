@@ -120,7 +120,7 @@
 
 \title{SPI-IPM Code Manual}
 \author{Chloé R. Nater}
-\date{2021-11-27}
+\date{2021-11-29}
 
 \begin{document}
 \maketitle
@@ -198,6 +198,9 @@ Quick recap of SPI-Birds standard format and overview over data types used in IP
 
 \hypertarget{capture-probability-proxies}{%
 \subsection{Capture probability proxies}\label{capture-probability-proxies}}
+
+\hypertarget{organisation-for-analysis-with-nimble}{%
+\section{Organisation for analysis with NIMBLE}\label{organisation-for-analysis-with-nimble}}
 
 \hypertarget{IPMCon}{%
 \chapter{IPM Construction}\label{IPMCon}}
@@ -696,18 +699,23 @@ rate \(X_{Y,t}\) and the adults vital rate \(X_{A,t}\). The exception are the an
 survival rates for juveniles (\(sJ_t\)) and (\(sA_t\)), which both have separate
 random effects because the drivers of survival variation are expected to vary
 between those two age classes, and the basic implementation includes an
-additional covariate effect \(sJ_t\) only:
+additional covariate effect \(sJ_t\) only\footnote{Note that the implementation of this
+  in \texttt{IPMSetup.R} looks slightly different as it uses a vectorized formulation
+  (calculations done over all time-steps simultaneously instead of using a
+  for-loop). Vectorized calculations are a nifty feature available in NIMBLE (but
+  not BUGS and JAGS); more on this in Chapter \protect\hyperlink{ux5cux23ux5cux2520Efficientux5cux2520implementationux5cux2520usingux5cux2520NIMBLE}{4.1}.}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{## Age- and time-dependent survival probabilities}
-\KeywordTok{logit}\NormalTok{(sJ[}\DecValTok{1}\OperatorTok{:}\NormalTok{Tmax]) <-}\StringTok{ }\KeywordTok{logit}\NormalTok{(Mu.sJ) }\OperatorTok{+}\StringTok{ }\NormalTok{beta3.sJ}\OperatorTok{*}\NormalTok{cov3[}\DecValTok{1}\OperatorTok{:}\NormalTok{Tmax] }\OperatorTok{+}\StringTok{ }\NormalTok{epsilon.sJ[}\DecValTok{1}\OperatorTok{:}\NormalTok{Tmax]}
-\KeywordTok{logit}\NormalTok{(sA[}\DecValTok{1}\OperatorTok{:}\NormalTok{Tmax]) <-}\StringTok{ }\KeywordTok{logit}\NormalTok{(Mu.sA) }\OperatorTok{+}\StringTok{ }\NormalTok{epsilon.sA[}\DecValTok{1}\OperatorTok{:}\NormalTok{Tmax]}
-
-\CommentTok{## Temporal random effects}
 \ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{Tmax)\{}
-\NormalTok{     epsilon.sJ[t] }\OperatorTok{~}\StringTok{ }\KeywordTok{dnorm}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DataTypeTok{sd =}\NormalTok{ sigma.sJ)}
-\NormalTok{     epsilon.sA[t] }\OperatorTok{~}\StringTok{ }\KeywordTok{dnorm}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DataTypeTok{sd =}\NormalTok{ sigma.sA)}
+    
+  \CommentTok{## Age- and time-dependent survival probabilities}
+  \KeywordTok{logit}\NormalTok{(sJ[t]) <-}\StringTok{ }\KeywordTok{logit}\NormalTok{(Mu.sJ) }\OperatorTok{+}\StringTok{ }\NormalTok{beta3.sJ}\OperatorTok{*}\NormalTok{cov3[t] }\OperatorTok{+}\StringTok{ }\NormalTok{epsilon.sJ[t]}
+  \KeywordTok{logit}\NormalTok{(sA[t]) <-}\StringTok{ }\KeywordTok{logit}\NormalTok{(Mu.sA) }\OperatorTok{+}\StringTok{ }\NormalTok{epsilon.sA[t]}
+
+  \CommentTok{## Temporal random effects}
+\NormalTok{    epsilon.sJ[t] }\OperatorTok{~}\StringTok{ }\KeywordTok{dnorm}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DataTypeTok{sd =}\NormalTok{ sigma.sJ)}
+\NormalTok{    epsilon.sA[t] }\OperatorTok{~}\StringTok{ }\KeywordTok{dnorm}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DataTypeTok{sd =}\NormalTok{ sigma.sA)}
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
@@ -750,11 +758,7 @@ quantifying strength and direction of the effect and \(cov1_t\) is the value of
 covariate \(cov1\) at time \(t\).
 In (generalized) linear mixed effects models as they are used in \texttt{SPI-IPM},
 effects of several different covariates can just be added up on the link scale.
-For \(pNS_t\), for example, this codes as\footnote{Note that the implementation of this
-  in \texttt{IPMSetup.R} looks slightly different as it uses a vectorized formulation
-  (calculations done over all time-steps simultaneously instead of using a
-  for-loop). Vectorized calculations are a nifty feature available in NIMBLE (but
-  not BUGS and JAGS); more on this in Chapter \protect\hyperlink{ux5cux23ux5cux2520Efficientux5cux2520implementationux5cux2520usingux5cux2520NIMBLE}{4.1}.}:
+For \(pNS_t\), for example, this codes as\footnote{see Footnote 1}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -902,7 +906,7 @@ underlying distribution.
 \hypertarget{notes-on-covariate-selection}{%
 \section{Notes on covariate selection}\label{notes-on-covariate-selection}}
 
-{[}TBA later{]}
+To be added later.
 
 \hypertarget{IPMImp}{%
 \chapter{IPM Implementation}\label{IPMImp}}
@@ -910,16 +914,290 @@ underlying distribution.
 \hypertarget{efficient-implementation-using-nimble}{%
 \section{Efficient implementation using NIMBLE}\label{efficient-implementation-using-nimble}}
 
-We use the fantastic \textbf{nimble} package \citep{devalpine2017}!
+\texttt{SPI-IPM} is implemented in a Bayesian framework and, more specifically, it is
+fit using NIMBLE \citep{devalpine2017}. In many ways, NIMBLE is the successor to
+BUGS and JAGS, using very similar syntax but offering higher efficiency, much
+more flexibility, and a range of smaller ``quality-of-life improvements''.
+Unlike its predecessors, NIMBLE is not a software on its own and is installed
+via the R-package \texttt{nimble} \citep{nimbleR}. A lot of resources on setting up and
+working with NIMBLE are available on the \href{https://r-nimble.org/}{NIMBLE website}
+and this manual will not give a comprehensive overview of NIMBLE or the
+\texttt{nimble} R package.
+In the following, I will instead briefly outline some of
+NIMBLE's features that \texttt{SPI-IPM} makes use of, and that may be good to be aware
+of particularly for people switching over from BUGS/JAGS. I will also briefly
+outline the structure for the basic call to NIMBLE to run a model.
+
+\hypertarget{alternative-specification-of-distributions}{%
+\subsection{Alternative specification of distributions}\label{alternative-specification-of-distributions}}
+
+First, NIMBLE allows alternative specifications for statistical distributions
+(see the \href{https://r-nimble.org/manuals/NimbleUserManual.pdf}{NIMBLE manual}
+for an overview). This is particularly convenient for some commonly used
+distributions such as the normal distribution, which had to be specified via
+a mean and a precision (\(\tau\)) in BUGS/JAGS. The latter was then often related
+to the (some might say) more useful standard deviation (\(\sigma\)):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{Tmax)\{}
+\NormalTok{  epsilon[t] }\OperatorTok{~}\StringTok{ }\KeywordTok{dnorm}\NormalTok{(}\DecValTok{0}\NormalTok{, tau)}
+\NormalTok{\}}
+\NormalTok{tau <-}\StringTok{ }\KeywordTok{pow}\NormalTok{(sigma, }\DecValTok{-2}\NormalTok{)}
+\NormalTok{sigma }\OperatorTok{~}\StringTok{ }\KeywordTok{dunif}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Looks familiar?\\
+NIMBLE allows to specify the distribution parameters exactly as above, but also
+offers alternatives such as parameterisation by mean and standard deviation
+directly, e.g.:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{Tmax)\{}
+\NormalTok{  epsilon[t] }\OperatorTok{~}\StringTok{ }\KeywordTok{dnorm}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DataTypeTok{sd =}\NormalTok{ sigma)}
+\NormalTok{\}}
+\NormalTok{sigma }\OperatorTok{~}\StringTok{ }\KeywordTok{dunif}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{vectorized-calculations}{%
+\subsection{Vectorized calculations}\label{vectorized-calculations}}
+
+A second useful feature is vectorized calculation of deterministic nodes. At
+some point, everyone has heard that when programming in \texttt{R}, vectorization
+outperforms for-loops when it comes to efficiency and speed. In many cases, this
+is also true for MCMC, and NIMBLE therefore supports vectorization of
+calculations for deterministic nodes (i.e.~nodes assigned via \texttt{\textless{}-} in the code).
+\texttt{SPI-IPM} uses vectorized calculations instead of for-loops in a variety of
+cases, for example for defining the models underlying temporal variation in
+vital rates:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{logit}\NormalTok{(pNS[}\DecValTok{1}\OperatorTok{:}\NormalTok{Tmax]) <-}\StringTok{ }\KeywordTok{logit}\NormalTok{(Mu.pNS) }\OperatorTok{+}\StringTok{ }\NormalTok{beta1.pNS}\OperatorTok{*}\NormalTok{cov1[}\DecValTok{1}\OperatorTok{:}\NormalTok{Tmax] }\OperatorTok{+}\StringTok{ }\NormalTok{beta2.pNS}\OperatorTok{*}\NormalTok{cov2[}\DecValTok{1}\OperatorTok{:}\NormalTok{Tmax] }\OperatorTok{+}\StringTok{ }\NormalTok{epsilon.pNS[}\DecValTok{1}\OperatorTok{:}\NormalTok{Tmax]}
+\end{Highlighting}
+\end{Shaded}
+
+instead of
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{Tmax)\{}
+  \KeywordTok{logit}\NormalTok{(pNS[t]) <-}\StringTok{ }\KeywordTok{logit}\NormalTok{(Mu.pNS) }\OperatorTok{+}\StringTok{ }\NormalTok{beta1.pNS}\OperatorTok{*}\NormalTok{cov1[t] }\OperatorTok{+}\StringTok{ }\NormalTok{beta2.pNS}\OperatorTok{*}\NormalTok{cov2[t] }\OperatorTok{+}\StringTok{ }\NormalTok{epsilon.pNS[t]}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+It is important to note that vectorization works for deterministic nodes, but
+-- per today -- not for stochastic nodes (i.e.~nodes assigned via \texttt{\textasciitilde{}}).
+
+\hypertarget{custom-distributions}{%
+\subsection{Custom distributions}\label{custom-distributions}}
+
+The third class of NIMBLE features that \texttt{SPI-IPM} capitalizes on is the ability
+to define custom distributions. Specifically, \texttt{SPI-IPM} uses a custom distribution
+in the likelihood for the mark-recapture data.\\
+In most IPMs, the analysis of mark-recapture data to estimate survival represents
+the bottleneck for MCMC efficiency: sampling hundreds -- if not thousands -- of
+latent alive or dead states is computationally expensive and results in long
+MCMC runtimes \citep{gimenez2007}.
+Summarising individual capture histories into ``m-arrays'' has long been the only
+way to reduce runtimes of Bayesian mark-recapture models \citep{kery2011}, but many
+find this format less intuitive and it quickly becomes convoluted and impractical
+when working with predictors/groups other than age class. With the rise of
+NIMBLE, \citet{turek2016} developed an approach to defining marginalized likelihoods
+that integrate over latent states and lead to tremendous increases in MCMC
+efficiency. Basic implementations of the marginalized likelihood for mark-recapture
+models were included in the \texttt{nimbleEcology} R package \citep{nimbleEcol}.\\
+\texttt{SPI-IPM} uses an extended version of the \texttt{dCJS\_vv} distribution contained in
+\texttt{nimbleEcology} which not only integrates over latent states, but also runs on
+only unique -- instead of all -- capture histories \citep[analogous to the goose
+example in][]{turek2016}. Preliminary tests have shown that mark-recapture models
+with a likelihood specified using this distribution (\texttt{dCJS\_vv\_sum}) have very
+similar runtimes as implementations using m-arrays for small to medium-sized
+datasets, and outspeed m-array formulations in for larger datasets.\\
+The specification of the custom distribution is contained in \texttt{dCJS\_CustomDist.R}
+and its implementation within the model code looks quite minimalistic:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Likelihood with custom distribution}
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{n.CH)\{}
+\NormalTok{  y.sum[i, first.sum[i]}\OperatorTok{:}\NormalTok{last.sum[i]] }\OperatorTok{~}\StringTok{ }\KeywordTok{dCJS_vv_sum}\NormalTok{(}
+       \DataTypeTok{probSurvive =}\NormalTok{ phi.CH[i, first.sum[i]}\OperatorTok{:}\NormalTok{last.sum[i]],}
+       \DataTypeTok{probCapture =}\NormalTok{ p.CH[i, first.sum[i]}\OperatorTok{:}\NormalTok{last.sum[i]],}
+       \DataTypeTok{len =}\NormalTok{ last.sum[i]}\OperatorTok{-}\NormalTok{first.sum[i]}\OperatorTok{+}\DecValTok{1}\NormalTok{,}
+       \DataTypeTok{mult =}\NormalTok{ CHs.count[i])}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\texttt{y.sum} is a matrix containing all \texttt{n.CH} unique capture histories and the
+likelihood is fit for the range of observations between the first capture of an
+individual (\texttt{first.sum}) and the last possible time this individual could still
+have been alive\footnote{in practice this can be set to e.g.~year of the last recorded
+  observation of the individual plus maximum lifesspan, plus some. In my analysis
+  of UK-breeding pied flycatchers, for example, I have set it -- generously -- to
+  20 years after the last recorded capture.}(\texttt{last.sum}). \texttt{probSurvive} and
+\texttt{probCapture} are vectors containing the survival and recapture probabilities
+relevant for the capture history (see \texttt{IPMSetup.R} and Chapter \protect\hyperlink{ux5cux23ux5cux23ux5cux2520Mark-recaptureux5cux2520dataux5cux2520likelihood}{2.2.4} for details). The argument \texttt{len} quantifies the length of \texttt{y.sum}
+and is required for successful compilation of the custom function. Finally, \texttt{mult}
+is an integer number specifying how many individual birds shared capture history
+\texttt{i}.
+
+\hypertarget{calling-nimble-from-r}{%
+\subsection{Calling NIMBLE from R}\label{calling-nimble-from-r}}
+
+The simplest way to implement and run a Bayesian model in NIMBLE is via the
+wrapper-function \texttt{nimbleMCMC}. The structure of the \texttt{nimbleMCMC} call is very
+similar to the functions provided with the different R-packages for running
+BUGS/JAGS and -- for \texttt{SPI-IPM} -- looks like this (code line 49 in \texttt{IPMRun\_PopID.R}):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{SPI.IPM <-}\StringTok{ }\KeywordTok{nimbleMCMC}\NormalTok{(}\DataTypeTok{code =}\NormalTok{ SPI.IPMcode, }\DataTypeTok{constants =}\NormalTok{ SPI.IPMconstants, }\DataTypeTok{data =}\NormalTok{ SPI.IPMdata, }\DataTypeTok{inits =}\NormalTok{ Inits, }\DataTypeTok{monitors =}\NormalTok{ parameters, }\DataTypeTok{niter =}\NormalTok{ ni, }\DataTypeTok{nburnin =}\NormalTok{ nb, }\DataTypeTok{nchains =}\NormalTok{ nc, }\DataTypeTok{thin =}\NormalTok{ nt, }\DataTypeTok{setSeed =}\NormalTok{ mySeed, }\DataTypeTok{samplesAsCodaMCMC =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\texttt{code} is the model code, formatted as \texttt{nimbleCode}. \texttt{constants} and \texttt{data}
+contain all information relevant for parameterising the model, as well as all
+the observational data (see Chapter \protect\hyperlink{ux5cux23ux5cux2520Organisationux5cux2520forux5cux2520analysisux5cux2520withux5cux2520NIMBLE}{1.4}).
+\texttt{inits} is a list of initial values that is described further below, and \texttt{monitors}
+is a character vector containing the names of all paramters that should be
+monitored. \texttt{niter}, \texttt{nburnin}, \texttt{nchains}, and \texttt{thin} are the numbers of iterations,
+samples to discard as burn-in, number of chains, and thinning interval for the
+MCMC. \texttt{setSeed} is absolutely crucial! By setting the seed within the call to
+NIMBLE, your entire MCMC becomes reproducible which is invaluable also for
+trouble-shooting. The final argument, \texttt{samplesAsCodaMCMC}, is for people like
+me who like to get back raw samples and make their own summaries instead of
+having the function return larger objects containing the samples along with
+a variety of summaries and other stats.
 
 \hypertarget{simulation-of-initial-values}{%
 \section{Simulation of initial values}\label{simulation-of-initial-values}}
 
+As a general rule, all parameters that have priors provided for them within
+Bayesian models also require initial values. For \texttt{SPI-IPM}, this applies to:
+
+\begin{itemize}
+\tightlist
+\item
+  Vital rate averages (\(\mu\) /\texttt{Mu})
+\item
+  Environmental effects on vital rates (\(\beta\) /\texttt{beta})
+\item
+  Standard deviation for year random effects on vital rates (\(\sigma\) /\texttt{sigma})
+\item
+  Initial population sizes (\texttt{localN{[},1{]}})
+\item
+  Average and standard deviation of immigrant numbers (\texttt{AvgImm}, \texttt{sigma.Imm})
+\item
+  Missing covariate values (subset of \texttt{cov1}, \texttt{cov2}, \texttt{cov3})
+\item
+  Missing observation probabilities (subset of \texttt{PropImmDetect})
+\end{itemize}
+
+Provided that initial values for all of these parameters have been provided,
+NIMBLE is able to calculate initial values for all of the remaining downstream
+nodes using the realtionships specified in the model code. In practice, however,
+the more different data sources and sub-models are included in an integrated
+model, the more likely it is that this ``automatic'' initialization of nodes will
+result in conflicts, i.e.~initial values that are not compatible with each other.
+
+While it may work for a single IPM to re-sample initial values repeatedly until
+a set without conflicts has been found by chance, this is vastly impractical for
+a framework like \texttt{SPI-IPM} which is designed to also work well for comparative
+analyses, i.e.~may be run on several datasets/populations at a time.\\
+For that reason, manual initialization of all nodes makes sense for \texttt{SPI-IPM} and
+is implemented in the function \texttt{SPI\_IPM.inits} (in file \texttt{InitSim.R}).
+
+The function runs a simulation of the entire population model, including the
+reconstruction of missing covariate and detection parameter values in four
+steps:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Simulation of missing covariate values
+\item
+  Simulation of age- and time-specific vital rates
+\item
+  Simulation of initial population size and population trajectory over the study period, incl.~immigration
+\item
+  Simulation of missing detection parameters
+\end{enumerate}
+
+The elements passed to the function are the collated data and constants
+(\texttt{IPM.data} and \texttt{IPM.constants}, see Chapter \protect\hyperlink{ux5cux23ux5cux2520Organisationux5cux2520forux5cux2520analysisux5cux2520withux5cux2520NIMBLE}{1.4}),
+as well as a logical argument determining whether initial values for year random
+effects should be sampled from their simulated distribution or set to 0 (\texttt{sampleRE}).
+
+To sample initial values for several chains, the function is called multiple
+times within a list.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Inits <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}
+  \KeywordTok{SPI_IPM.inits}\NormalTok{(}\DataTypeTok{IPM.data =}\NormalTok{ SPI.IPMdata, }\DataTypeTok{IPM.constants =}\NormalTok{ SPI.IPMconstants, }\DataTypeTok{sampleRE =} \OtherTok{FALSE}\NormalTok{),}
+  \KeywordTok{SPI_IPM.inits}\NormalTok{(}\DataTypeTok{IPM.data =}\NormalTok{ SPI.IPMdata, }\DataTypeTok{IPM.constants =}\NormalTok{ SPI.IPMconstants, }\DataTypeTok{sampleRE =} \OtherTok{FALSE}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+is an example for initializing two chains.
+
+Note that I am sampling the initial values and storing them in an object called
+\texttt{Inits} in the example, which I then pass to \texttt{nimbleMCMC} afterwards, instead of
+calling the \texttt{SPI\_IPM.inits} directly within the call to \texttt{nimbleMCMC}. The reason
+for ``pre-sampling'' initial values in this way is that it makes trouble-shooting
+much easier: if initialization problems occur at specific nodes, I can
+investigate both the associated data AND pre-sampled initial values to work out
+the cause of the discrepancy.\\
+For the purpose of facilitating trouble-shooting, but also to promote reproducibility,
+it is also good practice to set a seed prior to pre-sampling initial values
+(in \texttt{IPMRun\_PopID.R}, for example, the seed is set right at the start of the
+script).
+
 \hypertarget{test-runs-and-full-runs-chains-iterations-burn-in-and-thinning}{%
 \section{Test runs and full runs: chains, iterations, burn-in, and thinning}\label{test-runs-and-full-runs-chains-iterations-burn-in-and-thinning}}
 
+If you have ample experience working with Bayesian models and MCMC, you can jump
+over this section.
+
+The following is a (perhaps obvious) practical tip for users that are newer to
+Bayesian modelling and/or IPMs: always do a test-run of your implementation to
+make sure it works before running a long MCMC!
+
+In the original code, \texttt{SPI-IPM} is set up for a full run of 4 chains with
+200 000 iterations each (see code lines 26-29 in \texttt{IPMRun\_PopID.R}). The first
+50 000 iterations of each chain are discarded as burn-in and the remainder
+thinned by 30, resulting in a combined posterior consisting of 4\(\times\) 5000 = 20 000
+samples. This is rather generous, and it is not unlikely that your analysis will
+require substantially less iterations to reach convergence (see Chapter
+\protect\hyperlink{ux5cux23ux5cux2520Assessingux5cux2520chainux5cux2520convergence}{5.1} for how to assess convergence).
+Nonetheless, running the full MCMC can easily take several hours and ideally,
+you would discover issues such as bad initialization or mistakes made during
+code adjustments \textbf{before} having to wait that long.\\
+That's where short test runs become useful. The shortest MCMC you can run is
+two iterations long, no burn-in, and with thinning interval 1 (= no thinning).
+By running that first, you can check that your model builds smoothly and contains
+no unwanted NAs, and that initialization works as it should creates no conflicts.
+With slightly more iterations in a test chain, you can also make sure that all
+nodes that should be updating are in fact updating. Most importantly, this will
+allow you to test your model's setup and trouble-shoot some basic implementation
+issues without having to wait for hours.
+
 \hypertarget{trouble-shooting-implementation-issues}{%
 \section{Trouble-shooting implementation issues}\label{trouble-shooting-implementation-issues}}
+
+Specific content will be added later. In the meantime, a lot of helpful
+information can be found in the materials on the \href{https://r-nimble.org/}{NIMBLE website}
+and via the Google group \href{https://groups.google.com/g/nimble-users}{``nimble-users''}.
+
+For issues that are related specifically to \texttt{SPI-IPM}, you can also get in touch
+via \href{mailto:chloe.nater@nina.no}{email}.
 
 \hypertarget{ModelAssm}{%
 \chapter{Model Assessment}\label{ModelAssm}}

@@ -31,16 +31,22 @@ rate $X_{Y,t}$ and the adults vital rate $X_{A,t}$. The exception are the annual
 survival rates for juveniles ($sJ_t$) and ($sA_t$), which both have separate
 random effects because the drivers of survival variation are expected to vary 
 between those two age classes, and the basic implementation includes an 
-additional covariate effect $sJ_t$ only:
+additional covariate effect $sJ_t$ only^[Note that the implementation of this
+in `IPMSetup.R` looks slightly different as it uses a vectorized formulation
+(calculations done over all time-steps simultaneously instead of using a 
+for-loop). Vectorized calculations are a nifty feature available in NIMBLE (but
+not BUGS and JAGS); more on this in Chapter [4.1](##	Efficient implementation using NIMBLE).
+]:
 ```{r eval=FALSE}
-## Age- and time-dependent survival probabilities
-logit(sJ[1:Tmax]) <- logit(Mu.sJ) + beta3.sJ*cov3[1:Tmax] + epsilon.sJ[1:Tmax]
-logit(sA[1:Tmax]) <- logit(Mu.sA) + epsilon.sA[1:Tmax]
-
-## Temporal random effects
 for(t in 1:Tmax){
-	 epsilon.sJ[t] ~ dnorm(0, sd = sigma.sJ)
-	 epsilon.sA[t] ~ dnorm(0, sd = sigma.sA)
+    
+  ## Age- and time-dependent survival probabilities
+  logit(sJ[t]) <- logit(Mu.sJ) + beta3.sJ*cov3[t] + epsilon.sJ[t]
+  logit(sA[t]) <- logit(Mu.sA) + epsilon.sA[t]
+
+  ## Temporal random effects
+	epsilon.sJ[t] ~ dnorm(0, sd = sigma.sJ)
+	epsilon.sA[t] ~ dnorm(0, sd = sigma.sA)
 }
 
 ```
@@ -80,12 +86,7 @@ quantifying strength and direction of the effect and $cov1_t$ is the value of
 covariate $cov1$ at time $t$. 
 In (generalized) linear mixed effects models as they are used in `SPI-IPM`, 
 effects of several different covariates can just be added up on the link scale. 
-For $pNS_t$, for example, this codes as^[Note that the implementation of this
-in `IPMSetup.R` looks slightly different as it uses a vectorized formulation
-(calculations done over all time-steps simultaneously instead of using a 
-for-loop). Vectorized calculations are a nifty feature available in NIMBLE (but
-not BUGS and JAGS); more on this in Chapter [4.1](##	Efficient implementation using NIMBLE).
-]:
+For $pNS_t$, for example, this codes as^[see Footnote 1]:
 ```{r eval=FALSE}
 for(t in 1:Tmax){
   logit(pNS[t]) <- logit(Mu.pNS) + beta1.pNS*cov1[t] + beta2.pNS*cov2[t] + epsilon.pNS[t]
@@ -213,6 +214,6 @@ variables are essentially "mixture models" including auxiliary data about the
 underlying distribution. 
 
 ##	Notes on covariate selection 
-[TBA later]
+To be added later.
 
 

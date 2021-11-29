@@ -1,7 +1,6 @@
 # IPM Construction {#IPMCon}
 
 
-
 ##	Open population model with 2 age classes
 
 ### Model description

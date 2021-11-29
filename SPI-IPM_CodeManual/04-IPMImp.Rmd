@@ -2,13 +2,230 @@
 
 
 ##	Efficient implementation using NIMBLE
-We use the fantastic **nimble** package [@devalpine2017]!
+`SPI-IPM` is implemented in a Bayesian framework and, more specifically, it is 
+fit using NIMBLE [@devalpine2017]. In many ways, NIMBLE is the successor to 
+BUGS and JAGS, using very similar syntax but offering higher efficiency, much
+more flexibility, and a range of smaller "quality-of-life improvements". 
+Unlike its predecessors, NIMBLE is not a software on its own and is installed
+via the R-package `nimble` [@nimbleR]. A lot of resources on setting up and
+working with NIMBLE are available on the [NIMBLE website](https://r-nimble.org/)
+and this manual will not give a comprehensive overview of NIMBLE or the 
+`nimble` R package. 
+In the following, I will instead briefly outline some of 
+NIMBLE's features that `SPI-IPM` makes use of, and that may be good to be aware
+of particularly for people switching over from BUGS/JAGS. I will also briefly 
+outline the structure for the basic call to NIMBLE to run a model. 
 
+### Alternative specification of distributions
+First, NIMBLE allows alternative specifications for statistical distributions
+(see the [NIMBLE manual](https://r-nimble.org/manuals/NimbleUserManual.pdf) 
+for an overview). This is particularly convenient for some commonly used 
+distributions such as the normal distribution, which had to be specified via
+a mean and a precision ($\tau$) in BUGS/JAGS. The latter was then often related
+to the (some might say) more useful standard deviation ($\sigma$):
+```{r eval=FALSE}
+for(t in 1:Tmax){
+  epsilon[t] ~ dnorm(0, tau)
+}
+tau <- pow(sigma, -2)
+sigma ~ dunif(0, 5)
+```
+Looks familiar?  
+NIMBLE allows to specify the distribution parameters exactly as above, but also 
+offers alternatives such as parameterisation by mean and standard deviation 
+directly, e.g.:
+```{r eval=FALSE}
+for(t in 1:Tmax){
+  epsilon[t] ~ dnorm(0, sd = sigma)
+}
+sigma ~ dunif(0, 5)
+```
+
+### Vectorized calculations
+A second useful feature is vectorized calculation of deterministic nodes. At 
+some point, everyone has heard that when programming in `R`, vectorization
+outperforms for-loops when it comes to efficiency and speed. In many cases, this
+is also true for MCMC, and NIMBLE therefore supports vectorization of 
+calculations for deterministic nodes (i.e. nodes assigned via `<-` in the code).
+`SPI-IPM` uses vectorized calculations instead of for-loops in a variety of 
+cases, for example for defining the models underlying temporal variation in 
+vital rates:
+```{r eval=FALSE}
+logit(pNS[1:Tmax]) <- logit(Mu.pNS) + beta1.pNS*cov1[1:Tmax] + beta2.pNS*cov2[1:Tmax] + epsilon.pNS[1:Tmax]
+```
+instead of
+```{r eval=FALSE}
+for(t in 1:Tmax){
+  logit(pNS[t]) <- logit(Mu.pNS) + beta1.pNS*cov1[t] + beta2.pNS*cov2[t] + epsilon.pNS[t]
+}
+```
+It is important to note that vectorization works for deterministic nodes, but
+-- per today -- not for stochastic nodes (i.e. nodes assigned via `~`).
+
+### Custom distributions
+The third class of NIMBLE features that `SPI-IPM` capitalizes on is the ability
+to define custom distributions. Specifically, `SPI-IPM` uses a custom distribution
+in the likelihood for the mark-recapture data.  
+In most IPMs, the analysis of mark-recapture data to estimate survival represents 
+the bottleneck for MCMC efficiency: sampling hundreds -- if not thousands -- of 
+latent alive or dead states is computationally expensive and results in long 
+MCMC runtimes [@gimenez2007].
+Summarising individual capture histories into "m-arrays" has long been the only 
+way to reduce runtimes of Bayesian mark-recapture models [@kery2011], but many
+find this format less intuitive and it quickly becomes convoluted and impractical
+when working with predictors/groups other than age class. With the rise of
+NIMBLE, @turek2016 developed an approach to defining marginalized likelihoods
+that integrate over latent states and lead to tremendous increases in MCMC
+efficiency. Basic implementations of the marginalized likelihood for mark-recapture
+models were included in the `nimbleEcology` R package [@nimbleEcol].  
+`SPI-IPM` uses an extended version of the `dCJS_vv` distribution contained in
+`nimbleEcology` which not only integrates over latent states, but also runs on
+only unique -- instead of all -- capture histories [analogous to the goose
+example in @turek2016]. Preliminary tests have shown that mark-recapture models
+with a likelihood specified using this distribution (`dCJS_vv_sum`) have very
+similar runtimes as implementations using m-arrays for small to medium-sized
+datasets, and outspeed m-array formulations in for larger datasets.  
+The specification of the custom distribution is contained in `dCJS_CustomDist.R`
+and its implementation within the model code looks quite minimalistic:
+```{r eval=FALSE}
+## Likelihood with custom distribution
+for (i in 1:n.CH){
+  y.sum[i, first.sum[i]:last.sum[i]] ~ dCJS_vv_sum(
+	   probSurvive = phi.CH[i, first.sum[i]:last.sum[i]],
+	   probCapture = p.CH[i, first.sum[i]:last.sum[i]],
+	   len = last.sum[i]-first.sum[i]+1,
+	   mult = CHs.count[i])
+}
+```
+`y.sum` is a matrix containing all `n.CH` unique capture histories and the 
+likelihood is fit for the range of observations between the first capture of an
+individual (`first.sum`) and the last possible time this individual could still
+have been alive^[in practice this can be set to e.g. year of the last recorded
+observation of the individual plus maximum lifesspan, plus some. In my analysis
+of UK-breeding pied flycatchers, for example, I have set it -- generously -- to 
+20 years after the last recorded capture.](`last.sum`). `probSurvive` and
+`probCapture` are vectors containing the survival and recapture probabilities
+relevant for the capture history (see `IPMSetup.R` and Chapter [2.2.4](###	Mark-recapture data likelihood) for details). The argument `len` quantifies the length of `y.sum` 
+and is required for successful compilation of the custom function. Finally, `mult`
+is an integer number specifying how many individual birds shared capture history
+`i`.
+
+### Calling NIMBLE from R
+The simplest way to implement and run a Bayesian model in NIMBLE is via the
+wrapper-function `nimbleMCMC`. The structure of the `nimbleMCMC` call is very
+similar to the functions provided with the different R-packages for running
+BUGS/JAGS and -- for `SPI-IPM` -- looks like this (code line 49 in `IPMRun_PopID.R`):
+```{r eval=FALSE}
+SPI.IPM <- nimbleMCMC(code = SPI.IPMcode, constants = SPI.IPMconstants, data = SPI.IPMdata, inits = Inits, monitors = parameters, niter = ni, nburnin = nb, nchains = nc, thin = nt, setSeed = mySeed, samplesAsCodaMCMC = TRUE)
+```
+`code` is the model code, formatted as `nimbleCode`. `constants` and `data` 
+contain all information relevant for parameterising the model, as well as all 
+the observational data (see Chapter [1.4](## Organisation for analysis with NIMBLE)).
+`inits` is a list of initial values that is described further below, and `monitors`
+is a character vector containing the names of all paramters that should be 
+monitored. `niter`, `nburnin`, `nchains`, and `thin` are the numbers of iterations, 
+samples to discard as burn-in, number of chains, and thinning interval for the
+MCMC. `setSeed` is absolutely crucial! By setting the seed within the call to 
+NIMBLE, your entire MCMC becomes reproducible which is invaluable also for 
+trouble-shooting. The final argument, `samplesAsCodaMCMC`, is for people like
+me who like to get back raw samples and make their own summaries instead of
+having the function return larger objects containing the samples along with 
+a variety of summaries and other stats. 
 
 ##	Simulation of initial values
+As a general rule, all parameters that have priors provided for them within
+Bayesian models also require initial values. For `SPI-IPM`, this applies to: 
+
+- Vital rate averages ($\mu$ /`Mu`)
+- Environmental effects on vital rates ($\beta$ /`beta`)
+- Standard deviation for year random effects on vital rates ($\sigma$ /`sigma`)
+- Initial population sizes (`localN[,1]`)
+- Average and standard deviation of immigrant numbers (`AvgImm`, `sigma.Imm`)
+- Missing covariate values (subset of `cov1`, `cov2`, `cov3`)
+- Missing observation probabilities (subset of `PropImmDetect`)
+
+Provided that initial values for all of these parameters have been provided, 
+NIMBLE is able to calculate initial values for all of the remaining downstream
+nodes using the realtionships specified in the model code. In practice, however,
+the more different data sources and sub-models are included in an integrated
+model, the more likely it is that this "automatic" initialization of nodes will
+result in conflicts, i.e. initial values that are not compatible with each other. 
+
+While it may work for a single IPM to re-sample initial values repeatedly until
+a set without conflicts has been found by chance, this is vastly impractical for
+a framework like `SPI-IPM` which is designed to also work well for comparative
+analyses, i.e. may be run on several datasets/populations at a time.  
+For that reason, manual initialization of all nodes makes sense for `SPI-IPM` and
+is implemented in the function `SPI_IPM.inits` (in file `InitSim.R`).
+
+The function runs a simulation of the entire population model, including the
+reconstruction of missing covariate and detection parameter values in four
+steps: 
+
+1. Simulation of missing covariate values
+2. Simulation of age- and time-specific vital rates 
+3. Simulation of initial population size and population trajectory over the study period, incl. immigration
+4. Simulation of missing detection parameters
+
+The elements passed to the function are the collated data and constants
+(`IPM.data` and `IPM.constants`, see Chapter [1.4](## Organisation for analysis with NIMBLE)),
+as well as a logical argument determining whether initial values for year random
+effects should be sampled from their simulated distribution or set to 0 (`sampleRE`).
+
+To sample initial values for several chains, the function is called multiple 
+times within a list. 
+```{r eval=FALSE}
+Inits <- list(
+  SPI_IPM.inits(IPM.data = SPI.IPMdata, IPM.constants = SPI.IPMconstants, sampleRE = FALSE),
+  SPI_IPM.inits(IPM.data = SPI.IPMdata, IPM.constants = SPI.IPMconstants, sampleRE = FALSE))
+```
+is an example for initializing two chains. 
+
+Note that I am sampling the initial values and storing them in an object called
+`Inits` in the example, which I then pass to `nimbleMCMC` afterwards, instead of 
+calling the `SPI_IPM.inits` directly within the call to `nimbleMCMC`. The reason
+for "pre-sampling" initial values in this way is that it makes trouble-shooting
+much easier: if initialization problems occur at specific nodes, I can 
+investigate both the associated data AND pre-sampled initial values to work out
+the cause of the discrepancy.  
+For the purpose of facilitating trouble-shooting, but also to promote reproducibility,
+it is also good practice to set a seed prior to pre-sampling initial values 
+(in `IPMRun_PopID.R`, for example, the seed is set right at the start of the
+script).
 
 
 ##	Test runs and full runs: chains, iterations, burn-in, and thinning
+If you have ample experience working with Bayesian models and MCMC, you can jump
+over this section. 
+
+The following is a (perhaps obvious) practical tip for users that are newer to 
+Bayesian modelling and/or IPMs: always do a test-run of your implementation to
+make sure it works before running a long MCMC!  
+
+In the original code, `SPI-IPM` is set up for a full run of 4 chains with
+200 000 iterations each (see code lines 26-29 in `IPMRun_PopID.R`). The first 
+50 000 iterations of each chain are discarded as burn-in and the remainder 
+thinned by 30, resulting in a combined posterior consisting of 4$\times$ 5000 = 20 000 
+samples. This is rather generous, and it is not unlikely that your analysis will
+require substantially less iterations to reach convergence (see Chapter 
+[5.1](## Assessing chain convergence) for how to assess convergence). 
+Nonetheless, running the full MCMC can easily take several hours and ideally, 
+you would discover issues such as bad initialization or mistakes made during
+code adjustments **before** having to wait that long.  
+That's where short test runs become useful. The shortest MCMC you can run is
+two iterations long, no burn-in, and with thinning interval 1 (= no thinning). 
+By running that first, you can check that your model builds smoothly and contains
+no unwanted NAs, and that initialization works as it should creates no conflicts.
+With slightly more iterations in a test chain, you can also make sure that all
+nodes that should be updating are in fact updating. Most importantly, this will
+allow you to test your model's setup and trouble-shoot some basic implementation
+issues without having to wait for hours. 
 
 
 ##	Trouble-shooting implementation issues
+Specific content will be added later. In the meantime, a lot of helpful
+information can be found in the materials on the [NIMBLE website](https://r-nimble.org/)
+and via the Google group ["nimble-users"](https://groups.google.com/g/nimble-users).
+
+For issues that are related specifically to `SPI-IPM`, you can also get in touch
+via [email](mailto:chloe.nater@nina.no).

@@ -10,6 +10,7 @@ nimbleOptions(disallow_multivariate_argument_expressions = FALSE)
 
 ## Set seed
 mySeed <- 1
+set.seed(mySeed)
 
 ## Set population code
 PopID <- 'EDM'
@@ -36,16 +37,16 @@ nc <- 4
 
 
 ## Sample initial values
-#Inits <- list(PFC_IPM.inits(IPM.data = PFC.IPMdata, IPM.constants = PFC.IPMconstants, sampleRE = FALSE))
-Inits <- list(PFC_IPM.inits(IPM.data = PFC.IPMdata, IPM.constants = PFC.IPMconstants, sampleRE = FALSE),
-PFC_IPM.inits(IPM.data = PFC.IPMdata, IPM.constants = PFC.IPMconstants, sampleRE = FALSE),
-PFC_IPM.inits(IPM.data = PFC.IPMdata, IPM.constants = PFC.IPMconstants, sampleRE = FALSE),
-PFC_IPM.inits(IPM.data = PFC.IPMdata, IPM.constants = PFC.IPMconstants, sampleRE = FALSE))
+#Inits <- list(SPI_IPM.inits(IPM.data = SPI.IPMdata, IPM.constants = SPI.IPMconstants, sampleRE = FALSE))
+Inits <- list(SPI_IPM.inits(IPM.data = SPI.IPMdata, IPM.constants = SPI.IPMconstants, sampleRE = FALSE),
+SPI_IPM.inits(IPM.data = SPI.IPMdata, IPM.constants = SPI.IPMconstants, sampleRE = FALSE),
+SPI_IPM.inits(IPM.data = SPI.IPMdata, IPM.constants = SPI.IPMconstants, sampleRE = FALSE),
+SPI_IPM.inits(IPM.data = SPI.IPMdata, IPM.constants = SPI.IPMconstants, sampleRE = FALSE))
 
 ####################
 #### RUN NIMBLE ####
 ####################
 
-PFC.IPM <- nimbleMCMC(code = PFC.IPMcode, constants = PFC.IPMconstants, data = PFC.IPMdata, inits = Inits, monitors = parameters, niter = ni, nburnin = nb, nchains = nc, thin = nt, setSeed = mySeed, samplesAsCodaMCMC = TRUE)
+SPI.IPM <- nimbleMCMC(code = SPI.IPMcode, constants = SPI.IPMconstants, data = SPI.IPMdata, inits = Inits, monitors = parameters, niter = ni, nburnin = nb, nchains = nc, thin = nt, setSeed = mySeed, samplesAsCodaMCMC = TRUE)
 
-save(PFC.IPM, file = paste0("SPI-IPM_", PopID, ".RData"))
+save(SPI.IPM, file = paste0("SPI-IPM_", PopID, ".RData"))

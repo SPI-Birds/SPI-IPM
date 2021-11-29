@@ -92,16 +92,21 @@ rate <span class="math inline">\(X_{Y,t}\)</span> and the adults vital rate <spa
 survival rates for juveniles (<span class="math inline">\(sJ_t\)</span>) and (<span class="math inline">\(sA_t\)</span>), which both have separate
 random effects because the drivers of survival variation are expected to vary
 between those two age classes, and the basic implementation includes an
-additional covariate effect <span class="math inline">\(sJ_t\)</span> only:</p>
+additional covariate effect <span class="math inline">\(sJ_t\)</span> only<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;Note that the implementation of this
+in &lt;code&gt;IPMSetup.R&lt;/code&gt; looks slightly different as it uses a vectorized formulation
+(calculations done over all time-steps simultaneously instead of using a
+for-loop). Vectorized calculations are a nifty feature available in NIMBLE (but
+not BUGS and JAGS); more on this in Chapter &lt;a href="##%20Efficient%20implementation%20using%20NIMBLE"&gt;4.1&lt;/a&gt;.&lt;/p&gt;'><sup>2</sup></a>:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## Age- and time-dependent survival probabilities</span>
-<span class="fu">logit</span><span class="op">(</span><span class="va">sJ</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">Tmax</span><span class="op">]</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu">logit</span><span class="op">(</span><span class="va">Mu.sJ</span><span class="op">)</span> <span class="op">+</span> <span class="va">beta3.sJ</span><span class="op">*</span><span class="va">cov3</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">Tmax</span><span class="op">]</span> <span class="op">+</span> <span class="va">epsilon.sJ</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">Tmax</span><span class="op">]</span>
-<span class="fu">logit</span><span class="op">(</span><span class="va">sA</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">Tmax</span><span class="op">]</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu">logit</span><span class="op">(</span><span class="va">Mu.sA</span><span class="op">)</span> <span class="op">+</span> <span class="va">epsilon.sA</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">Tmax</span><span class="op">]</span>
+<code class="sourceCode R"><span class="kw">for</span><span class="op">(</span><span class="va">t</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">Tmax</span><span class="op">)</span><span class="op">{</span>
+    
+  <span class="co">## Age- and time-dependent survival probabilities</span>
+  <span class="fu">logit</span><span class="op">(</span><span class="va">sJ</span><span class="op">[</span><span class="va">t</span><span class="op">]</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu">logit</span><span class="op">(</span><span class="va">Mu.sJ</span><span class="op">)</span> <span class="op">+</span> <span class="va">beta3.sJ</span><span class="op">*</span><span class="va">cov3</span><span class="op">[</span><span class="va">t</span><span class="op">]</span> <span class="op">+</span> <span class="va">epsilon.sJ</span><span class="op">[</span><span class="va">t</span><span class="op">]</span>
+  <span class="fu">logit</span><span class="op">(</span><span class="va">sA</span><span class="op">[</span><span class="va">t</span><span class="op">]</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu">logit</span><span class="op">(</span><span class="va">Mu.sA</span><span class="op">)</span> <span class="op">+</span> <span class="va">epsilon.sA</span><span class="op">[</span><span class="va">t</span><span class="op">]</span>
 
-<span class="co">## Temporal random effects</span>
-<span class="kw">for</span><span class="op">(</span><span class="va">t</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">Tmax</span><span class="op">)</span><span class="op">{</span>
-     <span class="va">epsilon.sJ</span><span class="op">[</span><span class="va">t</span><span class="op">]</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">dnorm</a></span><span class="op">(</span><span class="fl">0</span>, sd <span class="op">=</span> <span class="va">sigma.sJ</span><span class="op">)</span>
-     <span class="va">epsilon.sA</span><span class="op">[</span><span class="va">t</span><span class="op">]</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">dnorm</a></span><span class="op">(</span><span class="fl">0</span>, sd <span class="op">=</span> <span class="va">sigma.sA</span><span class="op">)</span>
+  <span class="co">## Temporal random effects</span>
+    <span class="va">epsilon.sJ</span><span class="op">[</span><span class="va">t</span><span class="op">]</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">dnorm</a></span><span class="op">(</span><span class="fl">0</span>, sd <span class="op">=</span> <span class="va">sigma.sJ</span><span class="op">)</span>
+    <span class="va">epsilon.sA</span><span class="op">[</span><span class="va">t</span><span class="op">]</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">dnorm</a></span><span class="op">(</span><span class="fl">0</span>, sd <span class="op">=</span> <span class="va">sigma.sA</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
 <p>All random effects are treated as independent (= not correlated) in the basic
 implementation of the model, but the inclusion of correlation of random effects
@@ -113,7 +118,7 @@ on seven datasets from breeding populations of pied flycatchers in the UK, I
 found that estimates did not differ from those obtained from a model with
 independent random effects, and the posterior distribution for the correlation
 coefficient was so wide that no inference on strength or direction of the
-correlation was possible.&lt;/p&gt;"><sup>2</sup></a> using e.g.
+correlation was possible.&lt;/p&gt;"><sup>3</sup></a> using e.g.
 multivariate normal distributions or approaches similar to the one used in
 <span class="citation">Nater et al. (<a href="references.html#ref-nater2020" role="doc-biblioref">2020</a>)</span>.</p>
 </div>
@@ -142,11 +147,7 @@ quantifying strength and direction of the effect and <span class="math inline">\
 covariate <span class="math inline">\(cov1\)</span> at time <span class="math inline">\(t\)</span>.
 In (generalized) linear mixed effects models as they are used in <code>SPI-IPM</code>,
 effects of several different covariates can just be added up on the link scale.
-For <span class="math inline">\(pNS_t\)</span>, for example, this codes as<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;Note that the implementation of this
-in &lt;code&gt;IPMSetup.R&lt;/code&gt; looks slightly different as it uses a vectorized formulation
-(calculations done over all time-steps simultaneously instead of using a
-for-loop). Vectorized calculations are a nifty feature available in NIMBLE (but
-not BUGS and JAGS); more on this in Chapter &lt;a href="##%20Efficient%20implementation%20using%20NIMBLE"&gt;4.1&lt;/a&gt;.&lt;/p&gt;'><sup>3</sup></a>:</p>
+For <span class="math inline">\(pNS_t\)</span>, for example, this codes as<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;see Footnote 1&lt;/p&gt;"><sup>4</sup></a>:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw">for</span><span class="op">(</span><span class="va">t</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">Tmax</span><span class="op">)</span><span class="op">{</span>
   <span class="fu">logit</span><span class="op">(</span><span class="va">pNS</span><span class="op">[</span><span class="va">t</span><span class="op">]</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu">logit</span><span class="op">(</span><span class="va">Mu.pNS</span><span class="op">)</span> <span class="op">+</span> <span class="va">beta1.pNS</span><span class="op">*</span><span class="va">cov1</span><span class="op">[</span><span class="va">t</span><span class="op">]</span> <span class="op">+</span> <span class="va">beta2.pNS</span><span class="op">*</span><span class="va">cov2</span><span class="op">[</span><span class="va">t</span><span class="op">]</span> <span class="op">+</span> <span class="va">epsilon.pNS</span><span class="op">[</span><span class="va">t</span><span class="op">]</span>
@@ -268,7 +269,7 @@ underlying distribution.</p>
 <h2>
 <span class="header-section-number">3.3</span> Notes on covariate selection<a class="anchor" aria-label="anchor" href="#notes-on-covariate-selection"><i class="fas fa-link"></i></a>
 </h2>
-<p>[TBA later]</p>
+<p>To be added later.</p>
 
 </div>
 </div>
@@ -305,7 +306,7 @@ underlying distribution.</p>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>SPI-IPM Code Manual</strong>" was written by Chloé R. Nater. It was last built on 2021-11-27.</p>
+    <p>"<strong>SPI-IPM Code Manual</strong>" was written by Chloé R. Nater. It was last built on 2021-11-29.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

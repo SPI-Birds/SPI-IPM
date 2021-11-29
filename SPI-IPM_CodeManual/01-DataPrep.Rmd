@@ -35,3 +35,6 @@ Quick recap of SPI-Birds standard format and overview over data types used in IP
 ###	Nest survey sampling effort
 
 ###	Capture probability proxies
+
+
+## Organisation for analysis with NIMBLE

@@ -14,6 +14,7 @@ immigrant-count-data
 auxiliary-data-on-the-sampling-process
 nest-survey-sampling-effort
 capture-probability-proxies
+organisation-for-analysis-with-nimble
 IPMCon
 open-population-model-with-2-age-classes
 model-description
@@ -34,6 +35,10 @@ imputation-of-missing-covariate-values
 notes-on-covariate-selection
 IPMImp
 efficient-implementation-using-nimble
+alternative-specification-of-distributions
+vectorized-calculations
+custom-distributions
+calling-nimble-from-r
 simulation-of-initial-values
 test-runs-and-full-runs-chains-iterations-burn-in-and-thinning
 trouble-shooting-implementation-issues

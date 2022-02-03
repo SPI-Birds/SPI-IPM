@@ -123,7 +123,7 @@ stoch.Sims = function(i, data.Tmax, sim.Tmax, out.mat){ # i = simulation number
   ProjMat.list <- generateProjMat(data.Tmax = data.Tmax, out.mat)
     
 	# Make a random sequence of years
-	YearSeq <- sample(c(2:(data.Tmax-1)), sim.Tmax, replace = T)
+	YearSeq <- sample(c(1:(data.Tmax-1)), sim.Tmax, replace = T)
 	
 	# Population projection
 	N <- stoch.Proj(YearSeq, ProjMat.list)

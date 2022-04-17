@@ -8,7 +8,7 @@
 ##########################
 
 ## Load workspace containing formatted demographic data
-load(paste0(PopID, '_IPMData.RData'))
+PFC.data <- readRDS(paste0(PopID, '_IPMData.rds'))
 
 str(PFC.data)
 

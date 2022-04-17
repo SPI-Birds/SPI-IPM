@@ -669,4 +669,4 @@ PFC.data <- list(y = y, CHs = CHs,
                  YearIndeces = YearIndeces)
 
 ## Save data
-save(PFC.data, file = paste0(PopID, '_IPMData.RData'))
+saveRDS(PFC.data, file = paste0(PopID, '_IPMData.rds'))

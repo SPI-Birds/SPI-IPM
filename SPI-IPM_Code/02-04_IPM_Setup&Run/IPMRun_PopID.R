@@ -49,4 +49,4 @@ SPI_IPM.inits(IPM.data = SPI.IPMdata, IPM.constants = SPI.IPMconstants, sampleRE
 
 SPI.IPM <- nimbleMCMC(code = SPI.IPMcode, constants = SPI.IPMconstants, data = SPI.IPMdata, inits = Inits, monitors = parameters, niter = ni, nburnin = nb, nchains = nc, thin = nt, setSeed = mySeed, samplesAsCodaMCMC = TRUE)
 
-save(SPI.IPM, file = paste0("SPI-IPM_", PopID, ".RData"))
+saveRDS(SPI.IPM, file = paste0("SPI-IPM_", PopID, ".rds"))

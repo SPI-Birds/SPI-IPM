@@ -20,10 +20,10 @@ PopID_List <- c('DIN', 'EDM', 'KAT', 'NAG', 'NWA', 'OKE', 'TEI')
 assemble_LTREdata <- function(PopID){
   
   # Set path for LTRE results
-  DataPath <- paste0('fixedLTRE_', PopID, '.RData')
+  DataPath <- paste0('fixedLTRE_', PopID, '.rds')
 
   # Load LTRE data
-  load(DataPath)
+  LTRE_Results <- readRDS(DataPath)
   
   ## Make summaries of posteriors (medians + 95% CIs)
   LTRE.sum <- ddply(LTRE_Results, .(PopID, year1, year2, parameter), summarise, 
@@ -46,14 +46,14 @@ fLTRE_results$parameter <- factor(fLTRE_results$parameter,
                                           'imm_Y', 'imm_A', 'Imm_Y', 'Imm_A'))
 
 fLTRE_results$PopID <- factor(fLTRE_results$PopID, 
-                                  levels = c('TEI', 'EDM', 'OKE', 'NAG', 'DIN', 'NWA', 'KAT'))
+                                  levels = c('EDM', 'TEI', 'OKE', 'NAG', 'DIN', 'NWA', 'KAT'))
 
 #############################################################
 #### PLOTTING RESULTS - LTRE CONTRIBUTIONS  - ALL LEVELS ####
 #############################################################
 
 ## All levels - standardized axes
-pdf('ResultsAll_AxisSTD.pdf', width = 8.3, height = 11.7)
+pdf('Plots_General/ResultsAll_AxisSTD.pdf', width = 8.3, height = 11.7)
 ggplot(subset(fLTRE_results, !(parameter %in% c('N_Y', 'N_A', 'Imm_Y', 'Imm_A'))), aes(x = year1, y = median, group = parameter)) + 
   geom_bar(aes(fill = parameter, color = parameter), stat = 'identity', position = 'stack') + 
   ylab('Contribution') + xlab('Year') + 
@@ -64,7 +64,7 @@ ggplot(subset(fLTRE_results, !(parameter %in% c('N_Y', 'N_A', 'Imm_Y', 'Imm_A'))
   theme_bw() + theme(legend.title = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank()) 
 dev.off()
 
-pdf('ResultsAll_Abs_AxisSTD.pdf', width = 8.3, height = 11.7)
+pdf('Plots_General/ResultsAll_Abs_AxisSTD.pdf', width = 8.3, height = 11.7)
 ggplot(subset(fLTRE_results, !(parameter %in% c('N_Y', 'N_A', 'Imm_Y', 'Imm_A'))), aes(x = year1, y = abs(median), group = parameter)) + 
   geom_area(aes(fill = parameter, color = parameter), stat = 'identity', position = 'fill') + 
   ylab('Absolute contribution') + xlab('Year') + 
@@ -76,7 +76,7 @@ dev.off()
 
 
 ## All levels - population-specific axes
-pdf('ResultsAll_AxisSPC.pdf', width = 11.7, height = 8.3)
+pdf('Plots_General/ResultsAll_AxisSPC.pdf', width = 11.7, height = 8.3)
 ggplot(subset(fLTRE_results, !(parameter %in% c('N_Y', 'N_A', 'Imm_Y', 'Imm_A'))), aes(x = year1, y = median, group = parameter)) + 
   geom_bar(aes(fill = parameter, color = parameter), stat = 'identity', position = 'stack') + 
   ylab('Contribution') + xlab('Year') + 

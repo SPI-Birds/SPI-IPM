@@ -18,13 +18,13 @@ PopID_List <- c('DIN', 'EDM', 'KAT', 'NAG', 'NWA', 'OKE', 'TEI')
 assemble_LTREdata_local <- function(PopID){
   
   # Set path and name for relevant LTRE's
-  DataPath <- paste0('randomLTRE_', PopID, '.RData') # Full LTRE
+  DataPath <- paste0('randomLTRE_', PopID, '.rds') # Full LTRE
   
   # Make an empty data frame to store combined data
   ContData_out <- data.frame()
   
   # Load LTRE data
-  load(DataPath)
+  LTRE_Resuts <- readRDS(DataPath)
     
   # Extract non-summarized contributions
   ContData_n <- subset(LTRE_Results$ContData_n, !(parameter %in% c('imm_Y', 'imm_A')))
@@ -78,7 +78,7 @@ LTRE_local$parameter <- factor(LTRE_local$parameter,
                                           'sJ', 'sA', 's', 'Survival', 
                                           'n_Y', 'n_A', 'n', 'Pop. structure'))
 
-LTRE_local$PopID <- factor(LTRE_local$PopID, levels = c('TEI', 'EDM', 'OKE', 'NAG', 'DIN', 'NWA', 'KAT'))
+LTRE_local$PopID <- factor(LTRE_local$PopID, levels = c('EDM', 'TEI', 'OKE', 'NAG', 'DIN', 'NWA', 'KAT'))
 
 ## Define custom color scale
 PFC_ColorCode <- c('#B43AA5', '#F2309B', '#F23E1D', '#E7AA24', '#A5D85F', '#32A638', '#376BAD')

@@ -22,7 +22,7 @@ for(i in 1:7){
   #--------------------#
   
   ## Integrated analysis
-  load(paste0('/Users/chloe.nater/Dropbox/PiedFlycatcher_IPM/IPM_Code/210819_FlycatcherIPM_PostSamples_MS1/FlycatcherIPM_CovA_Sub_', PopID[i], '.RData'))
+  PFC.IPM <- readRDS(paste0('/Users/chloe.nater/Dropbox/PiedFlycatcher_IPM/IPM_Code/210819_FlycatcherIPM_PostSamples_MS1/FlycatcherIPM_CovA_Sub_', PopID[i], '.rds'))
   
   out.mat <- as.matrix(PFC.IPM)
   
@@ -31,7 +31,7 @@ for(i in 1:7){
 
   
   ## Independent analysis
-  load(paste0('/Users/chloe.nater/Dropbox/PiedFlycatcher_IPM/IPM_Code/210803_FlycatcherIPM_ClusterRuns_IndepAnalysis/FlycatcherIPM_Indep_CovA_', PopID[i], '.RData'))
+  PFC.IPM <- readRDS(paste0('/Users/chloe.nater/Dropbox/PiedFlycatcher_IPM/IPM_Code/210803_FlycatcherIPM_ClusterRuns_IndepAnalysis/FlycatcherIPM_Indep_CovA_', PopID[i], '.rds'))
   
   out.mat <- as.matrix(PFC.IPM)
 

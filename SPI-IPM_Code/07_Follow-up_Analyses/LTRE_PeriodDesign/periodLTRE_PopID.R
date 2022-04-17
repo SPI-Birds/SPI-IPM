@@ -1041,9 +1041,9 @@ LTRE_Results <- list(
 
 ## Saving output
 if(!FixLog0MeanRates){
-  save(LTRE_Results, file = paste0('periodLTRE_', PopID, '.RData'))
+  saveRDS(LTRE_Results, file = paste0('periodLTRE_', PopID, '.rds'))
 }
 if(FixLog0MeanRates){
-  save(LTRE_Results, file = paste0('periodLTRE_', PopID, '_Log0MeanFix.RData'))
+  saveRDS(LTRE_Results, file = paste0('periodLTRE_', PopID, '_Log0MeanFix.rds'))
 }
 

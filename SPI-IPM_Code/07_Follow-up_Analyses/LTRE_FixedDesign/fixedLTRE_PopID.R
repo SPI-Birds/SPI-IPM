@@ -274,4 +274,4 @@ LTRE_Results$year1 <- LTRE_Results$t1 + min(StudyYears) - 1
 LTRE_Results$year2 <- LTRE_Results$t2 + min(StudyYears) - 1
 
 ## Saving output
-save(LTRE_Results, file = paste0('fixedLTRE_', PopID, '.RData'))
+saveRDS(LTRE_Results, file = paste0('fixedLTRE_', PopID, '.rds'))

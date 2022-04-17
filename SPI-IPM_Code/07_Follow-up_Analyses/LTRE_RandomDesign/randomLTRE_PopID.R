@@ -405,4 +405,4 @@ LTRE_Results <- list(
 )
 
 ## Saving output
-save(LTRE_Results, file = paste0('randomLTRE_', PopID, '.RData'))
+saveRDS(LTRE_Results, file = paste0('randomLTRE_', PopID, '.rds'))

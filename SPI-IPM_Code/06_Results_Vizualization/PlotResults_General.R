@@ -14,26 +14,19 @@ library(plyr)
 #--------------------#
 
 ## Load posterior samples from all 7 runs
-load('SPI-IPM_DIN.RData')
-DIN.IPM <- PFC.IPM
+DIN.IPM <- readRDS('FlycatcherIPM_CovA_Sub_DIN.rds')
 
-load('SPI-IPM_EDM.RData')
-EDM.IPM <- PFC.IPM
+EDM.IPM <- readRDS('FlycatcherIPM_CovA_Sub_EDM.rds')
 
-load('SPI-IPM_KAT.RData')
-KAT.IPM <- PFC.IPM
+KAT.IPM <- readRDS('FlycatcherIPM_CovA_Sub_KAT.rds')
 
-load('SPI-IPM_NAG.RData')
-NAG.IPM <- PFC.IPM
+NAG.IPM <- readRDS('FlycatcherIPM_CovA_Sub_NAG.rds')
 
-load('SPI-IPM_NWA.RData')
-NWA.IPM <- PFC.IPM
+NWA.IPM <- readRDS('FlycatcherIPM_CovA_Sub_NWA.rds')
 
-load('SPI-IPM_OKE.RData')
-OKE.IPM <- PFC.IPM
+OKE.IPM <- readRDS('FlycatcherIPM_CovA_Sub_OKE.rds')
 
-load('SPI-IPM_TEI.RData')
-TEI.IPM <- PFC.IPM
+TEI.IPM <- readRDS('FlycatcherIPM_CovA_Sub_TEI.rds')
 
 
 # Re-organizing data #
@@ -60,8 +53,8 @@ VR.params <- c('Mu.sJ', 'Mu.sA', 'sigma.sJ', 'sigma.sA',
 ## List PopIDs and associated population labels
 PopIDs <- c('DIN', 'EDM', 'KAT', 'NAG', 'NWA', 'OKE', 'TEI')
 PopID_Labels <- c('Dinas (DIN)', 'East Dartmoor (EDM)', 'Loch Katrine (KAT)',
-                 'Forest of Dean (NAG)', 'North Wales (NWA)', 'Okehampton (OKE)',
-                 'Teign (TEI)')
+                 'Forest of Dean (NAG)', 'Denbigh (NWA)', 'Okehampton (OKE)',
+                 'Teign Valley (TEI)')
 
 ## Re-organize data for whole posteriors of vital rate parameters
 post.data <- data.frame(Sample = NA, Parameter = NA, Estimate = NA, PopID = NA)
@@ -122,15 +115,15 @@ for(i in 1:7){
 #----------------------------------------------------#
 
 ## Order PopIDs by latitude
-post.data$PopID <- factor(post.data$PopID, levels = c('TEI', 'EDM', 'OKE', 'NAG', 'DIN', 'NWA', 'KAT'))
+post.data$PopID <- factor(post.data$PopID, levels = c('EDM', 'TEI', 'OKE', 'NAG', 'DIN', 'NWA', 'KAT'))
 
 ## Define custom color code for PopIDs
 PFC_ColorCode <- c('#B43AA5', '#F2309B', '#F23E1D', '#E7AA24', '#A5D85F', '#32A638', '#376BAD')
 
-pdf('Plots/VR_Posteriors_crossPop.pdf', width = 12, height = 8)
+pdf('Plots/VR_Posteriors_crossPop.pdf', width = 8, height = 10)
 ggplot(post.data, aes(x = Estimate, group = PopID)) + 
   geom_density(aes(color = PopID, linetype = PopID), fill = NA) +
-  facet_wrap(~Parameter, scales = 'free') +
+  facet_wrap(~Parameter, ncol = 3, scales = 'free') +
   scale_color_manual(values = PFC_ColorCode) +
   scale_linetype_manual(values = c(rep(c('solid', 'dashed'), 3), 'solid')) + 
   theme_bw() + theme(panel.grid.minor = element_blank(), panel.grid.major = element_blank(), plot.title = element_text(face = 'bold'))
@@ -185,38 +178,39 @@ for(i in 1:length(PopIDs)){
   
   # Prepare matrices to store results
   Ntot <- Btot <- matrix(NA, nrow = PopTmax[i], ncol = 3, dimnames = list(NULL, c('lCI', 'Median', 'uCI')))
-  linkvar.sJ <- linkvar.sA <- linkvar.pB <- linkvar.CS <- linkvar.pNS <- linkvar.sN <- Ntot
-  var.immY <- var.immA <- Ntot
+  sJ <-sA <- pB <- CS <- pNS <- sN <- immY <- immA <- matrix(NA, nrow = PopTmax[i], ncol = 3, dimnames = list(NULL, c('lCI', 'Median', 'uCI')))
+  
   
   # Make posterior summaries of relevant quantities
   for(t in 1:PopTmax[i]){
     
     Ntot[t,] <- sam.summary(sam.mat[,paste0('Ntot[', t, ']')])
+    
     if(t < PopTmax[i]){
       Btot[t,] <- sam.summary(sam.mat[,paste0('Btot[', t, ']')])
       
-      var.immY[t,] <- sam.summary(sam.mat[,paste0('Imm[1, ', t+1, ']')] / sam.mat[,paste0('Ntot[', t, ']')])
-      var.immA[t,] <- sam.summary(sam.mat[,paste0('Imm[2, ', t+1, ']')] / sam.mat[,paste0('Ntot[', t, ']')])
+      immY[t,] <- sam.summary(sam.mat[,paste0('Imm[1, ', t+1, ']')] / sam.mat[,paste0('Ntot[', t, ']')])
+      immA[t,] <- sam.summary(sam.mat[,paste0('Imm[2, ', t+1, ']')] / sam.mat[,paste0('Ntot[', t, ']')])
     }
   
-    linkvar.sJ[t,] <- sam.summary(qlogis(sam.mat[,paste0('sJ[', t, ']')]) - qlogis(sam.mat[,'Mu.sJ']))
-    linkvar.sA[t,] <- sam.summary(qlogis(sam.mat[,paste0('sA[', t, ']')]) - qlogis(sam.mat[,'Mu.sA']))
-    linkvar.pB[t,] <- sam.summary(log(sam.mat[,paste0('pB[2, ', t, ']')]) - log(sam.mat[,'Mu.pB[2]']))
-    linkvar.CS[t,] <- sam.summary(log(sam.mat[,paste0('CS[2, ', t, ']')]) - log(sam.mat[,'Mu.CS[2]']))
-    linkvar.pNS[t,] <- sam.summary(qlogis(sam.mat[,paste0('pNS[', t, ']')]) - qlogis(sam.mat[,'Mu.pNS']))
-    linkvar.sN[t,] <- sam.summary(qlogis(sam.mat[,paste0('sN[2, ', t, ']')]) - qlogis(sam.mat[,'Mu.sN[2]']))
+    sJ[t,] <- sam.summary(sam.mat[,paste0('sJ[', t, ']')])
+    sA[t,] <- sam.summary(sam.mat[,paste0('sA[', t, ']')]) 
+    pB[t,] <- sam.summary(sam.mat[,paste0('pB[2, ', t, ']')]) 
+    CS[t,] <- sam.summary(sam.mat[,paste0('CS[2, ', t, ']')]) 
+    pNS[t,] <- sam.summary(sam.mat[,paste0('pNS[', t, ']')]) 
+    sN[t,] <- sam.summary(sam.mat[,paste0('sN[2, ', t, ']')]) 
   }
   
   # Organise summaries in a data frame
   pop.sum.data <- data.frame(
     PopID = PopIDs[i],
     Year = StudyYears[[i]],
-    Parameter = rep(c('Ntot', 'Btot', 'linkvar.sJ', 'linkvar.sA', 'linkvar.pB', 'linkvar.CS', 'linkvar.pNS', 'linkvar.sN', 'var.immY', 'var.immA'), each = PopTmax[i])
+    Parameter = rep(c('Ntot', 'Btot', 'sJ', 'sA', 'pB', 'CS', 'pNS', 'sN', 'immY', 'immA'), each = PopTmax[i])
   )
   
   pop.sum.data <- cbind(
     pop.sum.data, 
-    rbind(Ntot, Btot, linkvar.sJ, linkvar.sA, linkvar.pB, linkvar.CS, linkvar.pNS, linkvar.sN, var.immY, var.immA))
+    rbind(Ntot, Btot, sJ, sA, pB, CS, pNS, sN, immY, immA))
   
   # Insert summarised data into list
   sum.data[[i]] <- pop.sum.data
@@ -225,7 +219,7 @@ for(i in 1:length(PopIDs)){
 ## Make a combined data frame with all populations
 allPop.data <- dplyr::bind_rows(sum.data, .id = "column_label")
 
-allPop.data$PopID <- factor(allPop.data$PopID, levels = c('TEI', 'EDM', 'OKE', 'NAG', 'DIN', 'NWA', 'KAT'))
+allPop.data$PopID <- factor(allPop.data$PopID, levels = c('EDM', 'TEI', 'OKE', 'NAG', 'DIN', 'NWA', 'KAT'))
 
 
 # Plotting: Time-variation in populations sizes and vital rates - across populations #
@@ -233,28 +227,6 @@ allPop.data$PopID <- factor(allPop.data$PopID, levels = c('TEI', 'EDM', 'OKE', '
 
 ## Population sizes
 pdf('Plots/PopSizes_Years_crossPop.pdf', width = 8.25, height = 11.75)
-
-# ggplot(subset(allPop.data, Parameter == 'Ntot'), aes(x = Year, y = Median)) + 
-#   geom_line(aes(color = PopID)) + 
-#   geom_ribbon(aes(ymin = lCI, ymax = uCI, fill = PopID), alpha = 0.5) + 
-#   ggtitle('Total Population Size') + 
-#   ylab('Estimate') + 
-#   scale_x_continuous(breaks = seq(min(StudyYears$EDM), max(StudyYears$EDM), by = 5), minor_breaks = StudyYears$EDM) + 
-#   scale_color_manual(values = PFC_ColorCode) +
-#   scale_fill_manual(values = PFC_ColorCode) +
-#   facet_wrap(~PopID, ncol = 1, scales = 'free_y') + 
-#   theme_bw() + theme(legend.position = 'none', panel.grid.major.y = element_blank(), panel.grid.minor.y = element_blank(), axis.text.x = element_text(angle = 45, vjust = 0.5), plot.title = element_text(face = 'bold'))
-
-# ggplot(subset(allPop.data, Parameter == 'Btot'), aes(x = Year, y = Median)) + 
-#   geom_line(aes(color = PopID)) + 
-#   geom_ribbon(aes(ymin = lCI, ymax = uCI, fill = PopID), alpha = 0.5) + 
-#   ggtitle('Breeding Population Size') + 
-#   ylab('Estimate') + 
-#   scale_x_continuous(breaks = seq(min(StudyYears$EDM), max(StudyYears$EDM), by = 5), minor_breaks = StudyYears$EDM) + 
-#   scale_color_manual(values = PFC_ColorCode) +
-#   scale_fill_manual(values = PFC_ColorCode) +
-#   facet_wrap(~PopID, ncol = 1, scales = 'free_y') + 
-#   theme_bw() + theme(legend.position = 'none', panel.grid.major.y = element_blank(), panel.grid.minor.y = element_blank(), axis.text.x = element_text(angle = 45, vjust = 0.5), plot.title = element_text(face = 'bold'))
 
 ggplot(subset(allPop.data, Parameter %in% c('Ntot', 'Btot')), aes(x = Year, y = Median)) + 
   geom_line(aes(color = PopID, linetype = Parameter)) + 
@@ -272,9 +244,8 @@ dev.off()
 
 
 ## Vital rate variation
-pdf('Plots/VRVar_Years_crossPop.pdf', width = 8.25, height = 11.75)
-
-ggplot(subset(allPop.data, Parameter == 'linkvar.sJ'), aes(x = Year, y = Median)) + 
+pdf('Plots/sJVar_Years_crossPop.pdf', width = 8.25, height = 11.75)
+ggplot(subset(allPop.data, Parameter == 'sJ'), aes(x = Year, y = Median)) + 
   geom_line(aes(color = PopID)) + 
   geom_ribbon(aes(ymin = lCI, ymax = uCI, fill = PopID), alpha = 0.5) + 
   ggtitle('Variation in Juvenile Annual Survival') + 
@@ -284,8 +255,10 @@ ggplot(subset(allPop.data, Parameter == 'linkvar.sJ'), aes(x = Year, y = Median)
   scale_fill_manual(values = PFC_ColorCode) +
   facet_wrap(~PopID, ncol = 1, scales = 'free_y') + 
   theme_bw() + theme(legend.position = 'none', panel.grid.major.y = element_blank(), panel.grid.minor.y = element_blank(), axis.text.x = element_text(angle = 45, vjust = 0.5), plot.title = element_text(face = 'bold'))
+dev.off()
 
-ggplot(subset(allPop.data, Parameter == 'linkvar.sA'), aes(x = Year, y = Median)) + 
+pdf('Plots/sAVar_Years_crossPop.pdf', width = 8.25, height = 11.75)
+ggplot(subset(allPop.data, Parameter == 'sA'), aes(x = Year, y = Median)) + 
   geom_line(aes(color = PopID)) + 
   geom_ribbon(aes(ymin = lCI, ymax = uCI, fill = PopID), alpha = 0.5) + 
   ggtitle('Variation in Adult Annual Survival') + 
@@ -295,30 +268,36 @@ ggplot(subset(allPop.data, Parameter == 'linkvar.sA'), aes(x = Year, y = Median)
   scale_fill_manual(values = PFC_ColorCode) +
   facet_wrap(~PopID, ncol = 1, scales = 'free_y') + 
   theme_bw() + theme(legend.position = 'none', panel.grid.major.y = element_blank(), panel.grid.minor.y = element_blank(), axis.text.x = element_text(angle = 45, vjust = 0.5), plot.title = element_text(face = 'bold'))
+dev.off()
 
-ggplot(subset(allPop.data, Parameter == 'linkvar.pB'), aes(x = Year, y = Median)) + 
+pdf('Plots/pBVar_Years_crossPop.pdf', width = 8.25, height = 11.75)
+ggplot(subset(allPop.data, Parameter == 'pB'), aes(x = Year, y = Median)) + 
   geom_line(aes(color = PopID)) + 
   geom_ribbon(aes(ymin = lCI, ymax = uCI, fill = PopID), alpha = 0.5) + 
-  ggtitle('Variation in Breeding Probability') + 
+  ggtitle('Variation in Breeding Probability (Adult)') + 
   ylab('Estimate') + 
   scale_x_continuous(breaks = seq(min(StudyYears$EDM), max(StudyYears$EDM), by = 5), minor_breaks = StudyYears$EDM) + 
   scale_color_manual(values = PFC_ColorCode) +
   scale_fill_manual(values = PFC_ColorCode) +
   facet_wrap(~PopID, ncol = 1, scales = 'free_y') + 
   theme_bw() + theme(legend.position = 'none', panel.grid.major.y = element_blank(), panel.grid.minor.y = element_blank(), axis.text.x = element_text(angle = 45, vjust = 0.5), plot.title = element_text(face = 'bold'))
+dev.off()
 
-ggplot(subset(allPop.data, Parameter == 'linkvar.CS'), aes(x = Year, y = Median)) + 
+pdf('Plots/CSVar_Years_crossPop.pdf', width = 8.25, height = 11.75)
+ggplot(subset(allPop.data, Parameter == 'CS'), aes(x = Year, y = Median)) + 
   geom_line(aes(color = PopID)) + 
   geom_ribbon(aes(ymin = lCI, ymax = uCI, fill = PopID), alpha = 0.5) + 
-  ggtitle('Variation in Clutch Size') + 
+  ggtitle('Variation in Clutch Size (Adult)') + 
   ylab('Estimate') + 
   scale_x_continuous(breaks = seq(min(StudyYears$EDM), max(StudyYears$EDM), by = 5), minor_breaks = StudyYears$EDM) + 
   scale_color_manual(values = PFC_ColorCode) +
   scale_fill_manual(values = PFC_ColorCode) +
   facet_wrap(~PopID, ncol = 1, scales = 'free_y') + 
   theme_bw() + theme(legend.position = 'none', panel.grid.major.y = element_blank(), panel.grid.minor.y = element_blank(), axis.text.x = element_text(angle = 45, vjust = 0.5), plot.title = element_text(face = 'bold'))
+dev.off()
 
-ggplot(subset(allPop.data, Parameter == 'linkvar.pNS'), aes(x = Year, y = Median)) + 
+pdf('Plots/pNSVar_Years_crossPop.pdf', width = 8.25, height = 11.75)
+ggplot(subset(allPop.data, Parameter == 'pNS'), aes(x = Year, y = Median)) + 
   geom_line(aes(color = PopID)) + 
   geom_ribbon(aes(ymin = lCI, ymax = uCI, fill = PopID), alpha = 0.5) + 
   ggtitle('Variation in Nest Success') + 
@@ -328,157 +307,44 @@ ggplot(subset(allPop.data, Parameter == 'linkvar.pNS'), aes(x = Year, y = Median
   scale_fill_manual(values = PFC_ColorCode) +
   facet_wrap(~PopID, ncol = 1, scales = 'free_y') + 
   theme_bw() + theme(legend.position = 'none', panel.grid.major.y = element_blank(), panel.grid.minor.y = element_blank(), axis.text.x = element_text(angle = 45, vjust = 0.5), plot.title = element_text(face = 'bold'))
+dev.off()
 
-ggplot(subset(allPop.data, Parameter == 'linkvar.sN'), aes(x = Year, y = Median)) + 
+pdf('Plots/sNVar_Years_crossPop.pdf', width = 8.25, height = 11.75)
+ggplot(subset(allPop.data, Parameter == 'sN'), aes(x = Year, y = Median)) + 
   geom_line(aes(color = PopID)) + 
   geom_ribbon(aes(ymin = lCI, ymax = uCI, fill = PopID), alpha = 0.5) + 
-  ggtitle('Variation in Survival to Fledging') + 
+  ggtitle('Variation in Nestling Survival (Adult)') + 
   ylab('Estimate') + 
   scale_x_continuous(breaks = seq(min(StudyYears$EDM), max(StudyYears$EDM), by = 5), minor_breaks = StudyYears$EDM) + 
   scale_color_manual(values = PFC_ColorCode) +
   scale_fill_manual(values = PFC_ColorCode) +
   facet_wrap(~PopID, ncol = 1, scales = 'free_y') + 
   theme_bw() + theme(legend.position = 'none', panel.grid.major.y = element_blank(), panel.grid.minor.y = element_blank(), axis.text.x = element_text(angle = 45, vjust = 0.5), plot.title = element_text(face = 'bold'))
-
 dev.off()
 
-
-# Plotting: Time-variation in populations sizes and vital rates - across populations, with overlay #
-#--------------------------------------------------------------------------------------------------#
-
-## Standardize median population sizes
-allPop.std <- allPop.data %>%
-  dplyr::group_by(PopID, Parameter) %>%
-  dplyr::summarise(Median_std = (Median - mean(Median, na.rm = T))/sd(Median, na.rm = T), 
-                   Year = Year, .groups = "keep")
-
-## Population sizes
-pdf('Plots/PopSizes_Years_crossPop2.pdf', width = 8, height = 3.5)
-
-ggplot(subset(allPop.data, Parameter == 'Ntot'), aes(x = Year, y = Median)) + 
-  geom_line(aes(color = PopID, linetype = PopID)) + 
-  ggtitle('Total Population Size') + 
-  ylab('Estimate') + 
-  scale_x_continuous(breaks = seq(min(StudyYears$EDM), max(StudyYears$EDM), by = 5), minor_breaks = StudyYears$EDM, limits = c(1974, 2020)) + 
-  scale_color_manual(values = PFC_ColorCode) +
-  scale_fill_manual(values = PFC_ColorCode) +
-  scale_linetype_manual(values = c(rep(c('solid', 'dashed'), 3), 'solid')) + 
-  theme_bw() + theme(panel.grid.major.y = element_blank(), panel.grid.minor.y = element_blank(), axis.text.x = element_text(angle = 45, vjust = 0.5), plot.title = element_text(face = 'bold'))
-
-ggplot(subset(allPop.std, Parameter == 'Ntot'), aes(x = Year, y = Median_std)) + 
-  geom_line(aes(color = PopID, linetype = PopID)) + 
-  ggtitle('Total Population Size (standardized)') + 
-  ylab('Estimate') + 
-  scale_x_continuous(breaks = seq(min(StudyYears$EDM), max(StudyYears$EDM), by = 5), minor_breaks = StudyYears$EDM, limits = c(1974, 2020)) + 
-  scale_color_manual(values = PFC_ColorCode) +
-  scale_fill_manual(values = PFC_ColorCode) +
-  scale_linetype_manual(values = c(rep(c('solid', 'dashed'), 3), 'solid')) + 
-  theme_bw() + theme(panel.grid.major.y = element_blank(), panel.grid.minor.y = element_blank(), axis.text.x = element_text(angle = 45, vjust = 0.5), plot.title = element_text(face = 'bold'))
-
-ggplot(subset(allPop.data, Parameter == 'Btot'), aes(x = Year, y = Median)) + 
-  geom_line(aes(color = PopID, linetype = PopID)) + 
-  ggtitle('Breeding Population Size') + 
-  ylab('Estimate') + 
-  scale_x_continuous(breaks = seq(min(StudyYears$EDM), max(StudyYears$EDM), by = 5), minor_breaks = StudyYears$EDM, limits = c(1974, 2020)) + 
-  scale_color_manual(values = PFC_ColorCode) +
-  scale_fill_manual(values = PFC_ColorCode) +
-  scale_linetype_manual(values = c(rep(c('solid', 'dashed'), 3), 'solid')) + 
-  theme_bw() + theme(panel.grid.major.y = element_blank(), panel.grid.minor.y = element_blank(), axis.text.x = element_text(angle = 45, vjust = 0.5), plot.title = element_text(face = 'bold'))
-
-ggplot(subset(allPop.std, Parameter == 'Btot'), aes(x = Year, y = Median_std)) + 
-  geom_line(aes(color = PopID, linetype = PopID)) + 
-  ggtitle('Breeding Population Size (standardized)') + 
-  ylab('Estimate') + 
-  scale_x_continuous(breaks = seq(min(StudyYears$EDM), max(StudyYears$EDM), by = 5), minor_breaks = StudyYears$EDM, limits = c(1974, 2020)) + 
-  scale_color_manual(values = PFC_ColorCode) +
-  scale_fill_manual(values = PFC_ColorCode) +
-  scale_linetype_manual(values = c(rep(c('solid', 'dashed'), 3), 'solid')) + 
-  theme_bw() + theme(panel.grid.major.y = element_blank(), panel.grid.minor.y = element_blank(), axis.text.x = element_text(angle = 45, vjust = 0.5), plot.title = element_text(face = 'bold'))
-
-dev.off()
-
-
-## Vital rate variation
-pdf('Plots/VRVar_Years_crossPop2.pdf', width = 8, height = 3.5)
-
-ggplot(subset(allPop.data, Parameter == 'linkvar.sJ'), aes(x = Year, y = Median)) + 
-  geom_line(aes(color = PopID, linetype = PopID)) + 
-  ggtitle('Variation in Juvenile Annual Survival') + 
-  ylab('Estimate') + 
-  scale_x_continuous(breaks = seq(min(StudyYears$EDM), max(StudyYears$EDM), by = 5), minor_breaks = StudyYears$EDM, limits = c(1974, 2020)) + 
-  scale_color_manual(values = PFC_ColorCode) +
-  scale_fill_manual(values = PFC_ColorCode) +
-  scale_linetype_manual(values = c(rep(c('solid', 'dashed'), 3), 'solid')) + 
-  theme_bw() + theme(panel.grid.major.y = element_blank(), panel.grid.minor.y = element_blank(), axis.text.x = element_text(angle = 45, vjust = 0.5), plot.title = element_text(face = 'bold'))
-
-ggplot(subset(allPop.data, Parameter == 'linkvar.sA'), aes(x = Year, y = Median)) + 
-  geom_line(aes(color = PopID, linetype = PopID)) + 
-  ggtitle('Variation in Adult Annual Survival') + 
-  ylab('Estimate') + 
-  scale_x_continuous(breaks = seq(min(StudyYears$EDM), max(StudyYears$EDM), by = 5), minor_breaks = StudyYears$EDM, limits = c(1974, 2020)) + 
-  scale_color_manual(values = PFC_ColorCode) +
-  scale_fill_manual(values = PFC_ColorCode) +
-  scale_linetype_manual(values = c(rep(c('solid', 'dashed'), 3), 'solid')) + 
-  theme_bw() + theme(panel.grid.major.y = element_blank(), panel.grid.minor.y = element_blank(), axis.text.x = element_text(angle = 45, vjust = 0.5), plot.title = element_text(face = 'bold'))
-
-ggplot(subset(allPop.data, Parameter == 'linkvar.pB'), aes(x = Year, y = Median)) + 
-  geom_line(aes(color = PopID, linetype = PopID)) + 
-  ggtitle('Variation in Breeding Probability') + 
-  ylab('Estimate') + 
-  scale_x_continuous(breaks = seq(min(StudyYears$EDM), max(StudyYears$EDM), by = 5), minor_breaks = StudyYears$EDM, limits = c(1974, 2020)) + 
-  scale_color_manual(values = PFC_ColorCode) +
-  scale_fill_manual(values = PFC_ColorCode) +
-  scale_linetype_manual(values = c(rep(c('solid', 'dashed'), 3), 'solid')) + 
-  theme_bw() + theme(panel.grid.major.y = element_blank(), panel.grid.minor.y = element_blank(), axis.text.x = element_text(angle = 45, vjust = 0.5), plot.title = element_text(face = 'bold'))
-
-ggplot(subset(allPop.data, Parameter == 'linkvar.CS'), aes(x = Year, y = Median)) + 
-  geom_line(aes(color = PopID, linetype = PopID)) + 
-  ggtitle('Variation in Clutch Size') + 
-  ylab('Estimate') + 
-  scale_x_continuous(breaks = seq(min(StudyYears$EDM), max(StudyYears$EDM), by = 5), minor_breaks = StudyYears$EDM, limits = c(1974, 2020)) + 
-  scale_color_manual(values = PFC_ColorCode) +
-  scale_fill_manual(values = PFC_ColorCode) +
-  scale_linetype_manual(values = c(rep(c('solid', 'dashed'), 3), 'solid')) + 
-  theme_bw() + theme(panel.grid.major.y = element_blank(), panel.grid.minor.y = element_blank(), axis.text.x = element_text(angle = 45, vjust = 0.5), plot.title = element_text(face = 'bold'))
-
-ggplot(subset(allPop.data, Parameter == 'linkvar.pNS'), aes(x = Year, y = Median)) + 
-  geom_line(aes(color = PopID, linetype = PopID)) + 
-  ggtitle('Variation in Nest Success') + 
-  ylab('Estimate') + 
-  scale_x_continuous(breaks = seq(min(StudyYears$EDM), max(StudyYears$EDM), by = 5), minor_breaks = StudyYears$EDM, limits = c(1974, 2020)) + 
-  scale_color_manual(values = PFC_ColorCode) +
-  scale_fill_manual(values = PFC_ColorCode) +
-  scale_linetype_manual(values = c(rep(c('solid', 'dashed'), 3), 'solid')) + 
-  theme_bw() + theme(panel.grid.major.y = element_blank(), panel.grid.minor.y = element_blank(), axis.text.x = element_text(angle = 45, vjust = 0.5), plot.title = element_text(face = 'bold'))
-
-ggplot(subset(allPop.data, Parameter == 'linkvar.sN'), aes(x = Year, y = Median)) + 
-  geom_line(aes(color = PopID, linetype = PopID)) + 
-  ggtitle('Variation in Survival to Fledging') + 
-  ylab('Estimate') + 
-  scale_x_continuous(breaks = seq(min(StudyYears$EDM), max(StudyYears$EDM), by = 5), minor_breaks = StudyYears$EDM, limits = c(1974, 2020)) + 
-  scale_color_manual(values = PFC_ColorCode) +
-  scale_fill_manual(values = PFC_ColorCode) +
-  scale_linetype_manual(values = c(rep(c('solid', 'dashed'), 3), 'solid')) + 
-  theme_bw() + theme(panel.grid.major.y = element_blank(), panel.grid.minor.y = element_blank(), axis.text.x = element_text(angle = 45, vjust = 0.5), plot.title = element_text(face = 'bold'))
-
-ggplot(subset(allPop.data, Parameter == 'var.immY'), aes(x = Year, y = Median)) + 
-  geom_line(aes(color = PopID, linetype = PopID)) + 
+pdf('Plots/immYVar_Years_crossPop.pdf', width = 8.25, height = 11.75)
+ggplot(subset(allPop.data, Parameter == 'immY'), aes(x = Year, y = Median)) + 
+  geom_line(aes(color = PopID)) + 
+  geom_ribbon(aes(ymin = lCI, ymax = uCI, fill = PopID), alpha = 0.5) + 
   ggtitle('Variation in Yearling Immigration Rate') + 
   ylab('Estimate') + 
-  scale_x_continuous(breaks = seq(min(StudyYears$EDM), max(StudyYears$EDM), by = 5), minor_breaks = StudyYears$EDM, limits = c(1974, 2020)) + 
+  scale_x_continuous(breaks = seq(min(StudyYears$EDM), max(StudyYears$EDM), by = 5), minor_breaks = StudyYears$EDM) + 
   scale_color_manual(values = PFC_ColorCode) +
   scale_fill_manual(values = PFC_ColorCode) +
-  scale_linetype_manual(values = c(rep(c('solid', 'dashed'), 3), 'solid')) + 
-  theme_bw() + theme(panel.grid.major.y = element_blank(), panel.grid.minor.y = element_blank(), axis.text.x = element_text(angle = 45, vjust = 0.5), plot.title = element_text(face = 'bold'))
+  facet_wrap(~PopID, ncol = 1, scales = 'free_y') + 
+  theme_bw() + theme(legend.position = 'none', panel.grid.major.y = element_blank(), panel.grid.minor.y = element_blank(), axis.text.x = element_text(angle = 45, vjust = 0.5), plot.title = element_text(face = 'bold'))
+dev.off()
 
-ggplot(subset(allPop.data, Parameter == 'var.immA'), aes(x = Year, y = Median)) + 
-  geom_line(aes(color = PopID, linetype = PopID)) + 
+pdf('Plots/immAVar_Years_crossPop.pdf', width = 8.25, height = 11.75)
+ggplot(subset(allPop.data, Parameter == 'immA'), aes(x = Year, y = Median)) + 
+  geom_line(aes(color = PopID)) + 
+  geom_ribbon(aes(ymin = lCI, ymax = uCI, fill = PopID), alpha = 0.5) + 
   ggtitle('Variation in Adult Immigration Rate') + 
   ylab('Estimate') + 
-  scale_x_continuous(breaks = seq(min(StudyYears$EDM), max(StudyYears$EDM), by = 5), minor_breaks = StudyYears$EDM, limits = c(1974, 2020)) + 
+  scale_x_continuous(breaks = seq(min(StudyYears$EDM), max(StudyYears$EDM), by = 5), minor_breaks = StudyYears$EDM) + 
   scale_color_manual(values = PFC_ColorCode) +
   scale_fill_manual(values = PFC_ColorCode) +
-  scale_linetype_manual(values = c(rep(c('solid', 'dashed'), 3), 'solid')) + 
-  theme_bw() + theme(panel.grid.major.y = element_blank(), panel.grid.minor.y = element_blank(), axis.text.x = element_text(angle = 45, vjust = 0.5), plot.title = element_text(face = 'bold'))
-
+  facet_wrap(~PopID, ncol = 1, scales = 'free_y') + 
+  theme_bw() + theme(legend.position = 'none', panel.grid.major.y = element_blank(), panel.grid.minor.y = element_blank(), axis.text.x = element_text(angle = 45, vjust = 0.5), plot.title = element_text(face = 'bold'))
 dev.off()
+

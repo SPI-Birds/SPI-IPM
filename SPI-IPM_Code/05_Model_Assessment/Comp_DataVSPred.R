@@ -44,9 +44,8 @@ for (i in 1:7){
   ## Set PopID
   PopID <- PopID_List[[i]]
   
-  ## Load and rename input data
-  load(paste0(DataPath, '201210_', PopID, '_IPMData.RData'))
-  PFC.data <- eval(parse(text = paste0(PopID, '.data')))
+  ## Load input data
+  PFC.data <- readRDS(paste0(DataPath, '201210_', PopID, '_IPMData.rds'))
   
   ## Set max time index
   Tmax <- dim(PFC.data$YearIndeces)[1]
@@ -92,7 +91,7 @@ for (i in 1:7){
   #--------------------------------------------#
   
   ## Load posterior samples
-  load(paste0(DataPath, 'FlycatcherIPM_CovA_Sub_', PopID, '.RData'))
+  PFC.IPM <- readRDS(paste0(DataPath, 'FlycatcherIPM_CovA_Sub_', PopID, '.rds'))
   sam.mat <- as.matrix(PFC.IPM)
   
   ## Prepare matrices to store results

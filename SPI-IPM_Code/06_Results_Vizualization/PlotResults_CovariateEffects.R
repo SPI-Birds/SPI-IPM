@@ -13,26 +13,20 @@ library(tidyr)
 #--------------------#
 
 ## Load posterior samples from all 7 runs
-load('SPI-IPM_DIN.RData')
-DIN.IPM <- PFC.IPM
+DIN.IPM <- readRDS('FlycatcherIPM_CovA_Sub_DIN.rds')
 
-load('SPI-IPM_EDM.RData')
-EDM.IPM <- PFC.IPM
+EDM.IPM <- readRDS('FlycatcherIPM_CovA_Sub_EDM.rds')
 
-load('SPI-IPM_KAT.RData')
-KAT.IPM <- PFC.IPM
+KAT.IPM <- readRDS('FlycatcherIPM_CovA_Sub_KAT.rds')
 
-load('SPI-IPM_NAG.RData')
-NAG.IPM <- PFC.IPM
+NAG.IPM <- readRDS('FlycatcherIPM_CovA_Sub_NAG.rds')
 
-load('SPI-IPM_NWA.RData')
-NWA.IPM <- PFC.IPM
+NWA.IPM <- readRDS('FlycatcherIPM_CovA_Sub_NWA.rds')
 
-load('SPI-IPM_OKE.RData')
-OKE.IPM <- PFC.IPM
+OKE.IPM <- readRDS('FlycatcherIPM_CovA_Sub_OKE.rds')
 
-load('SPI-IPM_TEI.RData')
-TEI.IPM <- PFC.IPM
+TEI.IPM <- readRDS('FlycatcherIPM_CovA_Sub_TEI.rds')
+
 
 
 # Re-organizing data #
@@ -123,7 +117,6 @@ cov.predict <- function(MCMC.mat, effect, RepAgeClass, PopID){
 ## Make a grid with PopID - covariate combinations
 PopID_Eff <- expand.grid(PopID = names(out.mat), Cov = c('Temperature', 'Rainfall'))
 
-
 ## Run all combinations for temperature effects
 TempEff <- do.call("rbind", sapply(1:7, FUN = function(x) cov.predict(out.mat[[x]], 'Temperature', 2, names(out.mat)[x]), simplify = FALSE))
 
@@ -132,7 +125,7 @@ RainEff <- do.call("rbind", sapply(1:7, FUN = function(x) cov.predict(out.mat[[x
 
 ## Combine results
 CovEff <- rbind(TempEff, RainEff)
-CovEff$PopID <- factor(CovEff$PopID, levels = c('TEI', 'EDM', 'OKE', 'NAG', 'DIN', 'NWA', 'KAT'))
+CovEff$PopID <- factor(CovEff$PopID, levels = c('EDM', 'TEI', 'OKE', 'NAG', 'DIN', 'NWA', 'KAT'))
 
 ## Discard non-existent temp effect on sJ
 CovEff <- subset(CovEff, !(Covariate == 'Temperature' & VitalRate == 'Juvenile annual surv.'))

@@ -23,10 +23,10 @@ assemble_periodLTREdata <- function(PopID, ComponentSum){
   #-------#
   
   # Set path and name for relevant LTRE's
-  DataPath <- paste0('periodLTRE_', PopID, '.RData') # Full LTRE
+  DataPath <- paste0('periodLTRE_', PopID, '.rds') # Full LTRE
   
   # Load LTRE data
-  load(DataPath)
+  LTRE_Results <- readRDS(DataPath)
   
   if(ComponentSum){
     
@@ -130,7 +130,7 @@ LTRE_SumVR$parameter <- factor(LTRE_SumVR$parameter,
                                           'sJ', 'sA', 's', 'Survival', 
                                           'imm_Y', 'imm_A', 'imm', 'Immigration'))
 
-LTRE_SumVR$PopID <- factor(LTRE_SumVR$PopID, levels = c('TEI', 'EDM', 'OKE', 'NAG', 'DIN', 'NWA', 'KAT'))
+LTRE_SumVR$PopID <- factor(LTRE_SumVR$PopID, levels = c('EDM', 'TEI', 'OKE', 'NAG', 'DIN', 'NWA', 'KAT'))
 
 ## Define custom color scale
 PFC_ColorCode <- c('#B43AA5', '#F2309B', '#F23E1D', '#E7AA24', '#A5D85F', '#32A638', '#376BAD')
@@ -141,7 +141,7 @@ ggplot(subset(LTRE_SumVR, SummaryLevel == 'None'), aes(x = cont, y = parameter))
   geom_density_ridges(aes(height = ..ndensity.., fill = PopID, color = PopID), alpha = 0.6, scale = 2) +
   xlab('Contribution') + ylab('Category') +
   scale_x_continuous(expand = c(0.01, 0)) +
-  scale_y_discrete(expand = c(0.01, 0)) +
+  scale_y_discrete(expand = c(0.01, 0), limits = rev) +
   scale_fill_manual(values = PFC_ColorCode) + 
   scale_color_manual(values = PFC_ColorCode) + 
   facet_wrap(~PopID, scales = 'free_x', ncol = 1) +
@@ -155,7 +155,7 @@ ggplot(subset(LTRE_SumVR, SummaryLevel == 'Category'), aes(x = cont, y = paramet
   geom_density_ridges(aes(height = ..ndensity.., fill = PopID, color = PopID), alpha = 0.6, scale = 2) +
   xlab('Contribution') + ylab('Category') +
   scale_x_continuous(expand = c(0.01, 0)) +
-  scale_y_discrete(expand = c(0.01, 0)) +
+  scale_y_discrete(expand = c(0.01, 0), limits = rev) +
   scale_fill_manual(values = PFC_ColorCode) + 
   scale_color_manual(values = PFC_ColorCode) + 
   facet_wrap(~PopID, scales = 'free_x', ncol = 1) +
@@ -169,7 +169,7 @@ ggplot(subset(LTRE_SumVR, SummaryLevel == 'Overall'), aes(x = cont, y = paramete
   geom_density_ridges(aes(height = ..ndensity.., fill = PopID, color = PopID), alpha = 0.6, scale = 2) +
   xlab('Contribution') + ylab('Category') +
   scale_x_continuous(expand = c(0.01, 0)) +
-  scale_y_discrete(expand = c(0.01, 0)) +
+  scale_y_discrete(expand = c(0.01, 0), limits = rev) +
   scale_fill_manual(values = PFC_ColorCode) + 
   scale_color_manual(values = PFC_ColorCode) + 
   facet_wrap(~PopID, scales = 'free_x', ncol = 1) +
@@ -184,7 +184,7 @@ ggplot(subset(LTRE_SumVR, parameter %in% c('Survival', 'Reproduction', 'Immigrat
   geom_vline(aes(xintercept = 0), color = 'white', linetype = 'dotted', size = 0.4) + 
   xlab('Contribution') + ylab('Category') +
   scale_x_continuous(expand = c(0.01, 0)) +
-  scale_y_discrete(expand = c(0.01, 0)) +
+  scale_y_discrete(expand = c(0.01, 0), limits = rev) +
   scale_fill_manual(values = c('#00A69D', '#8C085E', 'orange')) + 
   scale_color_manual(values = c('#00A69D', '#8C085E', 'orange')) + 
   theme_ridges(font_size = 10, grid = FALSE) +

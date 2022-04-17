@@ -155,7 +155,7 @@ stoch.Sims = function(i, data.Tmax, sim.Tmax, out.mat){ # i = simulation number
 run.stochSim = function(PopID, SimNoMax, SimYearMax){
   
   ## Load posterior samples for specified population
-  load(paste0('FlycatcherIPM_CovA_Sub_', PopID, '.RData'))
+  PFC.IPM <- readRDS(paste0('FlycatcherIPM_CovA_Sub_', PopID, '.rds'))
   out.mat <- as.matrix(PFC.IPM)
   
   ## Set the index of the final year with data for the selected population
@@ -186,7 +186,7 @@ SimYearMax <- 100
 sim.all <- do.call("rbind", sapply(1:length(PopIDs), FUN = function(x) run.stochSim(PopID = PopIDs[x], SimNoMax, SimYearMax), simplify = FALSE))
 
 ## Order PopIDs by latitude
-sim.all$PopID <- factor(sim.all$PopID, levels = c('TEI', 'EDM', 'OKE', 'NAG', 'DIN', 'NWA', 'KAT'))
+sim.all$PopID <- factor(sim.all$PopID, levels = c('EDM', 'TEI', 'OKE', 'NAG', 'DIN', 'NWA', 'KAT'))
 
 ## Define custom color code for PopIDs
 PFC_ColorCode <- c('#B43AA5', '#F2309B', '#F23E1D', '#E7AA24', '#A5D85F', '#32A638', '#376BAD')

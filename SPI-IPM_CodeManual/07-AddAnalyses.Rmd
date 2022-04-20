@@ -2,24 +2,28 @@
 
 
 ##	Testing for time-trends
-
+TBA
 
 ##	Testing for density-dependence
-
+TBA
 
 ##	Investigating cross-population covariation
-
+TBA
 
 ##	Quantifying demographic contributions to short term population dynamics
+TBA
 
 ###	Year-by-year variation in population growth rate (random design LTRE)	 
+TBA
 
 ###	Year-to-year differences in population growth rate (fixed design LTRE)
-
+TBA
 
 ##	Quantifying demographic contributions to long-term population trends
+TBA
 
 ###	Differences in population trajectories between time periods (period design LTRE)
+TBA
 
-###	Differences in population trajectories between locations (period design LTRE with time-by-space substitution)
+<!-- ###	Differences in population trajectories between locations (period design LTRE with time-by-space substitution) -->
 

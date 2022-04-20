@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 1 Preparing SPI-Birds data for Bayesian analysis | SPI-IPM Code Manual</title>
+  <meta name="description" content="TBA." />
+  <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 1 Preparing SPI-Birds data for Bayesian analysis | SPI-IPM Code Manual" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="TBA." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 1 Preparing SPI-Birds data for Bayesian analysis | SPI-IPM Code Manual" />
+  
+  <meta name="twitter:description" content="TBA." />
+  
+
+<meta name="author" content="Chloé R. Nater" />
+
+
+<meta name="date" content="2022-04-20" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html"/>
+<link rel="next" href="IPMCon.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">SPI-IPM Code Manual</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>About this manual</a></li>
+<li class="chapter" data-level="1" data-path="DataPrep.html"><a href="DataPrep.html"><i class="fa fa-check"></i><b>1</b> Preparing SPI-Birds data for Bayesian analysis</a><ul>
+<li class="chapter" data-level="1.1" data-path="DataPrep.html"><a href="DataPrep.html#nest-count-data"><i class="fa fa-check"></i><b>1.1</b> Nest count data</a></li>
+<li class="chapter" data-level="1.2" data-path="DataPrep.html"><a href="DataPrep.html#clutch-size-data"><i class="fa fa-check"></i><b>1.2</b> Clutch size data</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="DataPrep.html"><a href="DataPrep.html#nest-level"><i class="fa fa-check"></i><b>1.2.1</b> Nest level</a></li>
+<li class="chapter" data-level="1.2.2" data-path="DataPrep.html"><a href="DataPrep.html#population-level"><i class="fa fa-check"></i><b>1.2.2</b> Population level</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="DataPrep.html"><a href="DataPrep.html#fledgling-count-data"><i class="fa fa-check"></i><b>1.3</b> Fledgling count data</a><ul>
+<li class="chapter" data-level="1.3.1" data-path="DataPrep.html"><a href="DataPrep.html#nest-level-1"><i class="fa fa-check"></i><b>1.3.1</b> Nest level</a></li>
+<li class="chapter" data-level="1.3.2" data-path="DataPrep.html"><a href="DataPrep.html#population-level-1"><i class="fa fa-check"></i><b>1.3.2</b> Population level</a></li>
+</ul></li>
+<li class="chapter" data-level="1.4" data-path="DataPrep.html"><a href="DataPrep.html#mark-recapture-data"><i class="fa fa-check"></i><b>1.4</b> Mark-recapture data</a><ul>
+<li class="chapter" data-level="1.4.1" data-path="DataPrep.html"><a href="DataPrep.html#individual-capture-histories"><i class="fa fa-check"></i><b>1.4.1</b> Individual capture histories</a></li>
+<li class="chapter" data-level="1.4.2" data-path="DataPrep.html"><a href="DataPrep.html#m-array"><i class="fa fa-check"></i><b>1.4.2</b> M-array</a></li>
+</ul></li>
+<li class="chapter" data-level="1.5" data-path="DataPrep.html"><a href="DataPrep.html#immigrant-count-data"><i class="fa fa-check"></i><b>1.5</b> Immigrant count data</a></li>
+<li class="chapter" data-level="1.6" data-path="DataPrep.html"><a href="DataPrep.html#auxiliary-data-on-the-sampling-process"><i class="fa fa-check"></i><b>1.6</b> Auxiliary data on the sampling process</a><ul>
+<li class="chapter" data-level="1.6.1" data-path="DataPrep.html"><a href="DataPrep.html#nest-survey-sampling-effort"><i class="fa fa-check"></i><b>1.6.1</b> Nest survey sampling effort</a></li>
+<li class="chapter" data-level="1.6.2" data-path="DataPrep.html"><a href="DataPrep.html#capture-probability-proxies"><i class="fa fa-check"></i><b>1.6.2</b> Capture probability proxies</a></li>
+</ul></li>
+<li class="chapter" data-level="1.7" data-path="DataPrep.html"><a href="DataPrep.html#organisation-for-analysis-with-nimble"><i class="fa fa-check"></i><b>1.7</b> Organisation for analysis with NIMBLE</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="IPMCon.html"><a href="IPMCon.html"><i class="fa fa-check"></i><b>2</b> IPM Construction</a><ul>
+<li class="chapter" data-level="2.1" data-path="IPMCon.html"><a href="IPMCon.html#open-population-model-with-2-age-classes"><i class="fa fa-check"></i><b>2.1</b> Open population model with 2 age classes</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="IPMCon.html"><a href="IPMCon.html#model-description"><i class="fa fa-check"></i><b>2.1.1</b> Model description</a></li>
+<li class="chapter" data-level="2.1.2" data-path="IPMCon.html"><a href="IPMCon.html#code-implementation-including-demographic-stochasticity"><i class="fa fa-check"></i><b>2.1.2</b> Code implementation including demographic stochasticity</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="IPMCon.html"><a href="IPMCon.html#data-likelihoods"><i class="fa fa-check"></i><b>2.2</b> Data likelihoods</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="IPMCon.html"><a href="IPMCon.html#nest-count-data-likelihood"><i class="fa fa-check"></i><b>2.2.1</b> Nest count data likelihood</a></li>
+<li class="chapter" data-level="2.2.2" data-path="IPMCon.html"><a href="IPMCon.html#clutch-size-data-likelihoods"><i class="fa fa-check"></i><b>2.2.2</b> Clutch size data likelihoods</a></li>
+<li class="chapter" data-level="2.2.3" data-path="IPMCon.html"><a href="IPMCon.html#fledgling-count-data-likelihoods"><i class="fa fa-check"></i><b>2.2.3</b> Fledgling count data likelihoods</a></li>
+<li class="chapter" data-level="2.2.4" data-path="IPMCon.html"><a href="IPMCon.html#mark-recapture-data-likelihood"><i class="fa fa-check"></i><b>2.2.4</b> Mark-recapture data likelihood</a></li>
+<li class="chapter" data-level="2.2.5" data-path="IPMCon.html"><a href="IPMCon.html#immigrant-count-data-likelihood"><i class="fa fa-check"></i><b>2.2.5</b> Immigrant count data likelihood</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="IPMCon.html"><a href="IPMCon.html#priors-and-constraints"><i class="fa fa-check"></i><b>2.3</b> Priors and constraints</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="TempVar.html"><a href="TempVar.html"><i class="fa fa-check"></i><b>3</b> Modelling temporal variation</a><ul>
+<li class="chapter" data-level="3.1" data-path="TempVar.html"><a href="TempVar.html#random-year-variation"><i class="fa fa-check"></i><b>3.1</b> Random year variation</a></li>
+<li class="chapter" data-level="3.2" data-path="TempVar.html"><a href="TempVar.html#temporal-covariates"><i class="fa fa-check"></i><b>3.2</b> Temporal covariates</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="TempVar.html"><a href="TempVar.html#continuous-variables"><i class="fa fa-check"></i><b>3.2.1</b> Continuous variables</a></li>
+<li class="chapter" data-level="3.2.2" data-path="TempVar.html"><a href="TempVar.html#categorical-variables"><i class="fa fa-check"></i><b>3.2.2</b> Categorical variables</a></li>
+<li class="chapter" data-level="3.2.3" data-path="TempVar.html"><a href="TempVar.html#imputation-of-missing-covariate-values"><i class="fa fa-check"></i><b>3.2.3</b> Imputation of missing covariate values</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="TempVar.html"><a href="TempVar.html#notes-on-covariate-selection"><i class="fa fa-check"></i><b>3.3</b> Notes on covariate selection</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="IPMImp.html"><a href="IPMImp.html"><i class="fa fa-check"></i><b>4</b> IPM Implementation</a><ul>
+<li class="chapter" data-level="4.1" data-path="IPMImp.html"><a href="IPMImp.html#efficient-implementation-using-nimble"><i class="fa fa-check"></i><b>4.1</b> Efficient implementation using NIMBLE</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="IPMImp.html"><a href="IPMImp.html#alternative-specification-of-distributions"><i class="fa fa-check"></i><b>4.1.1</b> Alternative specification of distributions</a></li>
+<li class="chapter" data-level="4.1.2" data-path="IPMImp.html"><a href="IPMImp.html#vectorized-calculations"><i class="fa fa-check"></i><b>4.1.2</b> Vectorized calculations</a></li>
+<li class="chapter" data-level="4.1.3" data-path="IPMImp.html"><a href="IPMImp.html#custom-distributions"><i class="fa fa-check"></i><b>4.1.3</b> Custom distributions</a></li>
+<li class="chapter" data-level="4.1.4" data-path="IPMImp.html"><a href="IPMImp.html#calling-nimble-from-r"><i class="fa fa-check"></i><b>4.1.4</b> Calling NIMBLE from R</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="IPMImp.html"><a href="IPMImp.html#simulation-of-initial-values"><i class="fa fa-check"></i><b>4.2</b> Simulation of initial values</a></li>
+<li class="chapter" data-level="4.3" data-path="IPMImp.html"><a href="IPMImp.html#test-runs-and-full-runs-chains-iterations-burn-in-and-thinning"><i class="fa fa-check"></i><b>4.3</b> Test runs and full runs: chains, iterations, burn-in, and thinning</a></li>
+<li class="chapter" data-level="4.4" data-path="IPMImp.html"><a href="IPMImp.html#trouble-shooting-implementation-issues"><i class="fa fa-check"></i><b>4.4</b> Trouble-shooting implementation issues</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="ModelAssm.html"><a href="ModelAssm.html"><i class="fa fa-check"></i><b>5</b> Model Assessment</a><ul>
+<li class="chapter" data-level="5.1" data-path="ModelAssm.html"><a href="ModelAssm.html#assessing-chain-convergence"><i class="fa fa-check"></i><b>5.1</b> Assessing chain convergence</a></li>
+<li class="chapter" data-level="5.2" data-path="ModelAssm.html"><a href="ModelAssm.html#plotting-data-vs.-predictions"><i class="fa fa-check"></i><b>5.2</b> Plotting data vs. predictions</a></li>
+<li class="chapter" data-level="5.3" data-path="ModelAssm.html"><a href="ModelAssm.html#comparing-estimates-from-integrated-vs.-independent-analyses"><i class="fa fa-check"></i><b>5.3</b> Comparing estimates from integrated vs. independent analyses</a></li>
+<li class="chapter" data-level="5.4" data-path="ModelAssm.html"><a href="ModelAssm.html#reality-check-using-stochastic-simulations"><i class="fa fa-check"></i><b>5.4</b> “Reality check” using stochastic simulations</a></li>
+<li class="chapter" data-level="5.5" data-path="ModelAssm.html"><a href="ModelAssm.html#other-approaches"><i class="fa fa-check"></i><b>5.5</b> Other approaches</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="ResultsViz.html"><a href="ResultsViz.html"><i class="fa fa-check"></i><b>6</b> Visualizing and interpreting direct IPM outputs</a><ul>
+<li class="chapter" data-level="6.1" data-path="ResultsViz.html"><a href="ResultsViz.html#population-trajectories"><i class="fa fa-check"></i><b>6.1</b> Population trajectories</a></li>
+<li class="chapter" data-level="6.2" data-path="ResultsViz.html"><a href="ResultsViz.html#within-population-variation-in-vital-rates"><i class="fa fa-check"></i><b>6.2</b> Within-population variation in vital rates</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="ResultsViz.html"><a href="ResultsViz.html#age-class-specific-averages"><i class="fa fa-check"></i><b>6.2.1</b> Age-class-specific averages</a></li>
+<li class="chapter" data-level="6.2.2" data-path="ResultsViz.html"><a href="ResultsViz.html#year-by-year-variation"><i class="fa fa-check"></i><b>6.2.2</b> Year-by-year variation</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="ResultsViz.html"><a href="ResultsViz.html#between-population-variation-in-vital-rates"><i class="fa fa-check"></i><b>6.3</b> Between-population variation in vital rates</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="ResultsViz.html"><a href="ResultsViz.html#population-specific-averages"><i class="fa fa-check"></i><b>6.3.1</b> Population-specific averages</a></li>
+<li class="chapter" data-level="6.3.2" data-path="ResultsViz.html"><a href="ResultsViz.html#year-by-year-variation-1"><i class="fa fa-check"></i><b>6.3.2</b> Year-by-year variation</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="ResultsViz.html"><a href="ResultsViz.html#covariate-effects"><i class="fa fa-check"></i><b>6.4</b> Covariate effects</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="AddAnalyses.html"><a href="AddAnalyses.html"><i class="fa fa-check"></i><b>7</b> Follow-up Analyses</a><ul>
+<li class="chapter" data-level="7.1" data-path="AddAnalyses.html"><a href="AddAnalyses.html#testing-for-time-trends"><i class="fa fa-check"></i><b>7.1</b> Testing for time-trends</a></li>
+<li class="chapter" data-level="7.2" data-path="AddAnalyses.html"><a href="AddAnalyses.html#testing-for-density-dependence"><i class="fa fa-check"></i><b>7.2</b> Testing for density-dependence</a></li>
+<li class="chapter" data-level="7.3" data-path="AddAnalyses.html"><a href="AddAnalyses.html#investigating-cross-population-covariation"><i class="fa fa-check"></i><b>7.3</b> Investigating cross-population covariation</a></li>
+<li class="chapter" data-level="7.4" data-path="AddAnalyses.html"><a href="AddAnalyses.html#quantifying-demographic-contributions-to-short-term-population-dynamics"><i class="fa fa-check"></i><b>7.4</b> Quantifying demographic contributions to short term population dynamics</a><ul>
+<li class="chapter" data-level="7.4.1" data-path="AddAnalyses.html"><a href="AddAnalyses.html#year-by-year-variation-in-population-growth-rate-random-design-ltre"><i class="fa fa-check"></i><b>7.4.1</b> Year-by-year variation in population growth rate (random design LTRE)</a></li>
+<li class="chapter" data-level="7.4.2" data-path="AddAnalyses.html"><a href="AddAnalyses.html#year-to-year-differences-in-population-growth-rate-fixed-design-ltre"><i class="fa fa-check"></i><b>7.4.2</b> Year-to-year differences in population growth rate (fixed design LTRE)</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="AddAnalyses.html"><a href="AddAnalyses.html#quantifying-demographic-contributions-to-long-term-population-trends"><i class="fa fa-check"></i><b>7.5</b> Quantifying demographic contributions to long-term population trends</a><ul>
+<li class="chapter" data-level="7.5.1" data-path="AddAnalyses.html"><a href="AddAnalyses.html#differences-in-population-trajectories-between-time-periods-period-design-ltre"><i class="fa fa-check"></i><b>7.5.1</b> Differences in population trajectories between time periods (period design LTRE)</a></li>
+<li class="chapter" data-level="7.5.2" data-path="AddAnalyses.html"><a href="AddAnalyses.html#differences-in-population-trajectories-between-locations-period-design-ltre-with-time-by-space-substitution"><i class="fa fa-check"></i><b>7.5.2</b> Differences in population trajectories between locations (period design LTRE with time-by-space substitution)</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="ExtOutlook.html"><a href="ExtOutlook.html"><i class="fa fa-check"></i><b>8</b> Useful extensions and outlook</a><ul>
+<li class="chapter" data-level="8.1" data-path="ExtOutlook.html"><a href="ExtOutlook.html#adapting-the-population-model-for-your-speciespopulation"><i class="fa fa-check"></i><b>8.1</b> Adapting the population model for your species/population</a><ul>
+<li class="chapter" data-level="8.1.1" data-path="ExtOutlook.html"><a href="ExtOutlook.html#accounting-for-multiple-broods-per-bird-per-year"><i class="fa fa-check"></i><b>8.1.1</b> Accounting for multiple broods per bird per year</a></li>
+<li class="chapter" data-level="8.1.2" data-path="ExtOutlook.html"><a href="ExtOutlook.html#altering-age-structure"><i class="fa fa-check"></i><b>8.1.2</b> Altering age structure</a></li>
+<li class="chapter" data-level="8.1.3" data-path="ExtOutlook.html"><a href="ExtOutlook.html#individual-heterogeneity-beyond-age-sex-traits-and-more"><i class="fa fa-check"></i><b>8.1.3</b> Individual heterogeneity beyond age: sex, traits, and more</a></li>
+</ul></li>
+<li class="chapter" data-level="8.2" data-path="ExtOutlook.html"><a href="ExtOutlook.html#including-additional-data-and-informative-priors"><i class="fa fa-check"></i><b>8.2</b> Including additional data and informative priors</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="ExtOutlook.html"><a href="ExtOutlook.html#including-partially-observed-age-information"><i class="fa fa-check"></i><b>8.2.1</b> Including partially observed age information</a></li>
+<li class="chapter" data-level="8.2.2" data-path="ExtOutlook.html"><a href="ExtOutlook.html#making-the-most-of-auxiliary-knowledge-about-immigrantsdispersers"><i class="fa fa-check"></i><b>8.2.2</b> Making the most of auxiliary knowledge about immigrants/dispersers</a></li>
+<li class="chapter" data-level="8.2.3" data-path="ExtOutlook.html"><a href="ExtOutlook.html#letting-published-values-help-with-estimation-when-data-is-sparse"><i class="fa fa-check"></i><b>8.2.3</b> Letting published values help with estimation when data is sparse</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="ExtOutlook.html"><a href="ExtOutlook.html#building-on-the-multi-population-perspective"><i class="fa fa-check"></i><b>8.3</b> Building on the multi-population perspective</a><ul>
+<li class="chapter" data-level="8.3.1" data-path="ExtOutlook.html"><a href="ExtOutlook.html#joint-analysis-of-data-from-several-populations"><i class="fa fa-check"></i><b>8.3.1</b> Joint analysis of data from several populations</a></li>
+<li class="chapter" data-level="8.3.2" data-path="ExtOutlook.html"><a href="ExtOutlook.html#modelling-cross-population-covariation"><i class="fa fa-check"></i><b>8.3.2</b> Modelling cross-population covariation</a></li>
+<li class="chapter" data-level="8.3.3" data-path="ExtOutlook.html"><a href="ExtOutlook.html#estimating-hyper-parameters-in-large-scale-analyses"><i class="fa fa-check"></i><b>8.3.3</b> Estimating hyper-parameters in large-scale analyses</a></li>
+<li class="chapter" data-level="8.3.4" data-path="ExtOutlook.html"><a href="ExtOutlook.html#unlocking-the-secrets-of-dispersal"><i class="fa fa-check"></i><b>8.3.4</b> Unlocking the secrets of dispersal</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">SPI-IPM Code Manual</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="DataPrep" class="section level1 hasAnchor">
+<h1><span class="header-section-number">Chapter 1</span> Preparing SPI-Birds data for Bayesian analysis<a href="DataPrep.html#DataPrep" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Quick recap of SPI-Birds standard format and overview over data types used in IPM (+ how they relate, incl. diagram).</p>
+<div id="nest-count-data" class="section level2 hasAnchor">
+<h2><span class="header-section-number">1.1</span> Nest count data<a href="DataPrep.html#nest-count-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+</div>
+<div id="clutch-size-data" class="section level2 hasAnchor">
+<h2><span class="header-section-number">1.2</span> Clutch size data<a href="DataPrep.html#clutch-size-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="nest-level" class="section level3 hasAnchor">
+<h3><span class="header-section-number">1.2.1</span> Nest level<a href="DataPrep.html#nest-level" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+</div>
+<div id="population-level" class="section level3 hasAnchor">
+<h3><span class="header-section-number">1.2.2</span> Population level<a href="DataPrep.html#population-level" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+</div>
+</div>
+<div id="fledgling-count-data" class="section level2 hasAnchor">
+<h2><span class="header-section-number">1.3</span> Fledgling count data<a href="DataPrep.html#fledgling-count-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="nest-level-1" class="section level3 hasAnchor">
+<h3><span class="header-section-number">1.3.1</span> Nest level<a href="DataPrep.html#nest-level-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+</div>
+<div id="population-level-1" class="section level3 hasAnchor">
+<h3><span class="header-section-number">1.3.2</span> Population level<a href="DataPrep.html#population-level-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+</div>
+</div>
+<div id="mark-recapture-data" class="section level2 hasAnchor">
+<h2><span class="header-section-number">1.4</span> Mark-recapture data<a href="DataPrep.html#mark-recapture-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="individual-capture-histories" class="section level3 hasAnchor">
+<h3><span class="header-section-number">1.4.1</span> Individual capture histories<a href="DataPrep.html#individual-capture-histories" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+</div>
+<div id="m-array" class="section level3 hasAnchor">
+<h3><span class="header-section-number">1.4.2</span> M-array<a href="DataPrep.html#m-array" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+</div>
+</div>
+<div id="immigrant-count-data" class="section level2 hasAnchor">
+<h2><span class="header-section-number">1.5</span> Immigrant count data<a href="DataPrep.html#immigrant-count-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+</div>
+<div id="auxiliary-data-on-the-sampling-process" class="section level2 hasAnchor">
+<h2><span class="header-section-number">1.6</span> Auxiliary data on the sampling process<a href="DataPrep.html#auxiliary-data-on-the-sampling-process" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="nest-survey-sampling-effort" class="section level3 hasAnchor">
+<h3><span class="header-section-number">1.6.1</span> Nest survey sampling effort<a href="DataPrep.html#nest-survey-sampling-effort" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+</div>
+<div id="capture-probability-proxies" class="section level3 hasAnchor">
+<h3><span class="header-section-number">1.6.2</span> Capture probability proxies<a href="DataPrep.html#capture-probability-proxies" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+</div>
+</div>
+<div id="organisation-for-analysis-with-nimble" class="section level2 hasAnchor">
+<h2><span class="header-section-number">1.7</span> Organisation for analysis with NIMBLE<a href="DataPrep.html#organisation-for-analysis-with-nimble" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="IPMCon.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/01-DataPrep.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["SPI-IPM_CodeManual.pdf", "SPI-IPM_CodeManual.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

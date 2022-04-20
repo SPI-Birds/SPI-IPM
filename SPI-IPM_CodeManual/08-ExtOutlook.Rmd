@@ -1,5 +1,7 @@
 # Useful extensions and outlook {#ExtOutlook}
 
+This last chapter is dedicated to possible future applications of `SPI-IPM`. For now, it is simply a collection of section titles alluding to potentially useful and interesting extensions of the model focusing on accommodating other species and additional data sources, as well as building further on the potential of multi-population studies. 
+The collection of section titles may serve as inspiration, but ideally, future users of `SPI-IPM` will contribute and describe their model extensions in this chapter. 
 
 ##	Adapting the population model for your species/population
 

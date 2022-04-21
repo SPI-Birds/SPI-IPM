@@ -4,10 +4,14 @@
 %
 \documentclass[
 ]{book}
+\title{SPI-IPM Code Manual}
+\author{Chloé R. Nater}
+\date{2022-04-21}
+
+\usepackage{amsmath,amssymb}
 \usepackage{lmodern}
-\usepackage{amssymb,amsmath}
-\usepackage{ifxetex,ifluatex}
-\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+\usepackage{iftex}
+\ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
@@ -81,7 +85,8 @@
 \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
 \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
 \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\usepackage{longtable,booktabs}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
 \makeatletter
@@ -90,7 +95,7 @@
 % Allow footnotes in longtable head/foot
 \IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
 \makesavenoteenv{longtable}
-\usepackage{graphicx,grffile}
+\usepackage{graphicx}
 \makeatletter
 \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
 \def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
@@ -115,12 +120,11 @@
   \thm@postskip=\thm@preskip
 }
 \makeatother
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
 \usepackage[]{natbib}
 \bibliographystyle{apalike}
-
-\title{SPI-IPM Code Manual}
-\author{Chloé R. Nater}
-\date{2021-11-29}
 
 \begin{document}
 \maketitle
@@ -133,11 +137,13 @@
 \chapter*{About this manual}\label{about-this-manual}}
 \addcontentsline{toc}{chapter}{About this manual}
 
-Briefly on the need for/value of standardized data and analyses.
+This manual is intended as a user guide for the SPI-IPM repository (\url{https://github.com/SPI-Birds/SPI-IPM}). The repository contains an entire toolbox of code to implement, run, and analyse integrated population models (IPMs) using data hosted by the SPI-Birds Network and Database (\url{https://spibirds.org}).While code is designed to work directly with the SPI-Birds standard data format and the population model is tailored to hole-nesting bird species, both code and workflow can serve as a basis for extensions and applications to a wide range of other species and data types.
 
-Why IPMs are popular and what they are suitable for \citep{kery2011, plard2019}.
+The increasing adoption of standard formats for ecological data opens new possibilities for (comparative) analyses at much larger spatial scales. Accessible, transparent, and reproducible tools and workflows are central to implementing such analyses. The idea behind SPI-IPM is to provide such tools and workflows for integrated analyses of population dynamics using Bayesian IPMs.
 
-Overview over workflow, code repository \& contents of manual (Figure \ref{fig:WorkflowDiag}).
+IPMs have rapidly gained popularity over the past decade due to a range of advantages including efficient use of available data, thorough inclusion and propagation of uncertainty, and estimation of parameters for which no explicit data can be collected. To learn more about IPMs and their applications in general, see \citet{plard2019} and \citet{schaub2021}. The use of IPMs with SPI-Birds data for identifying and quantifying the drivers of population dynamics (of pied flycatchers) is illustrated in the paper that gave rise to the SPI-IPM repository.
+
+This manual is organised into eight chapters that cover the entire workflow presented in Figure \ref{fig:WorkflowDiag}:
 
 \begin{figure}
 
@@ -148,59 +154,97 @@ Overview over workflow, code repository \& contents of manual (Figure \ref{fig:W
 \caption{Schematic representation of the SPI-IPM workflow.}\label{fig:WorkflowDiag}
 \end{figure}
 
-In no way complete: great if user's analyses/adaptations become part.
+Chapter 1 describes how data obtained in the \href{https://github.com/SPI-Birds/documentation/tree/master/standard_protocol}{SPI-Birds standard format} is reformatted for use in an IPM. Chapters 2 \& 3 explain the structure and assumptions of the IPM, and chapter 4 details its implementation using the R package \texttt{nimble} \citep{devalpine2017}. Chapter 5 introduces ways for assessing model performance and fit and chapter 6 contains notes about visualizing results in different ways. A range of useful follow-up analyses (incl.~tests for time trends and density dependence, perturbation analyses, etc.) are described in Chapter 7. The final chapter (8) is more of a teaser trailer than anything else, presenting a few ideas for future extensions and additional applications.
 
-How to cite.
+Relevant code for each chapter is deposited in subfolders in the \href{https://github.com/SPI-Birds/SPI-IPM/tree/main/SPI-IPM_Code}{code repository} that start with the same number as the manual chapter. The repository README contains more details about where to find what.
+
+At present, this manual is incomplete in two ways. First, there are chapters for which content is still missing (marked with ``TBA''). This content will be added throughout 2022. Second, and more importantly: neither the code repository nor the manual are exhaustive. They are meant to help others use and adapt SPI-IPM for their own studies and will hopefully keep growing as more people add their own extensions and new applications to the repository.
+
+\hypertarget{how-to-cite}{%
+\subsection*{How to cite}\label{how-to-cite}}
+\addcontentsline{toc}{subsection}{How to cite}
+
+TBA
 
 \hypertarget{DataPrep}{%
 \chapter{Preparing SPI-Birds data for Bayesian analysis}\label{DataPrep}}
 
-Quick recap of SPI-Birds standard format and overview over data types used in IPM (+ how they relate, incl.~diagram).
+TBA
 
 \hypertarget{nest-count-data}{%
 \section{Nest count data}\label{nest-count-data}}
 
+TBA
+
 \hypertarget{clutch-size-data}{%
 \section{Clutch size data}\label{clutch-size-data}}
+
+TBA
 
 \hypertarget{nest-level}{%
 \subsection{Nest level}\label{nest-level}}
 
+TBA
+
 \hypertarget{population-level}{%
 \subsection{Population level}\label{population-level}}
+
+TBA
 
 \hypertarget{fledgling-count-data}{%
 \section{Fledgling count data}\label{fledgling-count-data}}
 
+TBA
+
 \hypertarget{nest-level-1}{%
 \subsection{Nest level}\label{nest-level-1}}
+
+TBA
 
 \hypertarget{population-level-1}{%
 \subsection{Population level}\label{population-level-1}}
 
+TBA
+
 \hypertarget{mark-recapture-data}{%
 \section{Mark-recapture data}\label{mark-recapture-data}}
+
+TBA
 
 \hypertarget{individual-capture-histories}{%
 \subsection{Individual capture histories}\label{individual-capture-histories}}
 
+TBA
+
 \hypertarget{m-array}{%
 \subsection{M-array}\label{m-array}}
+
+TBA
 
 \hypertarget{immigrant-count-data}{%
 \section{Immigrant count data}\label{immigrant-count-data}}
 
+TBA
+
 \hypertarget{auxiliary-data-on-the-sampling-process}{%
 \section{Auxiliary data on the sampling process}\label{auxiliary-data-on-the-sampling-process}}
+
+TBA
 
 \hypertarget{nest-survey-sampling-effort}{%
 \subsection{Nest survey sampling effort}\label{nest-survey-sampling-effort}}
 
+TBA
+
 \hypertarget{capture-probability-proxies}{%
 \subsection{Capture probability proxies}\label{capture-probability-proxies}}
 
+TBA
+
 \hypertarget{organisation-for-analysis-with-nimble}{%
 \section{Organisation for analysis with NIMBLE}\label{organisation-for-analysis-with-nimble}}
+
+TBA
 
 \hypertarget{IPMCon}{%
 \chapter{IPM Construction}\label{IPMCon}}
@@ -221,6 +265,7 @@ The dynamics of the female segment of the population over the time-interval from
 census in year \(t\) to census in year \(t+1\) can be described with classic matrix
 notation \citep{Caswell2001} as:
 
+\hfill\break
 \[N_{tot,t+1} = \begin{bmatrix} N_{Y,t+1} \\ N_{A,t+1} \end{bmatrix} =
   \begin{bmatrix}
 0.5F_{Y,t}sJ_t & 0.5F_{A,t}sJ_t \\
@@ -277,14 +322,14 @@ SPI-IPM code (\href{https://github.com/SPI-Birds/SPI-IPM/blob/main/SPI-IPM_Code/
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ControlFlowTok{for}\NormalTok{ (t }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{Tmax)\{}
-  \ControlFlowTok{for}\NormalTok{(a }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{A)\{}
+\ControlFlowTok{for}\NormalTok{ (t }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{Tmax)\{}
+  \ControlFlowTok{for}\NormalTok{(a }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{A)\{}
     
-    \CommentTok{## 1) Breeding decision}
-\NormalTok{    B[a,t] }\OperatorTok{~}\StringTok{ }\KeywordTok{dbin}\NormalTok{(pB[a,t], N[a,t])}
+    \DocumentationTok{\#\# 1) Breeding decision}
+\NormalTok{    B[a,t] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dbin}\NormalTok{(pB[a,t], N[a,t])}
     
-    \CommentTok{## 2) Offspring production}
-\NormalTok{    Juv[a,t] }\OperatorTok{~}\StringTok{ }\KeywordTok{dpois}\NormalTok{(B[a,t]}\OperatorTok{*}\NormalTok{CS[a,t]}\OperatorTok{*}\NormalTok{pNS[t]}\OperatorTok{*}\NormalTok{sN[a,t]}\OperatorTok{*}\FloatTok{0.5}\NormalTok{)}
+    \DocumentationTok{\#\# 2) Offspring production}
+\NormalTok{    Juv[a,t] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dpois}\NormalTok{(B[a,t]}\SpecialCharTok{*}\NormalTok{CS[a,t]}\SpecialCharTok{*}\NormalTok{pNS[t]}\SpecialCharTok{*}\NormalTok{sN[a,t]}\SpecialCharTok{*}\FloatTok{0.5}\NormalTok{)}
 \NormalTok{  \}}
 \NormalTok{\}}
 \end{Highlighting}
@@ -299,17 +344,17 @@ next year -- are implemented as binomial random variables (\href{https://github.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ControlFlowTok{for}\NormalTok{ (t }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{(Tmax}\DecValTok{-1}\NormalTok{))\{}
+\ControlFlowTok{for}\NormalTok{ (t }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{(Tmax}\DecValTok{{-}1}\NormalTok{))\{}
   
-  \CommentTok{## 3) Annual survival of local birds}
-  \CommentTok{# Juveniles -> Yearlings}
-\NormalTok{  localN[}\DecValTok{1}\NormalTok{,t}\OperatorTok{+}\DecValTok{1}\NormalTok{] }\OperatorTok{~}\StringTok{ }\KeywordTok{dbin}\NormalTok{(sJ[t], }\KeywordTok{sum}\NormalTok{(Juv[}\DecValTok{1}\OperatorTok{:}\NormalTok{A,t]))}
-  \CommentTok{# Yearlings/Adults -> adults}
-\NormalTok{  localN[}\DecValTok{2}\NormalTok{,t}\OperatorTok{+}\DecValTok{1}\NormalTok{] }\OperatorTok{~}\StringTok{ }\KeywordTok{dbin}\NormalTok{(sA[t], }\KeywordTok{sum}\NormalTok{(N[}\DecValTok{1}\OperatorTok{:}\NormalTok{A,t]))}
+  \DocumentationTok{\#\# 3) Annual survival of local birds}
+  \CommentTok{\# Juveniles {-}\textgreater{} Yearlings}
+\NormalTok{  localN[}\DecValTok{1}\NormalTok{,t}\SpecialCharTok{+}\DecValTok{1}\NormalTok{] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dbin}\NormalTok{(sJ[t], }\FunctionTok{sum}\NormalTok{(Juv[}\DecValTok{1}\SpecialCharTok{:}\NormalTok{A,t]))}
+  \CommentTok{\# Yearlings/Adults {-}\textgreater{} adults}
+\NormalTok{  localN[}\DecValTok{2}\NormalTok{,t}\SpecialCharTok{+}\DecValTok{1}\NormalTok{] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dbin}\NormalTok{(sA[t], }\FunctionTok{sum}\NormalTok{(N[}\DecValTok{1}\SpecialCharTok{:}\NormalTok{A,t]))}
   
-  \CommentTok{## 4) Immigration}
-  \ControlFlowTok{for}\NormalTok{(a }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{A)\{}
-\NormalTok{    N[a,t}\OperatorTok{+}\DecValTok{1}\NormalTok{] <-}\StringTok{ }\NormalTok{localN[a,t}\OperatorTok{+}\DecValTok{1}\NormalTok{] }\OperatorTok{+}\StringTok{ }\NormalTok{Imm[a,t}\OperatorTok{+}\DecValTok{1}\NormalTok{]}
+  \DocumentationTok{\#\# 4) Immigration}
+  \ControlFlowTok{for}\NormalTok{(a }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{A)\{}
+\NormalTok{    N[a,t}\SpecialCharTok{+}\DecValTok{1}\NormalTok{] }\OtherTok{\textless{}{-}}\NormalTok{ localN[a,t}\SpecialCharTok{+}\DecValTok{1}\NormalTok{] }\SpecialCharTok{+}\NormalTok{ Imm[a,t}\SpecialCharTok{+}\DecValTok{1}\NormalTok{]}
 \NormalTok{  \}}
 \NormalTok{\}}
 \end{Highlighting}
@@ -366,8 +411,8 @@ extending the model to more than two age classes):
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{Tmax)\{}
-\NormalTok{  NestCount[t] }\OperatorTok{~}\StringTok{ }\KeywordTok{dpois}\NormalTok{(}\KeywordTok{sum}\NormalTok{(B[}\DecValTok{1}\OperatorTok{:}\NormalTok{A,t])}\OperatorTok{*}\NormalTok{NS_Data[t])}
+\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{Tmax)\{}
+\NormalTok{  NestCount[t] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dpois}\NormalTok{(}\FunctionTok{sum}\NormalTok{(B[}\DecValTok{1}\SpecialCharTok{:}\NormalTok{A,t])}\SpecialCharTok{*}\NormalTok{NS\_Data[t])}
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
@@ -389,8 +434,8 @@ expectation using data on female age (\texttt{CS\_FAge}) and year (\texttt{CS\_y
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ControlFlowTok{for}\NormalTok{(x }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{CS_X)\{}
-\NormalTok{    ClutchSize[x] }\OperatorTok{~}\StringTok{ }\KeywordTok{dpois}\NormalTok{(CS[CS_FAge[x], CS_year[x]])}
+\ControlFlowTok{for}\NormalTok{(x }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{CS\_X)\{}
+\NormalTok{    ClutchSize[x] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dpois}\NormalTok{(CS[CS\_FAge[x], CS\_year[x]])}
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
@@ -414,13 +459,13 @@ In code, the likelihood for the number of eggs at the population is written as:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{Tmax)\{}
+\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{Tmax)\{}
 
-    \CommentTok{# Expected "true" egg number (by mother age class)}
-\NormalTok{    EggNo.ex[}\DecValTok{1}\OperatorTok{:}\NormalTok{A,t] <-}\StringTok{ }\NormalTok{B[}\DecValTok{1}\OperatorTok{:}\NormalTok{A,t]}\OperatorTok{*}\NormalTok{CS[}\DecValTok{1}\OperatorTok{:}\NormalTok{A,t]}
+    \CommentTok{\# Expected "true" egg number (by mother age class)}
+\NormalTok{    EggNo.ex[}\DecValTok{1}\SpecialCharTok{:}\NormalTok{A,t] }\OtherTok{\textless{}{-}}\NormalTok{ B[}\DecValTok{1}\SpecialCharTok{:}\NormalTok{A,t]}\SpecialCharTok{*}\NormalTok{CS[}\DecValTok{1}\SpecialCharTok{:}\NormalTok{A,t]}
 
-    \CommentTok{# Observed egg number (corrected by data availaility)}
-\NormalTok{    EggNoTot[t] }\OperatorTok{~}\StringTok{ }\KeywordTok{dpois}\NormalTok{(}\KeywordTok{sum}\NormalTok{(EggNo.ex[}\DecValTok{1}\OperatorTok{:}\NormalTok{A,t])}\OperatorTok{*}\NormalTok{EggNoSP[t])}
+    \CommentTok{\# Observed egg number (corrected by data availaility)}
+\NormalTok{    EggNoTot[t] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dpois}\NormalTok{(}\FunctionTok{sum}\NormalTok{(EggNo.ex[}\DecValTok{1}\SpecialCharTok{:}\NormalTok{A,t])}\SpecialCharTok{*}\NormalTok{EggNoSP[t])}
 
 \NormalTok{\}}
 \end{Highlighting}
@@ -443,8 +488,8 @@ outcome of a Bernoulli process with a year-dependent success probability \(pNS_t
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ControlFlowTok{for}\NormalTok{(x }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{F_X)\{}
-\NormalTok{  anyFledged[x] }\OperatorTok{~}\StringTok{ }\KeywordTok{dbern}\NormalTok{(pNS[F_year[x]])}
+\ControlFlowTok{for}\NormalTok{(x }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{F\_X)\{}
+\NormalTok{  anyFledged[x] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dbern}\NormalTok{(pNS[F\_year[x]])}
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
@@ -456,8 +501,8 @@ mother) to survive and fledge:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ControlFlowTok{for}\NormalTok{(x }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{NoF_X)\{}
-\NormalTok{    NoFledged[x] }\OperatorTok{~}\StringTok{ }\KeywordTok{dbin}\NormalTok{(sN[NoF_FAge[x], NoF_year[x]], NoLaid[x])}
+\ControlFlowTok{for}\NormalTok{(x }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{NoF\_X)\{}
+\NormalTok{    NoFledged[x] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dbin}\NormalTok{(sN[NoF\_FAge[x], NoF\_year[x]], NoLaid[x])}
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
@@ -482,13 +527,13 @@ In the code, calculation of the expected number of fledglings is based on the ex
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{Tmax)\{}
+\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{Tmax)\{}
 
-    \CommentTok{# Expected "true" fledgling number (by mother age class)}
-\NormalTok{    Fledged.ex[}\DecValTok{1}\OperatorTok{:}\NormalTok{A,t] <-}\StringTok{ }\NormalTok{EggNo.ex[}\DecValTok{1}\OperatorTok{:}\NormalTok{A,t]}\OperatorTok{*}\NormalTok{pNS[t]}\OperatorTok{*}\NormalTok{sN[}\DecValTok{1}\OperatorTok{:}\NormalTok{A,t]}
+    \CommentTok{\# Expected "true" fledgling number (by mother age class)}
+\NormalTok{    Fledged.ex[}\DecValTok{1}\SpecialCharTok{:}\NormalTok{A,t] }\OtherTok{\textless{}{-}}\NormalTok{ EggNo.ex[}\DecValTok{1}\SpecialCharTok{:}\NormalTok{A,t]}\SpecialCharTok{*}\NormalTok{pNS[t]}\SpecialCharTok{*}\NormalTok{sN[}\DecValTok{1}\SpecialCharTok{:}\NormalTok{A,t]}
 
-    \CommentTok{# Observed egg number (corrected by data availaility)}
-\NormalTok{    FledgedTot[t] }\OperatorTok{~}\StringTok{ }\KeywordTok{dpois}\NormalTok{(}\KeywordTok{sum}\NormalTok{(Fledged.ex[}\DecValTok{1}\OperatorTok{:}\NormalTok{A,t])}\OperatorTok{*}\NormalTok{FledgedSP[t])}
+    \CommentTok{\# Observed egg number (corrected by data availaility)}
+\NormalTok{    FledgedTot[t] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dpois}\NormalTok{(}\FunctionTok{sum}\NormalTok{(Fledged.ex[}\DecValTok{1}\SpecialCharTok{:}\NormalTok{A,t])}\SpecialCharTok{*}\NormalTok{FledgedSP[t])}
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
@@ -507,14 +552,14 @@ CJS models in Bayesian frameworks have traditionally been implemented either as 
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{## Likelihood with custom distribution}
-\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{n.CH)\{}
+\DocumentationTok{\#\# Likelihood with custom distribution}
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{n.CH)\{}
 
-\NormalTok{  y.sum[i, first.sum[i]}\OperatorTok{:}\NormalTok{last.sum[i]] }\OperatorTok{~}\StringTok{ }\KeywordTok{dCJS_vv_sum}\NormalTok{(}
-      \DataTypeTok{probSurvive =}\NormalTok{ phi.CH[i, first.sum[i]}\OperatorTok{:}\NormalTok{last.sum[i]],}
-      \DataTypeTok{probCapture =}\NormalTok{ p.CH[i, first.sum[i]}\OperatorTok{:}\NormalTok{last.sum[i]],}
-      \DataTypeTok{len =}\NormalTok{ last.sum[i]}\OperatorTok{-}\NormalTok{first.sum[i]}\OperatorTok{+}\DecValTok{1}\NormalTok{,}
-      \DataTypeTok{mult =}\NormalTok{ CHs.count[i])}
+\NormalTok{  y.sum[i, first.sum[i]}\SpecialCharTok{:}\NormalTok{last.sum[i]] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dCJS\_vv\_sum}\NormalTok{(}
+      \AttributeTok{probSurvive =}\NormalTok{ phi.CH[i, first.sum[i]}\SpecialCharTok{:}\NormalTok{last.sum[i]],}
+      \AttributeTok{probCapture =}\NormalTok{ p.CH[i, first.sum[i]}\SpecialCharTok{:}\NormalTok{last.sum[i]],}
+      \AttributeTok{len =}\NormalTok{ last.sum[i]}\SpecialCharTok{{-}}\NormalTok{first.sum[i]}\SpecialCharTok{+}\DecValTok{1}\NormalTok{,}
+      \AttributeTok{mult =}\NormalTok{ CHs.count[i])}
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
@@ -532,9 +577,9 @@ The expected value represents the true number of female breeding immigrants in y
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{## Immigrant detection (= marking) probability}
-\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{Tmax)\{}
-\NormalTok{  PropImmDetect[t] }\OperatorTok{~}\StringTok{ }\KeywordTok{dunif}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{)}
+\DocumentationTok{\#\# Immigrant detection (= marking) probability}
+\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{Tmax)\{}
+\NormalTok{  PropImmDetect[t] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dunif}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{)}
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
@@ -549,20 +594,20 @@ In the code, the sub-model for immigration contains both the likelihood for the 
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{## Likelihood for the number/age distribution of immigrant females}
-\ControlFlowTok{for}\NormalTok{ (t }\ControlFlowTok{in} \DecValTok{2}\OperatorTok{:}\NormalTok{Tmax)\{}
+\DocumentationTok{\#\# Likelihood for the number/age distribution of immigrant females}
+\ControlFlowTok{for}\NormalTok{ (t }\ControlFlowTok{in} \DecValTok{2}\SpecialCharTok{:}\NormalTok{Tmax)\{}
 
-  \CommentTok{# Latent true number of breeding immigrants (count observation model)}
-\NormalTok{  ImmNoObs[t] }\OperatorTok{~}\StringTok{ }\KeywordTok{dpois}\NormalTok{(}\KeywordTok{sum}\NormalTok{(ImmB[}\DecValTok{1}\OperatorTok{:}\NormalTok{A,t])}\OperatorTok{*}\NormalTok{PropImmDetect[t])}
+  \CommentTok{\# Latent true number of breeding immigrants (count observation model)}
+\NormalTok{  ImmNoObs[t] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dpois}\NormalTok{(}\FunctionTok{sum}\NormalTok{(ImmB[}\DecValTok{1}\SpecialCharTok{:}\NormalTok{A,t])}\SpecialCharTok{*}\NormalTok{PropImmDetect[t])}
 
-  \CommentTok{# Number of breeding immigrants per age class}
-  \ControlFlowTok{for}\NormalTok{(a }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{A)\{}
-\NormalTok{    ImmB[a,t] }\OperatorTok{~}\StringTok{ }\KeywordTok{dbin}\NormalTok{(pB[a,t], Imm[a,t])}
+  \CommentTok{\# Number of breeding immigrants per age class}
+  \ControlFlowTok{for}\NormalTok{(a }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{A)\{}
+\NormalTok{    ImmB[a,t] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dbin}\NormalTok{(pB[a,t], Imm[a,t])}
 \NormalTok{  \}}
 \NormalTok{\}}
 
-\NormalTok{ImmNoObs[}\DecValTok{1}\NormalTok{] <-}\StringTok{ }\DecValTok{0}
-\NormalTok{ImmB[}\DecValTok{1}\OperatorTok{:}\NormalTok{A,}\DecValTok{1}\NormalTok{] <-}\StringTok{ }\DecValTok{0}
+\NormalTok{ImmNoObs[}\DecValTok{1}\NormalTok{] }\OtherTok{\textless{}{-}} \DecValTok{0}
+\NormalTok{ImmB[}\DecValTok{1}\SpecialCharTok{:}\NormalTok{A,}\DecValTok{1}\NormalTok{] }\OtherTok{\textless{}{-}} \DecValTok{0}
 \end{Highlighting}
 \end{Shaded}
 
@@ -609,14 +654,14 @@ essentially a discrete uniform prior for initial local population size:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{## Initial population sizes}
+\DocumentationTok{\#\# Initial population sizes}
 
-\ControlFlowTok{for}\NormalTok{(a }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{A)\{}
-\NormalTok{  localN[a,}\DecValTok{1}\NormalTok{] }\OperatorTok{~}\StringTok{ }\KeywordTok{dcat}\NormalTok{(DU.prior[}\DecValTok{1}\OperatorTok{:}\NormalTok{N1.limit])}
-\NormalTok{  N[a,}\DecValTok{1}\NormalTok{] <-}\StringTok{ }\NormalTok{localN[a,}\DecValTok{1}\NormalTok{] }\OperatorTok{+}\StringTok{ }\NormalTok{Imm[a,}\DecValTok{1}\NormalTok{]}
+\ControlFlowTok{for}\NormalTok{(a }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{A)\{}
+\NormalTok{  localN[a,}\DecValTok{1}\NormalTok{] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dcat}\NormalTok{(DU.prior[}\DecValTok{1}\SpecialCharTok{:}\NormalTok{N1.limit])}
+\NormalTok{  N[a,}\DecValTok{1}\NormalTok{] }\OtherTok{\textless{}{-}}\NormalTok{ localN[a,}\DecValTok{1}\NormalTok{] }\SpecialCharTok{+}\NormalTok{ Imm[a,}\DecValTok{1}\NormalTok{]}
 \NormalTok{\}}
 
-\NormalTok{DU.prior[}\DecValTok{1}\OperatorTok{:}\NormalTok{N1.limit] <-}\StringTok{ }\DecValTok{1}\OperatorTok{/}\NormalTok{N1.limit}
+\NormalTok{DU.prior[}\DecValTok{1}\SpecialCharTok{:}\NormalTok{N1.limit] }\OtherTok{\textless{}{-}} \DecValTok{1}\SpecialCharTok{/}\NormalTok{N1.limit}
 \end{Highlighting}
 \end{Shaded}
 
@@ -637,14 +682,14 @@ with age-specific mean \(AvgImm_a\) (\texttt{AvgImm{[}a{]}}) and standard deviat
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{## Latent number of all immigrants (breeding & non-breeding) per age class}
-\NormalTok{Imm[}\DecValTok{1}\OperatorTok{:}\NormalTok{A,}\DecValTok{1}\NormalTok{] <-}\StringTok{ }\DecValTok{0}
+\DocumentationTok{\#\# Latent number of all immigrants (breeding \& non{-}breeding) per age class}
+\NormalTok{Imm[}\DecValTok{1}\SpecialCharTok{:}\NormalTok{A,}\DecValTok{1}\NormalTok{] }\OtherTok{\textless{}{-}} \DecValTok{0}
 
-\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{2}\OperatorTok{:}\NormalTok{Tmax)\{}
-  \ControlFlowTok{for}\NormalTok{(a }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{A)\{}
+\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{2}\SpecialCharTok{:}\NormalTok{Tmax)\{}
+  \ControlFlowTok{for}\NormalTok{(a }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{A)\{}
 
-\NormalTok{    ImmCont[a,t] }\OperatorTok{~}\StringTok{ }\KeywordTok{T}\NormalTok{(}\KeywordTok{dnorm}\NormalTok{(AvgImm[a], }\DataTypeTok{sd =}\NormalTok{ sigma.Imm[a]), }\DecValTok{0}\NormalTok{, }\OtherTok{Inf}\NormalTok{)}
-\NormalTok{    Imm[a,t] <-}\StringTok{ }\KeywordTok{round}\NormalTok{(ImmCont[a,t])}
+\NormalTok{    ImmCont[a,t] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{T}\NormalTok{(}\FunctionTok{dnorm}\NormalTok{(AvgImm[a], }\AttributeTok{sd =}\NormalTok{ sigma.Imm[a]), }\DecValTok{0}\NormalTok{, }\ConstantTok{Inf}\NormalTok{)}
+\NormalTok{    Imm[a,t] }\OtherTok{\textless{}{-}} \FunctionTok{round}\NormalTok{(ImmCont[a,t])}
 \NormalTok{  \}}
 \NormalTok{\}}
 \end{Highlighting}
@@ -657,9 +702,9 @@ user-specified maximum possible number of immigrant females in any age class:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ControlFlowTok{for}\NormalTok{(a }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{A)\{}
-\NormalTok{  AvgImm[a] }\OperatorTok{~}\StringTok{ }\KeywordTok{dunif}\NormalTok{(}\DecValTok{0}\NormalTok{, AvgImm.limit)}
-\NormalTok{  sigma.Imm[a] }\OperatorTok{~}\StringTok{ }\KeywordTok{dunif}\NormalTok{(}\DecValTok{0}\NormalTok{, AvgImm.limit}\OperatorTok{*}\DecValTok{10}\NormalTok{)}
+\ControlFlowTok{for}\NormalTok{(a }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{A)\{}
+\NormalTok{  AvgImm[a] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dunif}\NormalTok{(}\DecValTok{0}\NormalTok{, AvgImm.limit)}
+\NormalTok{  sigma.Imm[a] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dunif}\NormalTok{(}\DecValTok{0}\NormalTok{, AvgImm.limit}\SpecialCharTok{*}\DecValTok{10}\NormalTok{)}
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
@@ -707,15 +752,15 @@ additional covariate effect \(sJ_t\) only\footnote{Note that the implementation 
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{Tmax)\{}
+\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{Tmax)\{}
     
-  \CommentTok{## Age- and time-dependent survival probabilities}
-  \KeywordTok{logit}\NormalTok{(sJ[t]) <-}\StringTok{ }\KeywordTok{logit}\NormalTok{(Mu.sJ) }\OperatorTok{+}\StringTok{ }\NormalTok{beta3.sJ}\OperatorTok{*}\NormalTok{cov3[t] }\OperatorTok{+}\StringTok{ }\NormalTok{epsilon.sJ[t]}
-  \KeywordTok{logit}\NormalTok{(sA[t]) <-}\StringTok{ }\KeywordTok{logit}\NormalTok{(Mu.sA) }\OperatorTok{+}\StringTok{ }\NormalTok{epsilon.sA[t]}
+  \DocumentationTok{\#\# Age{-} and time{-}dependent survival probabilities}
+  \FunctionTok{logit}\NormalTok{(sJ[t]) }\OtherTok{\textless{}{-}} \FunctionTok{logit}\NormalTok{(Mu.sJ) }\SpecialCharTok{+}\NormalTok{ beta3.sJ}\SpecialCharTok{*}\NormalTok{cov3[t] }\SpecialCharTok{+}\NormalTok{ epsilon.sJ[t]}
+  \FunctionTok{logit}\NormalTok{(sA[t]) }\OtherTok{\textless{}{-}} \FunctionTok{logit}\NormalTok{(Mu.sA) }\SpecialCharTok{+}\NormalTok{ epsilon.sA[t]}
 
-  \CommentTok{## Temporal random effects}
-\NormalTok{    epsilon.sJ[t] }\OperatorTok{~}\StringTok{ }\KeywordTok{dnorm}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DataTypeTok{sd =}\NormalTok{ sigma.sJ)}
-\NormalTok{    epsilon.sA[t] }\OperatorTok{~}\StringTok{ }\KeywordTok{dnorm}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DataTypeTok{sd =}\NormalTok{ sigma.sA)}
+  \DocumentationTok{\#\# Temporal random effects}
+\NormalTok{    epsilon.sJ[t] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dnorm}\NormalTok{(}\DecValTok{0}\NormalTok{, }\AttributeTok{sd =}\NormalTok{ sigma.sJ)}
+\NormalTok{    epsilon.sA[t] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dnorm}\NormalTok{(}\DecValTok{0}\NormalTok{, }\AttributeTok{sd =}\NormalTok{ sigma.sA)}
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
@@ -762,8 +807,8 @@ For \(pNS_t\), for example, this codes as\footnote{see Footnote 1}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{Tmax)\{}
-  \KeywordTok{logit}\NormalTok{(pNS[t]) <-}\StringTok{ }\KeywordTok{logit}\NormalTok{(Mu.pNS) }\OperatorTok{+}\StringTok{ }\NormalTok{beta1.pNS}\OperatorTok{*}\NormalTok{cov1[t] }\OperatorTok{+}\StringTok{ }\NormalTok{beta2.pNS}\OperatorTok{*}\NormalTok{cov2[t] }\OperatorTok{+}\StringTok{ }\NormalTok{epsilon.pNS[t]}
+\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{Tmax)\{}
+  \FunctionTok{logit}\NormalTok{(pNS[t]) }\OtherTok{\textless{}{-}} \FunctionTok{logit}\NormalTok{(Mu.pNS) }\SpecialCharTok{+}\NormalTok{ beta1.pNS}\SpecialCharTok{*}\NormalTok{cov1[t] }\SpecialCharTok{+}\NormalTok{ beta2.pNS}\SpecialCharTok{*}\NormalTok{cov2[t] }\SpecialCharTok{+}\NormalTok{ epsilon.pNS[t]}
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
@@ -828,12 +873,12 @@ for example, be coded as follows:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ControlFlowTok{for}\NormalTok{(a }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{A)\{}
-  \ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{Tmax)\{}
-      \KeywordTok{log}\NormalTok{(X[a,t]) <-}\StringTok{ }\KeywordTok{log}\NormalTok{(Mu.X[a]) }\OperatorTok{+}\StringTok{ }\NormalTok{beta[cov[t]]}
+\ControlFlowTok{for}\NormalTok{(a }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{A)\{}
+  \ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{Tmax)\{}
+      \FunctionTok{log}\NormalTok{(X[a,t]) }\OtherTok{\textless{}{-}} \FunctionTok{log}\NormalTok{(Mu.X[a]) }\SpecialCharTok{+}\NormalTok{ beta[cov[t]]}
 \NormalTok{  \}}
-\NormalTok{  Mu.X }\OperatorTok{~}\StringTok{ }\KeywordTok{dunif}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{10}\NormalTok{)}
-\NormalTok{  beta }\OperatorTok{~}\StringTok{ }\KeywordTok{dunif}\NormalTok{(}\OperatorTok{-}\DecValTok{5}\NormalTok{, }\DecValTok{5}\NormalTok{)}
+\NormalTok{  Mu.X }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dunif}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{10}\NormalTok{)}
+\NormalTok{  beta }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dunif}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{5}\NormalTok{, }\DecValTok{5}\NormalTok{)}
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
@@ -883,10 +928,10 @@ specify the process model for the missing covariates in the code:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{Tmax)\{}
-\NormalTok{  cov1[t] }\OperatorTok{~}\StringTok{ }\KeywordTok{dnorm}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DataTypeTok{sd =} \DecValTok{1}\NormalTok{)}
-\NormalTok{  cov2[t] }\OperatorTok{~}\StringTok{ }\KeywordTok{dnorm}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DataTypeTok{sd =} \DecValTok{1}\NormalTok{)}
-\NormalTok{  cov3[t] }\OperatorTok{~}\StringTok{ }\KeywordTok{dnorm}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DataTypeTok{sd =} \DecValTok{1}\NormalTok{)}
+\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{Tmax)\{}
+\NormalTok{  cov1[t] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dnorm}\NormalTok{(}\DecValTok{0}\NormalTok{, }\AttributeTok{sd =} \DecValTok{1}\NormalTok{)}
+\NormalTok{  cov2[t] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dnorm}\NormalTok{(}\DecValTok{0}\NormalTok{, }\AttributeTok{sd =} \DecValTok{1}\NormalTok{)}
+\NormalTok{  cov3[t] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dnorm}\NormalTok{(}\DecValTok{0}\NormalTok{, }\AttributeTok{sd =} \DecValTok{1}\NormalTok{)}
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
@@ -940,11 +985,11 @@ to the (some might say) more useful standard deviation (\(\sigma\)):
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{Tmax)\{}
-\NormalTok{  epsilon[t] }\OperatorTok{~}\StringTok{ }\KeywordTok{dnorm}\NormalTok{(}\DecValTok{0}\NormalTok{, tau)}
+\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{Tmax)\{}
+\NormalTok{  epsilon[t] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dnorm}\NormalTok{(}\DecValTok{0}\NormalTok{, tau)}
 \NormalTok{\}}
-\NormalTok{tau <-}\StringTok{ }\KeywordTok{pow}\NormalTok{(sigma, }\DecValTok{-2}\NormalTok{)}
-\NormalTok{sigma }\OperatorTok{~}\StringTok{ }\KeywordTok{dunif}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{5}\NormalTok{)}
+\NormalTok{tau }\OtherTok{\textless{}{-}} \FunctionTok{pow}\NormalTok{(sigma, }\SpecialCharTok{{-}}\DecValTok{2}\NormalTok{)}
+\NormalTok{sigma }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dunif}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{5}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -955,10 +1000,10 @@ directly, e.g.:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{Tmax)\{}
-\NormalTok{  epsilon[t] }\OperatorTok{~}\StringTok{ }\KeywordTok{dnorm}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DataTypeTok{sd =}\NormalTok{ sigma)}
+\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{Tmax)\{}
+\NormalTok{  epsilon[t] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dnorm}\NormalTok{(}\DecValTok{0}\NormalTok{, }\AttributeTok{sd =}\NormalTok{ sigma)}
 \NormalTok{\}}
-\NormalTok{sigma }\OperatorTok{~}\StringTok{ }\KeywordTok{dunif}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{5}\NormalTok{)}
+\NormalTok{sigma }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dunif}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{5}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -976,7 +1021,7 @@ vital rates:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{logit}\NormalTok{(pNS[}\DecValTok{1}\OperatorTok{:}\NormalTok{Tmax]) <-}\StringTok{ }\KeywordTok{logit}\NormalTok{(Mu.pNS) }\OperatorTok{+}\StringTok{ }\NormalTok{beta1.pNS}\OperatorTok{*}\NormalTok{cov1[}\DecValTok{1}\OperatorTok{:}\NormalTok{Tmax] }\OperatorTok{+}\StringTok{ }\NormalTok{beta2.pNS}\OperatorTok{*}\NormalTok{cov2[}\DecValTok{1}\OperatorTok{:}\NormalTok{Tmax] }\OperatorTok{+}\StringTok{ }\NormalTok{epsilon.pNS[}\DecValTok{1}\OperatorTok{:}\NormalTok{Tmax]}
+\FunctionTok{logit}\NormalTok{(pNS[}\DecValTok{1}\SpecialCharTok{:}\NormalTok{Tmax]) }\OtherTok{\textless{}{-}} \FunctionTok{logit}\NormalTok{(Mu.pNS) }\SpecialCharTok{+}\NormalTok{ beta1.pNS}\SpecialCharTok{*}\NormalTok{cov1[}\DecValTok{1}\SpecialCharTok{:}\NormalTok{Tmax] }\SpecialCharTok{+}\NormalTok{ beta2.pNS}\SpecialCharTok{*}\NormalTok{cov2[}\DecValTok{1}\SpecialCharTok{:}\NormalTok{Tmax] }\SpecialCharTok{+}\NormalTok{ epsilon.pNS[}\DecValTok{1}\SpecialCharTok{:}\NormalTok{Tmax]}
 \end{Highlighting}
 \end{Shaded}
 
@@ -984,8 +1029,8 @@ instead of
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{Tmax)\{}
-  \KeywordTok{logit}\NormalTok{(pNS[t]) <-}\StringTok{ }\KeywordTok{logit}\NormalTok{(Mu.pNS) }\OperatorTok{+}\StringTok{ }\NormalTok{beta1.pNS}\OperatorTok{*}\NormalTok{cov1[t] }\OperatorTok{+}\StringTok{ }\NormalTok{beta2.pNS}\OperatorTok{*}\NormalTok{cov2[t] }\OperatorTok{+}\StringTok{ }\NormalTok{epsilon.pNS[t]}
+\ControlFlowTok{for}\NormalTok{(t }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{Tmax)\{}
+  \FunctionTok{logit}\NormalTok{(pNS[t]) }\OtherTok{\textless{}{-}} \FunctionTok{logit}\NormalTok{(Mu.pNS) }\SpecialCharTok{+}\NormalTok{ beta1.pNS}\SpecialCharTok{*}\NormalTok{cov1[t] }\SpecialCharTok{+}\NormalTok{ beta2.pNS}\SpecialCharTok{*}\NormalTok{cov2[t] }\SpecialCharTok{+}\NormalTok{ epsilon.pNS[t]}
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
@@ -1023,13 +1068,13 @@ and its implementation within the model code looks quite minimalistic:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{## Likelihood with custom distribution}
-\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{n.CH)\{}
-\NormalTok{  y.sum[i, first.sum[i]}\OperatorTok{:}\NormalTok{last.sum[i]] }\OperatorTok{~}\StringTok{ }\KeywordTok{dCJS_vv_sum}\NormalTok{(}
-       \DataTypeTok{probSurvive =}\NormalTok{ phi.CH[i, first.sum[i]}\OperatorTok{:}\NormalTok{last.sum[i]],}
-       \DataTypeTok{probCapture =}\NormalTok{ p.CH[i, first.sum[i]}\OperatorTok{:}\NormalTok{last.sum[i]],}
-       \DataTypeTok{len =}\NormalTok{ last.sum[i]}\OperatorTok{-}\NormalTok{first.sum[i]}\OperatorTok{+}\DecValTok{1}\NormalTok{,}
-       \DataTypeTok{mult =}\NormalTok{ CHs.count[i])}
+\DocumentationTok{\#\# Likelihood with custom distribution}
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{n.CH)\{}
+\NormalTok{  y.sum[i, first.sum[i]}\SpecialCharTok{:}\NormalTok{last.sum[i]] }\SpecialCharTok{\textasciitilde{}} \FunctionTok{dCJS\_vv\_sum}\NormalTok{(}
+       \AttributeTok{probSurvive =}\NormalTok{ phi.CH[i, first.sum[i]}\SpecialCharTok{:}\NormalTok{last.sum[i]],}
+       \AttributeTok{probCapture =}\NormalTok{ p.CH[i, first.sum[i]}\SpecialCharTok{:}\NormalTok{last.sum[i]],}
+       \AttributeTok{len =}\NormalTok{ last.sum[i]}\SpecialCharTok{{-}}\NormalTok{first.sum[i]}\SpecialCharTok{+}\DecValTok{1}\NormalTok{,}
+       \AttributeTok{mult =}\NormalTok{ CHs.count[i])}
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
@@ -1057,7 +1102,7 @@ BUGS/JAGS and -- for \texttt{SPI-IPM} -- looks like this (code line 49 in \textt
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{SPI.IPM <-}\StringTok{ }\KeywordTok{nimbleMCMC}\NormalTok{(}\DataTypeTok{code =}\NormalTok{ SPI.IPMcode, }\DataTypeTok{constants =}\NormalTok{ SPI.IPMconstants, }\DataTypeTok{data =}\NormalTok{ SPI.IPMdata, }\DataTypeTok{inits =}\NormalTok{ Inits, }\DataTypeTok{monitors =}\NormalTok{ parameters, }\DataTypeTok{niter =}\NormalTok{ ni, }\DataTypeTok{nburnin =}\NormalTok{ nb, }\DataTypeTok{nchains =}\NormalTok{ nc, }\DataTypeTok{thin =}\NormalTok{ nt, }\DataTypeTok{setSeed =}\NormalTok{ mySeed, }\DataTypeTok{samplesAsCodaMCMC =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{SPI.IPM }\OtherTok{\textless{}{-}} \FunctionTok{nimbleMCMC}\NormalTok{(}\AttributeTok{code =}\NormalTok{ SPI.IPMcode, }\AttributeTok{constants =}\NormalTok{ SPI.IPMconstants, }\AttributeTok{data =}\NormalTok{ SPI.IPMdata, }\AttributeTok{inits =}\NormalTok{ Inits, }\AttributeTok{monitors =}\NormalTok{ parameters, }\AttributeTok{niter =}\NormalTok{ ni, }\AttributeTok{nburnin =}\NormalTok{ nb, }\AttributeTok{nchains =}\NormalTok{ nc, }\AttributeTok{thin =}\NormalTok{ nt, }\AttributeTok{setSeed =}\NormalTok{ mySeed, }\AttributeTok{samplesAsCodaMCMC =} \ConstantTok{TRUE}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1140,9 +1185,9 @@ times within a list.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{Inits <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}
-  \KeywordTok{SPI_IPM.inits}\NormalTok{(}\DataTypeTok{IPM.data =}\NormalTok{ SPI.IPMdata, }\DataTypeTok{IPM.constants =}\NormalTok{ SPI.IPMconstants, }\DataTypeTok{sampleRE =} \OtherTok{FALSE}\NormalTok{),}
-  \KeywordTok{SPI_IPM.inits}\NormalTok{(}\DataTypeTok{IPM.data =}\NormalTok{ SPI.IPMdata, }\DataTypeTok{IPM.constants =}\NormalTok{ SPI.IPMconstants, }\DataTypeTok{sampleRE =} \OtherTok{FALSE}\NormalTok{))}
+\NormalTok{Inits }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}
+  \FunctionTok{SPI\_IPM.inits}\NormalTok{(}\AttributeTok{IPM.data =}\NormalTok{ SPI.IPMdata, }\AttributeTok{IPM.constants =}\NormalTok{ SPI.IPMconstants, }\AttributeTok{sampleRE =} \ConstantTok{FALSE}\NormalTok{),}
+  \FunctionTok{SPI\_IPM.inits}\NormalTok{(}\AttributeTok{IPM.data =}\NormalTok{ SPI.IPMdata, }\AttributeTok{IPM.constants =}\NormalTok{ SPI.IPMconstants, }\AttributeTok{sampleRE =} \ConstantTok{FALSE}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1222,29 +1267,47 @@ Running for additional years and comparing to non-included data, PPCs, etc.
 \hypertarget{ResultsViz}{%
 \chapter{Visualizing and interpreting direct IPM outputs}\label{ResultsViz}}
 
+TBA
+
 \hypertarget{population-trajectories}{%
 \section{Population trajectories}\label{population-trajectories}}
+
+TBA
 
 \hypertarget{within-population-variation-in-vital-rates}{%
 \section{Within-population variation in vital rates}\label{within-population-variation-in-vital-rates}}
 
+TBA
+
 \hypertarget{age-class-specific-averages}{%
 \subsection{Age-class-specific averages}\label{age-class-specific-averages}}
+
+TBA
 
 \hypertarget{year-by-year-variation}{%
 \subsection{Year-by-year variation}\label{year-by-year-variation}}
 
+TBA
+
 \hypertarget{between-population-variation-in-vital-rates}{%
 \section{Between-population variation in vital rates}\label{between-population-variation-in-vital-rates}}
+
+TBA
 
 \hypertarget{population-specific-averages}{%
 \subsection{Population-specific averages}\label{population-specific-averages}}
 
+TBA
+
 \hypertarget{year-by-year-variation-1}{%
 \subsection{Year-by-year variation}\label{year-by-year-variation-1}}
 
+TBA
+
 \hypertarget{covariate-effects}{%
 \section{Covariate effects}\label{covariate-effects}}
+
+TBA
 
 \hypertarget{AddAnalyses}{%
 \chapter{Follow-up Analyses}\label{AddAnalyses}}
@@ -1252,32 +1315,48 @@ Running for additional years and comparing to non-included data, PPCs, etc.
 \hypertarget{testing-for-time-trends}{%
 \section{Testing for time-trends}\label{testing-for-time-trends}}
 
+TBA
+
 \hypertarget{testing-for-density-dependence}{%
 \section{Testing for density-dependence}\label{testing-for-density-dependence}}
+
+TBA
 
 \hypertarget{investigating-cross-population-covariation}{%
 \section{Investigating cross-population covariation}\label{investigating-cross-population-covariation}}
 
+TBA
+
 \hypertarget{quantifying-demographic-contributions-to-short-term-population-dynamics}{%
 \section{Quantifying demographic contributions to short term population dynamics}\label{quantifying-demographic-contributions-to-short-term-population-dynamics}}
+
+TBA
 
 \hypertarget{year-by-year-variation-in-population-growth-rate-random-design-ltre}{%
 \subsection{Year-by-year variation in population growth rate (random design LTRE)}\label{year-by-year-variation-in-population-growth-rate-random-design-ltre}}
 
+TBA
+
 \hypertarget{year-to-year-differences-in-population-growth-rate-fixed-design-ltre}{%
 \subsection{Year-to-year differences in population growth rate (fixed design LTRE)}\label{year-to-year-differences-in-population-growth-rate-fixed-design-ltre}}
+
+TBA
 
 \hypertarget{quantifying-demographic-contributions-to-long-term-population-trends}{%
 \section{Quantifying demographic contributions to long-term population trends}\label{quantifying-demographic-contributions-to-long-term-population-trends}}
 
+TBA
+
 \hypertarget{differences-in-population-trajectories-between-time-periods-period-design-ltre}{%
 \subsection{Differences in population trajectories between time periods (period design LTRE)}\label{differences-in-population-trajectories-between-time-periods-period-design-ltre}}
 
-\hypertarget{differences-in-population-trajectories-between-locations-period-design-ltre-with-time-by-space-substitution}{%
-\subsection{Differences in population trajectories between locations (period design LTRE with time-by-space substitution)}\label{differences-in-population-trajectories-between-locations-period-design-ltre-with-time-by-space-substitution}}
+TBA
 
 \hypertarget{ExtOutlook}{%
 \chapter{Useful extensions and outlook}\label{ExtOutlook}}
+
+This last chapter is dedicated to possible future applications of \texttt{SPI-IPM}. For now, it is simply a collection of section titles alluding to potentially useful and interesting extensions of the model focusing on accommodating other species and additional data sources, as well as building further on the potential of multi-population studies.
+The collection of section titles may serve as inspiration, but ideally, future users of \texttt{SPI-IPM} will contribute and describe their model extensions in this chapter.
 
 \hypertarget{adapting-the-population-model-for-your-speciespopulation}{%
 \section{Adapting the population model for your species/population}\label{adapting-the-population-model-for-your-speciespopulation}}

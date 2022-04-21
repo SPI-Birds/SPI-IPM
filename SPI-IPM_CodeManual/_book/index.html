@@ -14,10 +14,10 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="About this manual | SPI-IPM Code Manual">
 <meta name="twitter:description" content="TBA.">
-<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.11/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
-<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -59,25 +59,34 @@
   </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><!--bookdown:title:end--><!--bookdown:title:start--><div id="about-this-manual" class="section level1 unnumbered">
 <h1>About this manual<a class="anchor" aria-label="anchor" href="#about-this-manual"><i class="fas fa-link"></i></a>
 </h1>
-<p>Briefly on the need for/value of standardized data and analyses.</p>
-<p>Why IPMs are popular and what they are suitable for <span class="citation">(Kéry and Schaub <a href="references.html#ref-kery2011" role="doc-biblioref">2011</a>; Plard et al. <a href="references.html#ref-plard2019" role="doc-biblioref">2019</a>)</span>.</p>
-<p>Overview over workflow, code repository &amp; contents of manual (Figure <a href="index.html#fig:WorkflowDiag">0.1</a>).</p>
+<p>This manual is intended as a user guide for the SPI-IPM repository (<a href="https://github.com/SPI-Birds/SPI-IPM" class="uri">https://github.com/SPI-Birds/SPI-IPM</a>). The repository contains an entire toolbox of code to implement, run, and analyse integrated population models (IPMs) using data hosted by the SPI-Birds Network and Database (<a href="https://spibirds.org" class="uri">https://spibirds.org</a>).While code is designed to work directly with the SPI-Birds standard data format and the population model is tailored to hole-nesting bird species, both code and workflow can serve as a basis for extensions and applications to a wide range of other species and data types.</p>
+<p>The increasing adoption of standard formats for ecological data opens new possibilities for (comparative) analyses at much larger spatial scales. Accessible, transparent, and reproducible tools and workflows are central to implementing such analyses. The idea behind SPI-IPM is to provide such tools and workflows for integrated analyses of population dynamics using Bayesian IPMs.</p>
+<p>IPMs have rapidly gained popularity over the past decade due to a range of advantages including efficient use of available data, thorough inclusion and propagation of uncertainty, and estimation of parameters for which no explicit data can be collected. To learn more about IPMs and their applications in general, see <span class="citation"><a href="references.html#ref-plard2019" role="doc-biblioref">Plard et al.</a> (<a href="references.html#ref-plard2019" role="doc-biblioref">2019</a>)</span> and <span class="citation"><a href="references.html#ref-schaub2021" role="doc-biblioref">Schaub and Kery</a> (<a href="references.html#ref-schaub2021" role="doc-biblioref">2021</a>)</span>. The use of IPMs with SPI-Birds data for identifying and quantifying the drivers of population dynamics (of pied flycatchers) is illustrated in the paper that gave rise to the SPI-IPM repository.</p>
+<p>This manual is organised into eight chapters that cover the entire workflow presented in Figure <a href="index.html#fig:WorkflowDiag">0.1</a>:</p>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:WorkflowDiag"></span>
 <img src="Figures/SPI-IPM_Workflow.png" alt="Schematic representation of the SPI-IPM workflow." width="100%"><p class="caption">
 Figure 0.1: Schematic representation of the SPI-IPM workflow.
 </p>
 </div>
-<p>In no way complete: great if user’s analyses/adaptations become part.</p>
-<p>How to cite.</p>
+<p>Chapter 1 describes how data obtained in the <a href="https://github.com/SPI-Birds/documentation/tree/master/standard_protocol">SPI-Birds standard format</a> is reformatted for use in an IPM. Chapters 2 &amp; 3 explain the structure and assumptions of the IPM, and chapter 4 details its implementation using the R package <code>nimble</code> <span class="citation">(<a href="references.html#ref-devalpine2017" role="doc-biblioref">de Valpine et al. 2017</a>)</span>. Chapter 5 introduces ways for assessing model performance and fit and chapter 6 contains notes about visualizing results in different ways. A range of useful follow-up analyses (incl. tests for time trends and density dependence, perturbation analyses, etc.) are described in Chapter 7. The final chapter (8) is more of a teaser trailer than anything else, presenting a few ideas for future extensions and additional applications.</p>
+<p>Relevant code for each chapter is deposited in subfolders in the <a href="https://github.com/SPI-Birds/SPI-IPM/tree/main/SPI-IPM_Code">code repository</a> that start with the same number as the manual chapter. The repository README contains more details about where to find what.</p>
+<p>At present, this manual is incomplete in two ways. First, there are chapters for which content is still missing (marked with “TBA”). This content will be added throughout 2022. Second, and more importantly: neither the code repository nor the manual are exhaustive. They are meant to help others use and adapt SPI-IPM for their own studies and will hopefully keep growing as more people add their own extensions and new applications to the repository.</p>
+<div id="how-to-cite" class="section level3 unnumbered">
+<h3>How to cite<a class="anchor" aria-label="anchor" href="#how-to-cite"><i class="fas fa-link"></i></a>
+</h3>
+<p>TBA</p>
 
+</div>
 </div>
   <div class="chapter-nav">
 <div class="empty"></div>
 <div class="next"><a href="DataPrep.html"><span class="header-section-number">1</span> Preparing SPI-Birds data for Bayesian analysis</a></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
-      <ul class="nav navbar-nav"><li><a class="nav-link" href="#about-this-manual">About this manual</a></li></ul>
+      <ul class="nav navbar-nav"><li>
+<a class="nav-link" href="#about-this-manual">About this manual</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#how-to-cite">How to cite</a></li></ul>
+</li></ul>
 
       <div class="book-extra">
         <ul class="list-unstyled">
@@ -93,7 +102,7 @@ Figure 0.1: Schematic representation of the SPI-IPM workflow.
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>SPI-IPM Code Manual</strong>" was written by Chloé R. Nater. It was last built on 2021-11-29.</p>
+    <p>"<strong>SPI-IPM Code Manual</strong>" was written by Chloé R. Nater. It was last built on 2022-04-21.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

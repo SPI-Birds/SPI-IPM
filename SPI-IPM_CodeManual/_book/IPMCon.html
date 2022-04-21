@@ -14,10 +14,10 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Chapter 2 IPM Construction | SPI-IPM Code Manual">
 <meta name="twitter:description" content="2.1 Open population model with 2 age classes  2.1.1 Model description Population dynamics are represented using a female-based age-structured open population model with a pre-breeding census in...">
-<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.11/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
-<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -56,15 +56,15 @@
         </div>
       </nav>
 </div>
-  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="IPMCon" class="section level1">
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="IPMCon" class="section level1" number="2">
 <h1>
 <span class="header-section-number">2</span> IPM Construction<a class="anchor" aria-label="anchor" href="#IPMCon"><i class="fas fa-link"></i></a>
 </h1>
-<div id="open-population-model-with-2-age-classes" class="section level2">
+<div id="open-population-model-with-2-age-classes" class="section level2" number="2.1">
 <h2>
 <span class="header-section-number">2.1</span> Open population model with 2 age classes<a class="anchor" aria-label="anchor" href="#open-population-model-with-2-age-classes"><i class="fas fa-link"></i></a>
 </h2>
-<div id="model-description" class="section level3">
+<div id="model-description" class="section level3" number="2.1.1">
 <h3>
 <span class="header-section-number">2.1.1</span> Model description<a class="anchor" aria-label="anchor" href="#model-description"><i class="fas fa-link"></i></a>
 </h3>
@@ -76,7 +76,7 @@ The motivation underlying this distinction is that reproductive output often
 differs for these two age classes in passerine birds.
 The dynamics of the female segment of the population over the time-interval from
 census in year <span class="math inline">\(t\)</span> to census in year <span class="math inline">\(t+1\)</span> can be described with classic matrix
-notation <span class="citation">(Caswell <a href="references.html#ref-Caswell2001" role="doc-biblioref">2001</a>)</span> as:</p>
+notation <span class="citation">(<a href="references.html#ref-Caswell2001" role="doc-biblioref">Caswell 2001</a>)</span> as:</p>
 <p><br><span class="math display">\[N_{tot,t+1} = \begin{bmatrix} N_{Y,t+1} \\ N_{A,t+1} \end{bmatrix} =
   \begin{bmatrix}
 0.5F_{Y,t}sJ_t &amp; 0.5F_{A,t}sJ_t \\
@@ -111,13 +111,13 @@ population (probability = <span class="math inline">\(sJ_t\)</span>) contribute 
 remain within the population (probability = <span class="math inline">\(sA_t\)</span>) become part of next year’s
 adult age class (<span class="math inline">\(N_{A,t+1}\)</span>).</p>
 </div>
-<div id="code-implementation-including-demographic-stochasticity" class="section level3">
+<div id="code-implementation-including-demographic-stochasticity" class="section level3" number="2.1.2">
 <h3>
 <span class="header-section-number">2.1.2</span> Code implementation including demographic stochasticity<a class="anchor" aria-label="anchor" href="#code-implementation-including-demographic-stochasticity"><i class="fas fa-link"></i></a>
 </h3>
 <p>Population process models within IPMs are typically implemented as stochastic
 models that account for randomness in the outcomes of demographic processes at
-the individual level <span class="citation">(“demographic stochasticity”, Caswell <a href="references.html#ref-Caswell2001" role="doc-biblioref">2001</a>; Kéry and Schaub <a href="references.html#ref-kery2011" role="doc-biblioref">2011</a>)</span>.
+the individual level <span class="citation">(<span>“demographic stochasticity,”</span> <a href="references.html#ref-Caswell2001" role="doc-biblioref">Caswell 2001</a>; <a href="references.html#ref-kery2011" role="doc-biblioref">Kéry and Schaub 2011</a>)</span>.
 The model described here is no different, meaning that the numbers of breeders,
 fledglings, and survivors are treated as binomial and Poisson random variables.</p>
 <p>Reproduction is modelled via two sets of random variables: a binomial random
@@ -160,7 +160,7 @@ next year – are implemented as binomial random variables (<a href="https://git
 these are detailed in <a href="###%20Immigrant%20count%20data%20likelihood">2.2.5 Immigrant count data likelihood</a>.</p>
 </div>
 </div>
-<div id="data-likelihoods" class="section level2">
+<div id="data-likelihoods" class="section level2" number="2.2">
 <h2>
 <span class="header-section-number">2.2</span> Data likelihoods<a class="anchor" aria-label="anchor" href="#data-likelihoods"><i class="fas fa-link"></i></a>
 </h2>
@@ -174,7 +174,7 @@ and immigrant count data (one likelihood).
 The likelihoods contained in each data module are described in detail in the
 following sub-chapters. The underlying data sets are introduced in
 <a href="DataPrep.html#DataPrep">Chapter 1</a> of the manual.</p>
-<div id="nest-count-data-likelihood" class="section level3">
+<div id="nest-count-data-likelihood" class="section level3" number="2.2.1">
 <h3>
 <span class="header-section-number">2.2.1</span> Nest count data likelihood<a class="anchor" aria-label="anchor" href="#nest-count-data-likelihood"><i class="fas fa-link"></i></a>
 </h3>
@@ -206,7 +206,7 @@ extending the model to more than two age classes):</p>
   <span class="va">NestCount</span><span class="op">[</span><span class="va">t</span><span class="op">]</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html">dpois</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">B</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">A</span>,<span class="va">t</span><span class="op">]</span><span class="op">)</span><span class="op">*</span><span class="va">NS_Data</span><span class="op">[</span><span class="va">t</span><span class="op">]</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
 </div>
-<div id="clutch-size-data-likelihoods" class="section level3">
+<div id="clutch-size-data-likelihoods" class="section level3" number="2.2.2">
 <h3>
 <span class="header-section-number">2.2.2</span> Clutch size data likelihoods<a class="anchor" aria-label="anchor" href="#clutch-size-data-likelihoods"><i class="fas fa-link"></i></a>
 </h3>
@@ -247,7 +247,7 @@ EggNoTot_t \sim Poisson(sum(B_{Y:A,t} \times CS_{Y:A,t}) \times p_t^{EggNo})
 
 <span class="op">}</span></code></pre></div>
 </div>
-<div id="fledgling-count-data-likelihoods" class="section level3">
+<div id="fledgling-count-data-likelihoods" class="section level3" number="2.2.3">
 <h3>
 <span class="header-section-number">2.2.3</span> Fledgling count data likelihoods<a class="anchor" aria-label="anchor" href="#fledgling-count-data-likelihoods"><i class="fas fa-link"></i></a>
 </h3>
@@ -298,18 +298,18 @@ missing records of fledgling numbers.</p>
     <span class="va">FledgedTot</span><span class="op">[</span><span class="va">t</span><span class="op">]</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html">dpois</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">Fledged.ex</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">A</span>,<span class="va">t</span><span class="op">]</span><span class="op">)</span><span class="op">*</span><span class="va">FledgedSP</span><span class="op">[</span><span class="va">t</span><span class="op">]</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
 </div>
-<div id="mark-recapture-data-likelihood" class="section level3">
+<div id="mark-recapture-data-likelihood" class="section level3" number="2.2.4">
 <h3>
 <span class="header-section-number">2.2.4</span> Mark-recapture data likelihood<a class="anchor" aria-label="anchor" href="#mark-recapture-data-likelihood"><i class="fas fa-link"></i></a>
 </h3>
-<p>In the SPI-IPM, capture histories of marked birds are analysed using an age-specific Cormack-Jolly-Seber (CJS) model <span class="citation">(Cormack <a href="references.html#ref-cormack1964" role="doc-biblioref">1964</a>; Jolly <a href="references.html#ref-jolly1965" role="doc-biblioref">1965</a>; Seber <a href="references.html#ref-seber1965" role="doc-biblioref">1965</a>)</span>, which allows estimation of parameters associated with both annual survival and the (re-)capturing process.<br>
+<p>In the SPI-IPM, capture histories of marked birds are analysed using an age-specific Cormack-Jolly-Seber (CJS) model <span class="citation">(<a href="references.html#ref-cormack1964" role="doc-biblioref">Cormack 1964</a>; <a href="references.html#ref-jolly1965" role="doc-biblioref">Jolly 1965</a>; <a href="references.html#ref-seber1965" role="doc-biblioref">Seber 1965</a>)</span>, which allows estimation of parameters associated with both annual survival and the (re-)capturing process.<br>
 The survival parameters <span class="math inline">\(sJ_t\)</span> and <span class="math inline">\(sA_t\)</span> describe the probability of surviving from one breeding season to the next for fledglings/juveniles and adult females, respectively. Since field-based sexing fledglings is not possible in the hatch year, first-year survival in the CJS likelihood was set to <span class="math inline">\(0.5sJ_t\)</span>, representing the probability that a fledgling is female and survives (recaptures of adult males were removed from the capture histories).<br>
 The time- and age-dependent recapture parameters <span class="math inline">\(p_{Age,t}^{Recap}\)</span> describe the probability that an age class <span class="math inline">\(a\)</span> individual is recaptured and identified during the breeding season of year <span class="math inline">\(t\)</span> given that it survived the time interval <span class="math inline">\(t-1\)</span> to <span class="math inline">\(t\)</span>. For many of the bird populations included in SPI-Birds, (re-)captures of birds are carried out at the nestboxes during the breeding season only. Consequently, two conditions need to be met for a (re-)capture besides the individual being alive: 1) the individual breeds in a nestbox (as non-breeders and birds breeding in natural cavities are not captured) and 2) the individual is actually captured and marked/identified while breeding in a nestbox. The recapture probability is therefore the product of the probability of breeding in a nestbox (<span class="math inline">\(pB_{Age,t}\)</span>) and the probability of capture and identification given breeding in a nestbox (<span class="math inline">\(p_t^{CapB}\)</span>):
 <span class="math display">\[\begin{equation}
   p_{Age,t}^{Recap}=pB_{Age,t}\times p_t^{CapB}
 \end{equation}\]</span>
 The parameters <span class="math inline">\(pB_{Age,t}\)</span> and <span class="math inline">\(p_t^{CapB}\)</span> are confounded, and auxiliary data on one of them is required to separately estimate them. Here, raw data on the annual proportions of surveyed nests for which the identity of the breeding female was recorded (as a result of ringing or recapture) is used to approximated <span class="math inline">\(p_t^{CapB}\)</span>, allowing the CJS model to estimate age- and time-specific breeding probabilities (<span class="math inline">\(pB_{Age,t}\)</span>).<br>
-CJS models in Bayesian frameworks have traditionally been implemented either as latent states models with Bernouilli likelihoods or as multinomial likelihoods for data re-formatted as “m-arrays” <span class="citation">(Gimenez et al. <a href="references.html#ref-gimenez2007" role="doc-biblioref">2007</a>; Kéry and Schaub <a href="references.html#ref-kery2011" role="doc-biblioref">2011</a>)</span>. The former typically results in long runtimes and high computational costs, while the improved efficiency of the latter is tied to an implementation that suffers from being neither particularly intuitive nor user-friendly. To avoid these pitfalls, the CJS model in the SPI-IPM is implemented using a much more efficient marginalized likelihood (that integrates over all latent states) that can be applied to unique (not individual) capture histories only <span class="citation">(following Turek, de Valpine, and Paciorek <a href="references.html#ref-turek2016" role="doc-biblioref">2016</a>)</span>:</p>
+CJS models in Bayesian frameworks have traditionally been implemented either as latent states models with Bernouilli likelihoods or as multinomial likelihoods for data re-formatted as “m-arrays” <span class="citation">(<a href="references.html#ref-gimenez2007" role="doc-biblioref">Gimenez et al. 2007</a>; <a href="references.html#ref-kery2011" role="doc-biblioref">Kéry and Schaub 2011</a>)</span>. The former typically results in long runtimes and high computational costs, while the improved efficiency of the latter is tied to an implementation that suffers from being neither particularly intuitive nor user-friendly. To avoid these pitfalls, the CJS model in the SPI-IPM is implemented using a much more efficient marginalized likelihood (that integrates over all latent states) that can be applied to unique (not individual) capture histories only <span class="citation">(following <a href="references.html#ref-turek2016" role="doc-biblioref">Turek, de Valpine, and Paciorek 2016</a>)</span>:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## Likelihood with custom distribution</span>
 <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">n.CH</span><span class="op">)</span><span class="op">{</span>
@@ -322,7 +322,7 @@ CJS models in Bayesian frameworks have traditionally been implemented either as 
 <span class="op">}</span></code></pre></div>
 <p>In practice, this involves the use of a custom distribution <code>dCJS_vv_sum</code>, and more information on the likelihood and its implementation using NIMBLE is provided in <a href="##%20Efficient%20implementation%20using%20NIMBLE">Chapter 4.1 (Efficient implementation using NIMBLE)</a>.</p>
 </div>
-<div id="immigrant-count-data-likelihood" class="section level3">
+<div id="immigrant-count-data-likelihood" class="section level3" number="2.2.5">
 <h3>
 <span class="header-section-number">2.2.5</span> Immigrant count data likelihood<a class="anchor" aria-label="anchor" href="#immigrant-count-data-likelihood"><i class="fas fa-link"></i></a>
 </h3>
@@ -360,7 +360,7 @@ By assuming equal breeding probabilities for locally recruited and newly immigra
 <p>Note that various immigrant numbers are set to 0 at <span class="math inline">\(t=1\)</span> since there is no way of distinguishing between locally-born and newly immigrated birds in the first year of study.</p>
 </div>
 </div>
-<div id="priors-and-constraints" class="section level2">
+<div id="priors-and-constraints" class="section level2" number="2.3">
 <h2>
 <span class="header-section-number">2.3</span> Priors and constraints<a class="anchor" aria-label="anchor" href="#priors-and-constraints"><i class="fas fa-link"></i></a>
 </h2>
@@ -482,7 +482,7 @@ user-specified maximum possible number of immigrant females in any age class:</p
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>SPI-IPM Code Manual</strong>" was written by Chloé R. Nater. It was last built on 2021-11-29.</p>
+    <p>"<strong>SPI-IPM Code Manual</strong>" was written by Chloé R. Nater. It was last built on 2022-04-21.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

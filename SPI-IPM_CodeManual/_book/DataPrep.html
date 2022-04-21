@@ -6,18 +6,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Chapter 1 Preparing SPI-Birds data for Bayesian analysis | SPI-IPM Code Manual</title>
 <meta name="author" content="Chloé R. Nater">
-<meta name="description" content="Quick recap of SPI-Birds standard format and overview over data types used in IPM (+ how they relate, incl. diagram).  1.1 Nest count data   1.2 Clutch size data  1.2.1 Nest level   1.2.2...">
+<meta name="description" content="TBA  1.1 Nest count data TBA  1.2 Clutch size data TBA  1.2.1 Nest level TBA  1.2.2 Population level TBA   1.3 Fledgling count data TBA  1.3.1 Nest level TBA  1.3.2 Population level TBA   1.4...">
 <meta name="generator" content="bookdown 0.24 with bs4_book()">
 <meta property="og:title" content="Chapter 1 Preparing SPI-Birds data for Bayesian analysis | SPI-IPM Code Manual">
 <meta property="og:type" content="book">
-<meta property="og:description" content="Quick recap of SPI-Birds standard format and overview over data types used in IPM (+ how they relate, incl. diagram).  1.1 Nest count data   1.2 Clutch size data  1.2.1 Nest level   1.2.2...">
+<meta property="og:description" content="TBA  1.1 Nest count data TBA  1.2 Clutch size data TBA  1.2.1 Nest level TBA  1.2.2 Population level TBA   1.3 Fledgling count data TBA  1.3.1 Nest level TBA  1.3.2 Population level TBA   1.4...">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Chapter 1 Preparing SPI-Birds data for Bayesian analysis | SPI-IPM Code Manual">
-<meta name="twitter:description" content="Quick recap of SPI-Birds standard format and overview over data types used in IPM (+ how they relate, incl. diagram).  1.1 Nest count data   1.2 Clutch size data  1.2.1 Nest level   1.2.2...">
-<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="twitter:description" content="TBA  1.1 Nest count data TBA  1.2 Clutch size data TBA  1.2.1 Nest level TBA  1.2.2 Population level TBA   1.3 Fledgling count data TBA  1.3.1 Nest level TBA  1.3.2 Population level TBA   1.4...">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.11/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
-<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -56,85 +56,101 @@
         </div>
       </nav>
 </div>
-  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="DataPrep" class="section level1">
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="DataPrep" class="section level1" number="1">
 <h1>
 <span class="header-section-number">1</span> Preparing SPI-Birds data for Bayesian analysis<a class="anchor" aria-label="anchor" href="#DataPrep"><i class="fas fa-link"></i></a>
 </h1>
-<p>Quick recap of SPI-Birds standard format and overview over data types used in IPM (+ how they relate, incl. diagram).</p>
-<div id="nest-count-data" class="section level2">
+<p>TBA
+<!-- Quick recap of SPI-Birds standard format and overview over data types used in IPM (+ how they relate, incl. diagram). --></p>
+<div id="nest-count-data" class="section level2" number="1.1">
 <h2>
 <span class="header-section-number">1.1</span> Nest count data<a class="anchor" aria-label="anchor" href="#nest-count-data"><i class="fas fa-link"></i></a>
 </h2>
+<p>TBA</p>
 </div>
-<div id="clutch-size-data" class="section level2">
+<div id="clutch-size-data" class="section level2" number="1.2">
 <h2>
 <span class="header-section-number">1.2</span> Clutch size data<a class="anchor" aria-label="anchor" href="#clutch-size-data"><i class="fas fa-link"></i></a>
 </h2>
-<div id="nest-level" class="section level3">
+<p>TBA</p>
+<div id="nest-level" class="section level3" number="1.2.1">
 <h3>
 <span class="header-section-number">1.2.1</span> Nest level<a class="anchor" aria-label="anchor" href="#nest-level"><i class="fas fa-link"></i></a>
 </h3>
+<p>TBA</p>
 </div>
-<div id="population-level" class="section level3">
+<div id="population-level" class="section level3" number="1.2.2">
 <h3>
 <span class="header-section-number">1.2.2</span> Population level<a class="anchor" aria-label="anchor" href="#population-level"><i class="fas fa-link"></i></a>
 </h3>
+<p>TBA</p>
 </div>
 </div>
-<div id="fledgling-count-data" class="section level2">
+<div id="fledgling-count-data" class="section level2" number="1.3">
 <h2>
 <span class="header-section-number">1.3</span> Fledgling count data<a class="anchor" aria-label="anchor" href="#fledgling-count-data"><i class="fas fa-link"></i></a>
 </h2>
-<div id="nest-level-1" class="section level3">
+<p>TBA</p>
+<div id="nest-level-1" class="section level3" number="1.3.1">
 <h3>
 <span class="header-section-number">1.3.1</span> Nest level<a class="anchor" aria-label="anchor" href="#nest-level-1"><i class="fas fa-link"></i></a>
 </h3>
+<p>TBA</p>
 </div>
-<div id="population-level-1" class="section level3">
+<div id="population-level-1" class="section level3" number="1.3.2">
 <h3>
 <span class="header-section-number">1.3.2</span> Population level<a class="anchor" aria-label="anchor" href="#population-level-1"><i class="fas fa-link"></i></a>
 </h3>
+<p>TBA</p>
 </div>
 </div>
-<div id="mark-recapture-data" class="section level2">
+<div id="mark-recapture-data" class="section level2" number="1.4">
 <h2>
 <span class="header-section-number">1.4</span> Mark-recapture data<a class="anchor" aria-label="anchor" href="#mark-recapture-data"><i class="fas fa-link"></i></a>
 </h2>
-<div id="individual-capture-histories" class="section level3">
+<p>TBA</p>
+<div id="individual-capture-histories" class="section level3" number="1.4.1">
 <h3>
 <span class="header-section-number">1.4.1</span> Individual capture histories<a class="anchor" aria-label="anchor" href="#individual-capture-histories"><i class="fas fa-link"></i></a>
 </h3>
+<p>TBA</p>
 </div>
-<div id="m-array" class="section level3">
+<div id="m-array" class="section level3" number="1.4.2">
 <h3>
 <span class="header-section-number">1.4.2</span> M-array<a class="anchor" aria-label="anchor" href="#m-array"><i class="fas fa-link"></i></a>
 </h3>
+<p>TBA</p>
 </div>
 </div>
-<div id="immigrant-count-data" class="section level2">
+<div id="immigrant-count-data" class="section level2" number="1.5">
 <h2>
 <span class="header-section-number">1.5</span> Immigrant count data<a class="anchor" aria-label="anchor" href="#immigrant-count-data"><i class="fas fa-link"></i></a>
 </h2>
+<p>TBA</p>
 </div>
-<div id="auxiliary-data-on-the-sampling-process" class="section level2">
+<div id="auxiliary-data-on-the-sampling-process" class="section level2" number="1.6">
 <h2>
 <span class="header-section-number">1.6</span> Auxiliary data on the sampling process<a class="anchor" aria-label="anchor" href="#auxiliary-data-on-the-sampling-process"><i class="fas fa-link"></i></a>
 </h2>
-<div id="nest-survey-sampling-effort" class="section level3">
+<p>TBA</p>
+<div id="nest-survey-sampling-effort" class="section level3" number="1.6.1">
 <h3>
 <span class="header-section-number">1.6.1</span> Nest survey sampling effort<a class="anchor" aria-label="anchor" href="#nest-survey-sampling-effort"><i class="fas fa-link"></i></a>
 </h3>
+<p>TBA</p>
 </div>
-<div id="capture-probability-proxies" class="section level3">
+<div id="capture-probability-proxies" class="section level3" number="1.6.2">
 <h3>
 <span class="header-section-number">1.6.2</span> Capture probability proxies<a class="anchor" aria-label="anchor" href="#capture-probability-proxies"><i class="fas fa-link"></i></a>
 </h3>
+<p>TBA</p>
 </div>
 </div>
-<div id="organisation-for-analysis-with-nimble" class="section level2">
+<div id="organisation-for-analysis-with-nimble" class="section level2" number="1.7">
 <h2>
 <span class="header-section-number">1.7</span> Organisation for analysis with NIMBLE<a class="anchor" aria-label="anchor" href="#organisation-for-analysis-with-nimble"><i class="fas fa-link"></i></a>
 </h2>
+<p>TBA</p>
 
 </div>
 </div>
@@ -188,7 +204,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>SPI-IPM Code Manual</strong>" was written by Chloé R. Nater. It was last built on 2021-11-29.</p>
+    <p>"<strong>SPI-IPM Code Manual</strong>" was written by Chloé R. Nater. It was last built on 2022-04-21.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

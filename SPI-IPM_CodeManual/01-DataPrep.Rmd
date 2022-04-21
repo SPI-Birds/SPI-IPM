@@ -1,40 +1,50 @@
 # Preparing SPI-Birds data for Bayesian analysis {#DataPrep}
 
-Quick recap of SPI-Birds standard format and overview over data types used in IPM (+ how they relate, incl. diagram).
+TBA
+<!-- Quick recap of SPI-Birds standard format and overview over data types used in IPM (+ how they relate, incl. diagram). -->
 
 
 ##	Nest count data
-
+TBA
 
 ##	Clutch size data
+TBA
 
 ###	Nest level
+TBA
 
 ###	Population level
-
+TBA
 
 ##	Fledgling count data
+TBA
 
 ###	Nest level
+TBA
 
 ###	Population level
-
+TBA
 
 ##	Mark-recapture data
+TBA
 
 ###	Individual capture histories
+TBA
 
 ###	M-array
-
+TBA
 
 ##	Immigrant count data
-
+TBA
 
 ##	Auxiliary data on the sampling process
+TBA
 
 ###	Nest survey sampling effort
+TBA
 
 ###	Capture probability proxies
-
+TBA
 
 ## Organisation for analysis with NIMBLE
+TBA

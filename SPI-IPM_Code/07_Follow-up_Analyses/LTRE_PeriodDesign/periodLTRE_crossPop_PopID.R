@@ -2,53 +2,57 @@
 #### DATA ASSEMBLY ####
 #######################
 
-message(green$underline$bold(paste0('Period design LTRE analyses for ', PopID)))
+message(green$underline$bold(paste0('Cross-population period design LTRE analyses for ', PopID)))
 
-## Extract study years for focal population
-StudyYears <- eval(parse(text = paste0('StudyYearsList$', PopID)))
+## Set study years to period covered by all populations
+StudyYears <- CompPeriod
 
-## Load MCMC samples
-load(paste0(DataPath,'/SPI-IPM_', PopID, '.RData'))
-#str(PFC.IPM) # = posterior samples in coda format
-
-## Transform samples into matrix (all chains combined)
-out.mat <- as.matrix(PFC.IPM)
-#str(out.mat) # = posterior samples in matrix format
+## Load MCMC samples (matrix format) for all populations
+PopID.MCMC <- list(
+  DIN = as.matrix(readRDS(paste0(DataPath,'SPI-IPM_DIN.rds'))),
+  EDM = as.matrix(readRDS(paste0(DataPath,'SPI-IPM_EDM.rds'))),
+  KAT = as.matrix(readRDS(paste0(DataPath,'SPI-IPM_KAT.rds'))),
+  NAG = as.matrix(readRDS(paste0(DataPath,'SPI-IPM_NAG.rds'))),
+  NWA = as.matrix(readRDS(paste0(DataPath,'SPI-IPM_NWA.rds'))),
+  OKE = as.matrix(readRDS(paste0(DataPath,'SPI-IPM_OKE.rds'))),
+  TEI = as.matrix(readRDS(paste0(DataPath,'SPI-IPM_TEI.rds')))
+)
 
 ## Set sample and year number
-nosamples <- dim(out.mat)[1]
+nosamples <- dim(PopID.MCMC[[1]])[1]
 noyears <- length(StudyYears)
-
-## Set time-indexes for equal-length periods
-Periods <- eval(parse(text = paste0('PeriodsList$', PopID))) - min(StudyYears) + 1
-
-Period1 <- Periods[1,]
-Period2 <- Periods[2,]
 
 ## Identify unusable samples - Part 1
 #  NOTE: This includes samples that predicted population extinction (Ntot = 0) at some point
-#        as well as - optionally - samples with period-mean immigration rates of 0
-NAsamples1 <- which(out.mat[,paste0('Ntot[', 1:length(StudyYears), ']')] == 0, arr.ind = T)[,1]
+#        (in the example case here, there were none)
+NAsamples1 <- list()
+for(p in 1:length(PopID_List)){
+  NAsamples1[[p]] <- which(PopID.MCMC[[p]][,paste0('Ntot[', YearIndexList[[p]], ']')] == 0, arr.ind = T)[,1]
+}
 
 ## Identify unusable samples - Part 2
 
 # Assemble time-specific immigration rates
-imm_Y <- imm_A <- matrix(NA, nrow = nosamples, ncol = noyears)
-for(t in 1:(noyears-1)){
-  imm_Y[,t+1] <- out.mat[, paste0('Imm[1, ', t+1, ']')]/out.mat[, paste0('Ntot[', t, ']')]
-  imm_A[,t+1] <- out.mat[, paste0('Imm[2, ', t+1, ']')]/out.mat[, paste0('Ntot[', t, ']')]
+imm_Y <- imm_A <- array(NA, dim = c(length(PopID_List), nosamples, noyears))
+for(p in 1:length(PopID_List)){
+  for(t in 1:(noyears-1)){
+    imm_Y[p,,t+1] <- PopID.MCMC[[p]][, paste0('Imm[1, ', YearIndexList[[p]][t+1], ']')]/PopID.MCMC[[p]][, paste0('Ntot[', YearIndexList[[p]][t], ']')]
+    imm_A[p,,t+1] <- PopID.MCMC[[p]][, paste0('Imm[2, ', YearIndexList[[p]][t+1], ']')]/PopID.MCMC[[p]][, paste0('Ntot[', YearIndexList[[p]][t], ']')]
+  }
 }
 
+
 # Identify sample indeces with imm = 0 for the entire time periods
-imm_Y_Mean0_P1 <- which(rowMeans(imm_Y[,Period1+1]) == 0)
-imm_A_Mean0_P1 <- which(rowMeans(imm_A[,Period1+1]) == 0)
-imm_Y_Mean0_P2 <- which(rowMeans(imm_Y[,Period2+1]) == 0)
-imm_A_Mean0_P2 <- which(rowMeans(imm_A[,Period2+1]) == 0)
+imm_Y_Mean0 <- imm_A_Mean0 <- list()
+for(p in 1:length(PopID_List)){
+  imm_Y_Mean0[[p]] <- which(rowMeans(imm_Y[p,,2:noyears]) == 0)
+  imm_A_Mean0[[p]] <- which(rowMeans(imm_A[p,,2:noyears]) == 0)
+}
+
 
 # Set the number of samples to remove based on period-mean immigration rates of 0 (fix option 1)
 if(!FixLog0MeanRates){
-  NAsamples2 <- unique(c(imm_Y_Mean0_P1, imm_A_Mean0_P1,
-                         imm_Y_Mean0_P2, imm_A_Mean0_P2))
+  NAsamples2 <- unique(c(unlist(imm_Y_Mean0), unlist(imm_A_Mean0)))
 }else{
   NAsamples2 <- c()
 }
@@ -57,13 +61,15 @@ if(!FixLog0MeanRates){
 rm(imm_Y, imm_A)
 
 ## Remove unusable samples
-NAsamples <- c(NAsamples1, NAsamples2)
+NAsamples <- c(unlist(NAsamples1), NAsamples2)
 if(length(NAsamples) > 0){
-  out.mat <- out.mat[-NAsamples,]
+  for(p in 1:length(PopID_List)){
+    PopID.MCMC[[p]] <- PopID.MCMC[[p]][-NAsamples,]
+  }
 }
 
 ## Re-calculate sample number
-nosamples <- dim(out.mat)[1]
+nosamples <- dim(PopID.MCMC[[1]])[1]
 
 ###############
 #### SETUP ####
@@ -74,58 +80,63 @@ message(cyan('Assembling posterior data...'))
 ## Prepare matrices to rearrange samples - Vital rates & population sizes
 
 # Time-varying vital rates
-sJ <- sA <- pNS <- matrix(NA, nrow = nosamples, ncol = noyears)
-pB_Y <- CS_Y <- sN_Y <- matrix(NA, nrow = nosamples, ncol = noyears)
-pB_A <- CS_A <- sN_A <- matrix(NA, nrow = nosamples, ncol = noyears)
+sJ <- sA <- pNS <- array(NA, dim = c(length(PopID_List), nosamples, noyears))
+pB_Y <- CS_Y <- sN_Y <- array(NA, dim = c(length(PopID_List), nosamples, noyears))
+pB_A <- CS_A <- sN_A <- array(NA, dim = c(length(PopID_List), nosamples, noyears))
 
-# Time-varying population sizes and growth rates
-N_Y <- matrix(NA, nrow = nosamples, ncol = noyears)
-N_A <- matrix(NA, nrow = nosamples, ncol = noyears)
-N_tot <- matrix(NA, nrow = nosamples, ncol = noyears)
-lambda <- matrix(NA, nrow = nosamples, ncol = noyears)
+# Time-varying population sizes/proportions and growth rates
+N_Y <- n_Y <- array(NA, dim = c(length(PopID_List), nosamples, noyears))
+N_A <- n_A <- array(NA, dim = c(length(PopID_List), nosamples, noyears))
+N_tot <- array(NA, dim = c(length(PopID_List), nosamples, noyears))
+lambda <- array(NA, dim = c(length(PopID_List), nosamples, noyears))
 
-# Time-varying immigrant numbers
-Imm_Y <- Imm_A <- matrix(NA, nrow = nosamples, ncol = noyears)
+# Time-varying immigrant numbers & proportions
+Imm_Y <- Imm_A <- imm_Y <- imm_A <- array(NA, dim = c(length(PopID_List), nosamples, noyears))
 
 ## Fill posterior samples into vectors and matrices
-for(t in 1:noyears){
+for(p in 1:length(PopID_List)){
+    
+  for(t in 1:noyears){
+    
+    # Time-varying population sizes & proportions
+    N_Y[p,,t] <- PopID.MCMC[[p]][, paste0('N[1, ', YearIndexList[[p]][t], ']')]
+    N_A[p,,t] <- PopID.MCMC[[p]][, paste0('N[2, ', YearIndexList[[p]][t], ']')]
+    N_tot[p,,t] <- PopID.MCMC[[p]][, paste0('Ntot[', YearIndexList[[p]][t], ']')]
+    
+    n_Y[p,,t] <- N_Y[p,,t]/N_tot[p,,t]
+    n_A[p,,t] <- N_A[p,,t]/N_tot[p,,t]
+    
+    # Time-varying vital rates   
+    pB_Y[p,,t] <- PopID.MCMC[[p]][, paste0('pB[1, ', YearIndexList[[p]][t], ']')]
+    pB_A[p,,t] <- PopID.MCMC[[p]][, paste0('pB[2, ', YearIndexList[[p]][t], ']')]
+    
+    CS_Y[p,,t] <- PopID.MCMC[[p]][, paste0('CS[1, ', YearIndexList[[p]][t], ']')]
+    CS_A[p,,t] <- PopID.MCMC[[p]][, paste0('CS[2, ', YearIndexList[[p]][t], ']')]
+    
+    pNS[p,,t] <- PopID.MCMC[[p]][, paste0('pNS[', YearIndexList[[p]][t], ']')]
+    
+    sN_Y[p,,t] <- PopID.MCMC[[p]][, paste0('sN[1, ', YearIndexList[[p]][t], ']')]
+    sN_A[p,,t] <- PopID.MCMC[[p]][, paste0('sN[2, ', YearIndexList[[p]][t], ']')]
+    
+    sJ[p,,t] <- PopID.MCMC[[p]][, paste0('sJ[', YearIndexList[[p]][t], ']')]
+    sA[p,,t] <- PopID.MCMC[[p]][, paste0('sA[', YearIndexList[[p]][t], ']')]
+    
+    # Time-varying immigrant numbers/proportions
+    Imm_Y[p,,t] <- PopID.MCMC[[p]][, paste0('Imm[1, ', YearIndexList[[p]][t], ']')]
+    Imm_A[p,,t] <- PopID.MCMC[[p]][, paste0('Imm[2, ', YearIndexList[[p]][t], ']')]
+    
+    if(t > 1){
+      imm_Y[p,,t] <- Imm_Y[p,,t]/N_tot[p,,t-1]
+      imm_A[p,,t] <- Imm_A[p,,t]/N_tot[p,,t-1]
+    }
+  }
   
-  # Time-varying population sizes
-  N_Y[,t] <- out.mat[, paste0('N[1, ', t, ']')]
-  N_A[,t] <- out.mat[, paste0('N[2, ', t, ']')]
-  N_tot[,t] <- out.mat[, paste0('Ntot[', t, ']')]
-  
-  # Time-varying immigrant numbers
-  Imm_Y[,t] <- out.mat[, paste0('Imm[1, ', t, ']')]
-  Imm_A[,t] <- out.mat[, paste0('Imm[2, ', t, ']')]
+  for(t in 1:(noyears-1)){
+    
+    # Population growth rate
+    lambda[p,,t] <- N_tot[p,,t+1]/N_tot[p,,t]
+  }
 }
-
-for(t in 1:(noyears-1)){
-  
-  # Time-varying vital rates   
-  pB_Y[,t] <- out.mat[, paste0('pB[1, ', t, ']')]
-  pB_A[,t] <- out.mat[, paste0('pB[2, ', t, ']')]
-  
-  CS_Y[,t] <- out.mat[, paste0('CS[1, ', t, ']')]
-  CS_A[,t] <- out.mat[, paste0('CS[2, ', t, ']')]
-  
-  pNS[,t] <- out.mat[, paste0('pNS[', t, ']')]
-  
-  sN_Y[,t] <- out.mat[, paste0('sN[1, ', t, ']')]
-  sN_A[,t] <- out.mat[, paste0('sN[2, ', t, ']')]
-  
-  sJ[,t] <- out.mat[, paste0('sJ[', t, ']')]
-  sA[,t] <- out.mat[, paste0('sA[', t, ']')]
-  
-  # Population growth rate
-  lambda[,t] <- N_tot[,t+1]/N_tot[,t]
-}
-
-## Calculate population/immigrant proportions
-n_Y <- N_Y/N_tot
-n_A <- N_A/N_tot
-imm_Y <- cbind(NA,Imm_Y[,2:noyears]/N_tot[,1:(noyears-1)])
-imm_A <- cbind(NA,Imm_A[,2:noyears]/N_tot[,1:(noyears-1)])
 
 
 ###################################################
@@ -135,27 +146,23 @@ imm_A <- cbind(NA,Imm_A[,2:noyears]/N_tot[,1:(noyears-1)])
 message(cyan('Calculating geometric mean growth rates...'))
 
 ## Prepare vectors
-loggeolam_1 <- rep(NA, nosamples) # Mean log lambda for period 1
-loggeolam_2 <- rep(NA, nosamples) # Mean log lambda for period 2
-diffgeolam <- rep(NA, nosamples) # Difference of log lambda (period 1 vs. period 2)
+loggeolam <- matrix(NA, ncol = nosamples, nrow = length(PopID_List)) # Mean log lambda for each population
 
-
-## Calculate geometric mean growth rate for each sample
-for(i in 1:nosamples){
-  loggeolam_1[i] <- mean(log(lambda[i,Period1]))
-  loggeolam_2[i] <- mean(log(lambda[i,Period2]))
-  diffgeolam[i] <- loggeolam_2[i]-loggeolam_1[i]
+## Calculate geometric mean growth rate for each population and sample
+for(p in 1:length(PopID_List)){
+  for(i in 1:nosamples){
+    loggeolam[p,i] <- mean(log(lambda[p,i,1:(noyears-1)]))
+  }
 }
 
+
 ## Summary statistics
-message('Mean log lambda for Period 1:')
-print(quantile(loggeolam_1, probs = c(0.025, 0.5, 0.975), na.rm = T))
+for(p in 1:length(PopID_List)){
+  message(paste0('Mean log lambda for Population ', PopID_List[p], ' (', min(CompPeriod), '-', max(CompPeriod), ')'))
+  print(quantile(loggeolam[p,], probs = c(0.025, 0.5, 0.975), na.rm = T))
+  message('')
+}
 
-message('Mean log lambda for Period 2:')
-print(quantile(loggeolam_2, probs = c(0.025, 0.5, 0.975), na.rm = T))
-
-message('Difference in mean log lambda between periods:')
-print(quantile(diffgeolam, probs = c(0.025, 0.5, 0.975), na.rm = T))
 
 #############################################################################
 #### SIMULATION OF POPULATION DYNAMICS FOR A "MEAN" REFERENCE POPULATION ####
@@ -165,12 +172,12 @@ message(cyan('Simulating dynamics for the reference population...'))
 
 # NOTE: 
 # Reference population = hypothetical population whose vital rates and 
-# initial structure reflect per time-step averages across both time periods. 
+# initial structure reflect per time-step averages across all populations. 
 # The average vital rates and projected dynamics of the reference population
 # are required to evaluate real-time elasticities for the LTRE.
 
 ## Define time period length
-PeriodLength <- ncol(Periods)
+PeriodLength <- noyears
 
 ## Prepare arrays to store reference values
 ref_sJ <- matrix(NA, nosamples, PeriodLength)
@@ -183,35 +190,34 @@ ref_pNS <- matrix(NA, nosamples, PeriodLength)
 ref_sN_Y <- matrix(NA, nosamples, PeriodLength)
 ref_sN_A <- matrix(NA, nosamples, PeriodLength)
 
-ref_n <- array(NA, dim = c(2, 1, nosamples, PeriodLength+1))
-ref_imm <- array(NA, dim = c(2, 1, nosamples, PeriodLength+1))
+ref_n <- array(NA, dim = c(2, 1, nosamples, PeriodLength))
+ref_imm <- array(NA, dim = c(2, 1, nosamples, PeriodLength))
 # NOTE: These are given as arrays to ensure correct dimensions for matrix operations
 
 lam_realref <- matrix(NA, nosamples, PeriodLength)
-
 
 ## Project reference population
 for(i in 1:nosamples){
   
   # Define reference mean starting population structures
-  ref_n[1,1,i,1] <- mean(n_Y[i,c(Period1[1],Period2[1])])
-  ref_n[2,1,i,1] <- mean(n_A[i,c(Period1[1],Period2[1])])
+  ref_n[1,1,i,1] <- mean(n_Y[,i,1])
+  ref_n[2,1,i,1] <- mean(n_A[,i,1])
   
   # Calculate reference mean vital rates
-  ref_sJ[i,] <- (sJ[i,Period1] + sJ[i,Period2])/2
-  ref_sA[i,] <- (sA[i,Period1] + sA[i,Period2])/2
-  ref_pB_Y[i,] <- (pB_Y[i,Period1] + pB_Y[i,Period2])/2
-  ref_pB_A[i,] <- (pB_A[i,Period1] + pB_A[i,Period2])/2
-  ref_CS_Y[i,] <- (CS_Y[i,Period1] + CS_Y[i,Period2])/2
-  ref_CS_A[i,] <- (CS_A[i,Period1] + CS_A[i,Period2])/2
-  ref_pNS[i,] <- (pNS[i,Period1] + pNS[i,Period2])/2
-  ref_sN_Y[i,] <- (sN_Y[i,Period1] + sN_Y[i,Period2])/2
-  ref_sN_A[i,] <- (sN_A[i,Period1] + sN_A[i,Period2])/2
+  ref_sJ[i,] <- colMeans(sJ[,i,])
+  ref_sA[i,] <- colMeans(sA[,i,])
+  ref_pB_Y[i,] <- colMeans(pB_Y[,i,])
+  ref_pB_A[i,] <- colMeans(pB_A[,i,])
+  ref_CS_Y[i,] <- colMeans(CS_Y[,i,])
+  ref_CS_A[i,] <- colMeans(CS_A[,i,])
+  ref_pNS[i,] <- colMeans(pNS[,i,])
+  ref_sN_Y[i,] <- colMeans(sN_Y[,i,])
+  ref_sN_A[i,] <- colMeans(sN_A[,i,])
 
-  ref_imm[1,1,i,2:(PeriodLength+1)] <- (imm_Y[i,Period1+1] + imm_Y[i,Period2+1])/2
-  ref_imm[2,1,i,2:(PeriodLength+1)] <- (imm_A[i,Period1+1] + imm_A[i,Period2+1])/2
+  ref_imm[1,1,i,2:PeriodLength] <- colMeans(imm_Y[,i,2:PeriodLength])
+  ref_imm[2,1,i,2:PeriodLength] <- colMeans(imm_A[,i,2:PeriodLength])
   
-  for(t in 1:PeriodLength){
+  for(t in 1:(PeriodLength-1)){
 
     # Formulate projection matrix 
     A <- matrix(NA, nrow = 2, ncol = 2)
@@ -228,18 +234,18 @@ for(i in 1:nosamples){
 }
 
 ## Calculate temporal means of reference vital rates
-ref_sJ.mu <- rowMeans(ref_sJ)
-ref_sA.mu <- rowMeans(ref_sA)
-ref_pB_Y.mu <- rowMeans(ref_pB_Y)
-ref_pB_A.mu <- rowMeans(ref_pB_A)
-ref_CS_Y.mu <- rowMeans(ref_CS_Y)
-ref_CS_A.mu <- rowMeans(ref_CS_A)
-ref_pNS.mu <- rowMeans(ref_pNS)
-ref_sN_Y.mu <- rowMeans(ref_sN_Y)
-ref_sN_A.mu <- rowMeans(ref_sN_A)
+ref_sJ.mu <- rowMeans(ref_sJ[,1:(PeriodLength-1)])
+ref_sA.mu <- rowMeans(ref_sA[,1:(PeriodLength-1)])
+ref_pB_Y.mu <- rowMeans(ref_pB_Y[,1:(PeriodLength-1)])
+ref_pB_A.mu <- rowMeans(ref_pB_A[,1:(PeriodLength-1)])
+ref_CS_Y.mu <- rowMeans(ref_CS_Y[,1:(PeriodLength-1)])
+ref_CS_A.mu <- rowMeans(ref_CS_A[,1:(PeriodLength-1)])
+ref_pNS.mu <- rowMeans(ref_pNS[,1:(PeriodLength-1)])
+ref_sN_Y.mu <- rowMeans(ref_sN_Y[,1:(PeriodLength-1)])
+ref_sN_A.mu <- rowMeans(ref_sN_A[,1:(PeriodLength-1)])
 
-ref_imm_Y.mu <- rowMeans(ref_imm[1,1,,2:(PeriodLength+1)])
-ref_imm_A.mu <- rowMeans(ref_imm[2,1,,2:(PeriodLength+1)])
+ref_imm_Y.mu <- rowMeans(ref_imm[1,1,,2:PeriodLength])
+ref_imm_A.mu <- rowMeans(ref_imm[2,1,,2:PeriodLength])
 
 
 ####################################################################################
@@ -266,95 +272,33 @@ logsigdiff_imm_Y <- logsigdiff_imm_A <- rep(NA, nosamples)
 
 for(i in 1:nosamples){
   
-  ## Calculate log differences of vital rate means
-  logmudiff_sJ[i] <- log(mean(sJ[i,Period1])) - log(mean(sJ[i,Period2]))
-  logmudiff_sA[i] <- log(mean(sA[i,Period1])) - log(mean(sA[i,Period2]))
-  logmudiff_pB_Y[i] <- log(mean(pB_Y[i,Period1])) - log(mean(pB_Y[i,Period2]))
-  logmudiff_pB_A[i] <- log(mean(pB_A[i,Period1])) - log(mean(pB_A[i,Period2]))
-  logmudiff_CS_Y[i] <- log(mean(CS_Y[i,Period1])) - log(mean(CS_Y[i,Period2]))
-  logmudiff_CS_A[i] <- log(mean(CS_A[i,Period1])) - log(mean(CS_A[i,Period2]))
-  logmudiff_pNS[i] <- log(mean(pNS[i,Period1])) - log(mean(pNS[i,Period2]))
-  logmudiff_sN_Y[i] <- log(mean(sN_Y[i,Period1])) - log(mean(sN_Y[i,Period2]))
-  logmudiff_sN_A[i] <- log(mean(sN_A[i,Period1])) - log(mean(sN_A[i,Period2]))
+  ## Calculate log differences of vital rate means (reference vs. focal population)
+  logmudiff_sJ[i] <- log(mean(ref_sJ[i,1:(PeriodLength-1)])) - log(mean(sJ[PopIDIdx,i,1:(PeriodLength-1)]))
+  logmudiff_sA[i] <- log(mean(ref_sA[i,1:(PeriodLength-1)])) - log(mean(sA[PopIDIdx,i,1:(PeriodLength-1)]))
+  logmudiff_pB_Y[i] <- log(mean(ref_pB_Y[i,1:(PeriodLength-1)])) - log(mean(pB_Y[PopIDIdx,i,1:(PeriodLength-1)]))
+  logmudiff_pB_A[i] <- log(mean(ref_pB_A[i,1:(PeriodLength-1)])) - log(mean(pB_A[PopIDIdx,i,1:(PeriodLength-1)]))
+  logmudiff_CS_Y[i] <- log(mean(ref_CS_Y[i,1:(PeriodLength-1)])) - log(mean(CS_Y[PopIDIdx,i,1:(PeriodLength-1)]))
+  logmudiff_CS_A[i] <- log(mean(ref_CS_A[i,1:(PeriodLength-1)])) - log(mean(CS_A[PopIDIdx,i,1:(PeriodLength-1)]))
+  logmudiff_pNS[i] <- log(mean(ref_pNS[i,1:(PeriodLength-1)])) - log(mean(pNS[PopIDIdx,i,1:(PeriodLength-1)]))
+  logmudiff_sN_Y[i] <- log(mean(ref_sN_Y[i,1:(PeriodLength-1)])) - log(mean(sN_Y[PopIDIdx,i,1:(PeriodLength-1)]))
+  logmudiff_sN_A[i] <- log(mean(ref_sN_A[i,1:(PeriodLength-1)])) - log(mean(sN_A[PopIDIdx,i,1:(PeriodLength-1)]))
   
-  logmudiff_imm_Y[i] <- log(mean(imm_Y[i,Period1+1])) - log(mean(imm_Y[i,Period2+1]))
-  logmudiff_imm_A[i] <- log(mean(imm_A[i,Period1+1])) - log(mean(imm_A[i,Period2+1]))
+  logmudiff_imm_Y[i] <- log(mean(ref_imm[1,1,i,2:PeriodLength])) - log(mean(imm_Y[PopIDIdx,i,2:PeriodLength]))
+  logmudiff_imm_A[i] <- log(mean(ref_imm[2,1,i,2:PeriodLength])) - log(mean(imm_A[PopIDIdx,i,2:PeriodLength]))
   
   ## Calculate log differences of vital rate standard deviations
-  logsigdiff_sJ[i] <- log(sd(sJ[i,Period1])) - log(sd(sJ[i,Period2]))
-  logsigdiff_sA[i] <- log(sd(sA[i,Period1])) - log(sd(sA[i,Period2]))
-  logsigdiff_pB_Y[i] <- log(sd(pB_Y[i,Period1])) - log(sd(pB_Y[i,Period2]))
-  logsigdiff_pB_A[i] <- log(sd(pB_A[i,Period1])) - log(sd(pB_A[i,Period2]))
-  logsigdiff_CS_Y[i] <- log(sd(CS_Y[i,Period1])) - log(sd(CS_Y[i,Period2]))
-  logsigdiff_CS_A[i] <- log(sd(CS_A[i,Period1])) - log(sd(CS_A[i,Period2]))
-  logsigdiff_pNS[i] <- log(sd(pNS[i,Period1])) - log(sd(pNS[i,Period2]))
-  logsigdiff_sN_Y[i] <- log(sd(sN_Y[i,Period1])) - log(sd(sN_Y[i,Period2]))
-  logsigdiff_sN_A[i] <- log(sd(sN_A[i,Period1])) - log(sd(sN_A[i,Period2]))
+  logmudiff_sJ[i] <- log(sd(ref_sJ[i,1:(PeriodLength-1)])) - log(sd(sJ[PopIDIdx,i,1:(PeriodLength-1)]))
+  logmudiff_sA[i] <- log(sd(ref_sA[i,1:(PeriodLength-1)])) - log(sd(sA[PopIDIdx,i,1:(PeriodLength-1)]))
+  logmudiff_pB_Y[i] <- log(sd(ref_pB_Y[i,1:(PeriodLength-1)])) - log(sd(pB_Y[PopIDIdx,i,1:(PeriodLength-1)]))
+  logmudiff_pB_A[i] <- log(sd(ref_pB_A[i,1:(PeriodLength-1)])) - log(sd(pB_A[PopIDIdx,i,1:(PeriodLength-1)]))
+  logmudiff_CS_Y[i] <- log(sd(ref_CS_Y[i,1:(PeriodLength-1)])) - log(sd(CS_Y[PopIDIdx,i,1:(PeriodLength-1)]))
+  logmudiff_CS_A[i] <- log(sd(ref_CS_A[i,1:(PeriodLength-1)])) - log(sd(CS_A[PopIDIdx,i,1:(PeriodLength-1)]))
+  logmudiff_pNS[i] <- log(sd(ref_pNS[i,1:(PeriodLength-1)])) - log(sd(pNS[PopIDIdx,i,1:(PeriodLength-1)]))
+  logmudiff_sN_Y[i] <- log(sd(ref_sN_Y[i,1:(PeriodLength-1)])) - log(sd(sN_Y[PopIDIdx,i,1:(PeriodLength-1)]))
+  logmudiff_sN_A[i] <- log(sd(ref_sN_A[i,1:(PeriodLength-1)])) - log(sd(sN_A[PopIDIdx,i,1:(PeriodLength-1)]))
   
-  logsigdiff_imm_Y[i] <- log(sd(imm_Y[i,Period1+1])) - log(sd(imm_Y[i,Period2+1]))
-  logsigdiff_imm_A[i] <- log(sd(imm_A[i,Period1+1])) - log(sd(imm_A[i,Period2+1]))
-}
-
-## Optional: Re-calculate immigration rate log-means and log-sd's that are 
-#            (-)Inf (fix option 3)
-if(FixLog0MeanRates){
-  
-  # Extract cross-sample minimum non-zero sd
-  immY_sd_min <- min(rowSds(imm_Y, na.rm = T)[which(rowSds(imm_Y, na.rm = T) > 0)]) 
-  immA_sd_min <- min(rowSds(imm_A, na.rm = T)[which(rowSds(imm_A, na.rm = T) > 0)])
-  
-  for(i in 1:nosamples){
-    
-    # Set the period mean to use in calculations (minimum estimated if 0)
-    YP1_mean <- ifelse(i %in% imm_Y_Mean0_P1, 
-                       min(imm_Y[which(imm_Y > 0)]), mean(imm_Y[i,Period1+1]))
-    AP1_mean <- ifelse(i %in% imm_A_Mean0_P1, 
-                       min(imm_A[which(imm_A > 0)]), mean(imm_A[i,Period1+1]))
-    YP2_mean <- ifelse(i %in% imm_Y_Mean0_P2, 
-                       min(imm_Y[which(imm_Y > 0)]), mean(imm_Y[i,Period2+1]))
-    AP2_mean <- ifelse(i %in% imm_A_Mean0_P2, 
-                       min(imm_A[which(imm_A > 0)]), mean(imm_A[i,Period2+1]))
-    
-    # Re-calculate difference of log means for immigration rates
-    logmudiff_imm_Y[i] <- log(YP1_mean) - log(YP2_mean)
-    logmudiff_imm_A[i] <- log(AP1_mean) - log(AP2_mean)
-    
-    # Set the period sd to use in calculatios (minimum sd estimated if 0)
-    YP1_sd <- ifelse(i %in% imm_Y_Mean0_P1, 
-                     immY_sd_min, sd(imm_Y[i,Period1+1]))
-    AP1_sd <- ifelse(i %in% imm_A_Mean0_P1, 
-                     immA_sd_min, sd(imm_A[i,Period1+1]))
-    YP2_sd <- ifelse(i %in% imm_Y_Mean0_P2, 
-                     immY_sd_min, sd(imm_Y[i,Period2+1]))
-    AP2_sd <- ifelse(i %in% imm_A_Mean0_P2, 
-                     immA_sd_min, sd(imm_A[i,Period2+1]))
-    
-    # Re-calculate difference of log sds for immigration rates
-    logsigdiff_imm_Y[i] <- log(YP1_sd) - log(YP2_sd)
-    logsigdiff_imm_A[i] <- log(AP1_sd) - log(AP2_sd)
-    
-  }
-}
-
-## Write a message detailing the number of samples with immigration rate 
-## estimates of 0 for entire time-periods, and how they were treated
-message(paste0('Numbers of samples with period-mean immigration rates of 0:
-               
-  Yearling: ', length(unique(c(imm_Y_Mean0_P1, imm_Y_Mean0_P2))), '
-  ',
-  'Adult: ', length(unique(c(imm_A_Mean0_P1, imm_A_Mean0_P2))),
-  '
-  '))
-
-
-if(!FixLog0MeanRates){
-  message('Affected samples were removed entirely prior to analysis.')
-}
-
-if(FixLog0MeanRates){
-  message('Immigration rate period-mean and period-sd estimates of 0 were 
-replaced with the overall minimum non-0 values in all affected samples prior to
-analysis.')
+  logmudiff_imm_Y[i] <- log(sd(ref_imm[1,1,i,2:PeriodLength])) - log(sd(imm_Y[PopIDIdx,i,2:PeriodLength]))
+  logmudiff_imm_A[i] <- log(sd(ref_imm[2,1,i,2:PeriodLength])) - log(sd(imm_A[PopIDIdx,i,2:PeriodLength]))
 }
 
 
@@ -373,38 +317,38 @@ message(cyan('Calculating real-time elasticities for direct effects...'))
 S <- 2
 
 ## Prepare arrays for storing elasticity matrices
-eA.mu_sJ <- eA.mu_sA <- array(NA, dim = c(S, S, nosamples, PeriodLength))
-eA.mu_pB_Y <- eA.mu_pB_A <- array(NA, dim = c(S, S, nosamples, PeriodLength))
-eA.mu_CS_Y <- eA.mu_CS_A <- array(NA, dim = c(S, S, nosamples, PeriodLength))
-eA.mu_pNS <- array(NA, dim = c(S, S, nosamples, PeriodLength))
-eA.mu_sN_Y <- eA.mu_sN_A <- array(NA, dim = c(S, S, nosamples, PeriodLength))
-eA.mu_imm_Y <- eA.mu_imm_A <- array(NA, dim = c(S, S, nosamples, PeriodLength))
+eA.mu_sJ <- eA.mu_sA <- array(NA, dim = c(S, S, nosamples, PeriodLength-1))
+eA.mu_pB_Y <- eA.mu_pB_A <- array(NA, dim = c(S, S, nosamples, PeriodLength-1))
+eA.mu_CS_Y <- eA.mu_CS_A <- array(NA, dim = c(S, S, nosamples, PeriodLength-1))
+eA.mu_pNS <- array(NA, dim = c(S, S, nosamples, PeriodLength-1))
+eA.mu_sN_Y <- eA.mu_sN_A <- array(NA, dim = c(S, S, nosamples, PeriodLength-1))
+eA.mu_imm_Y <- eA.mu_imm_A <- array(NA, dim = c(S, S, nosamples, PeriodLength-1))
 
-tot_eA.mu_sJ <- tot_eA.mu_sA <- matrix(NA, nosamples, PeriodLength)
-tot_eA.mu_pB_Y <- tot_eA.mu_pB_A <- matrix(NA, nosamples, PeriodLength)
-tot_eA.mu_CS_Y <- tot_eA.mu_CS_A <- matrix(NA, nosamples, PeriodLength)
-tot_eA.mu_pNS <- matrix(NA, nosamples, PeriodLength)
-tot_eA.mu_sN_Y <- tot_eA.mu_sN_A <- matrix(NA, nosamples, PeriodLength)
-tot_eA.mu_imm_Y <- tot_eA.mu_imm_A <- matrix(NA, nosamples, PeriodLength)
+tot_eA.mu_sJ <- tot_eA.mu_sA <- matrix(NA, nosamples, PeriodLength-1)
+tot_eA.mu_pB_Y <- tot_eA.mu_pB_A <- matrix(NA, nosamples, PeriodLength-1)
+tot_eA.mu_CS_Y <- tot_eA.mu_CS_A <- matrix(NA, nosamples, PeriodLength-1)
+tot_eA.mu_pNS <- matrix(NA, nosamples, PeriodLength-1)
+tot_eA.mu_sN_Y <- tot_eA.mu_sN_A <- matrix(NA, nosamples, PeriodLength-1)
+tot_eA.mu_imm_Y <- tot_eA.mu_imm_A <- matrix(NA, nosamples, PeriodLength-1)
 
-eA.sig_sJ <- eA.sig_sA <- array(NA, dim = c(S, S, nosamples, PeriodLength))
-eA.sig_pB_Y <- eA.sig_pB_A <- array(NA, dim = c(S, S, nosamples, PeriodLength))
-eA.sig_CS_Y <- eA.sig_CS_A <- array(NA, dim = c(S, S, nosamples, PeriodLength))
-eA.sig_pNS <- array(NA, dim = c(S, S, nosamples, PeriodLength))
-eA.sig_sN_Y <- eA.sig_sN_A <- array(NA, dim = c(S, S, nosamples, PeriodLength))
-eA.sig_imm_Y <- eA.sig_imm_A <- array(NA, dim = c(S, S, nosamples, PeriodLength))
+eA.sig_sJ <- eA.sig_sA <- array(NA, dim = c(S, S, nosamples, PeriodLength-1))
+eA.sig_pB_Y <- eA.sig_pB_A <- array(NA, dim = c(S, S, nosamples, PeriodLength-1))
+eA.sig_CS_Y <- eA.sig_CS_A <- array(NA, dim = c(S, S, nosamples, PeriodLength-1))
+eA.sig_pNS <- array(NA, dim = c(S, S, nosamples, PeriodLength-1))
+eA.sig_sN_Y <- eA.sig_sN_A <- array(NA, dim = c(S, S, nosamples, PeriodLength-1))
+eA.sig_imm_Y <- eA.sig_imm_A <- array(NA, dim = c(S, S, nosamples, PeriodLength-1))
 
-tot_eA.sig_sJ <- tot_eA.sig_sA <- matrix(NA, nosamples, PeriodLength)
-tot_eA.sig_pB_Y <- tot_eA.sig_pB_A <- matrix(NA, nosamples, PeriodLength)
-tot_eA.sig_CS_Y <- tot_eA.sig_CS_A <- matrix(NA, nosamples, PeriodLength)
-tot_eA.sig_pNS <- matrix(NA, nosamples, PeriodLength)
-tot_eA.sig_sN_Y <- tot_eA.sig_sN_A <- matrix(NA, nosamples, PeriodLength)
-tot_eA.sig_imm_Y <- tot_eA.sig_imm_A <- matrix(NA, nosamples, PeriodLength)
+tot_eA.sig_sJ <- tot_eA.sig_sA <- matrix(NA, nosamples, PeriodLength-1)
+tot_eA.sig_pB_Y <- tot_eA.sig_pB_A <- matrix(NA, nosamples, PeriodLength-1)
+tot_eA.sig_CS_Y <- tot_eA.sig_CS_A <- matrix(NA, nosamples, PeriodLength-1)
+tot_eA.sig_pNS <- matrix(NA, nosamples, PeriodLength-1)
+tot_eA.sig_sN_Y <- tot_eA.sig_sN_A <- matrix(NA, nosamples, PeriodLength-1)
+tot_eA.sig_imm_Y <- tot_eA.sig_imm_A <- matrix(NA, nosamples, PeriodLength-1)
 
 
 ## Calculating direct effect real-time elasticities
 for(i in 1:nosamples){
-  for(t in 1:PeriodLength){
+  for(t in 1:(PeriodLength-1)){
     
     # a) Make derivative of projection matrix with regards to each vital rate
     #    (dA[t]/dVR[t]), in the matrix format.
@@ -563,33 +507,33 @@ message(cyan('Calculating real-time elasticities for indirect effects...'))
 # reference population simulated above. 
 
 ## Prepare arrays for storing elasticity matrices
-en.mu_sJ <- en.mu_sA <- array(NA, dim = c(S, S, nosamples, PeriodLength))
-en.mu_pB_Y <- en.mu_pB_A <- array(NA, dim = c(S, S, nosamples, PeriodLength))
-en.mu_CS_Y <- en.mu_CS_A <- array(NA, dim = c(S, S, nosamples, PeriodLength))
-en.mu_pNS <- array(NA, dim = c(S, S, nosamples, PeriodLength))
-en.mu_sN_Y <- en.mu_sN_A <- array(NA, dim = c(S, S, nosamples, PeriodLength))
-en.mu_imm_Y <- en.mu_imm_A <- array(NA, dim = c(S, S, nosamples, PeriodLength))
+en.mu_sJ <- en.mu_sA <- array(NA, dim = c(S, S, nosamples, PeriodLength-1))
+en.mu_pB_Y <- en.mu_pB_A <- array(NA, dim = c(S, S, nosamples, PeriodLength-1))
+en.mu_CS_Y <- en.mu_CS_A <- array(NA, dim = c(S, S, nosamples, PeriodLength-1))
+en.mu_pNS <- array(NA, dim = c(S, S, nosamples, PeriodLength-1))
+en.mu_sN_Y <- en.mu_sN_A <- array(NA, dim = c(S, S, nosamples, PeriodLength-1))
+en.mu_imm_Y <- en.mu_imm_A <- array(NA, dim = c(S, S, nosamples, PeriodLength-1))
 
-tot_en.mu_sJ <- tot_en.mu_sA <- matrix(NA, nosamples, PeriodLength)
-tot_en.mu_pB_Y <- tot_en.mu_pB_A <- matrix(NA, nosamples, PeriodLength)
-tot_en.mu_CS_Y <- tot_en.mu_CS_A <- matrix(NA, nosamples, PeriodLength)
-tot_en.mu_pNS <- matrix(NA, nosamples, PeriodLength)
-tot_en.mu_sN_Y <- tot_en.mu_sN_A <- matrix(NA, nosamples, PeriodLength)
-tot_en.mu_imm_Y <- tot_en.mu_imm_A <- matrix(NA, nosamples, PeriodLength)
+tot_en.mu_sJ <- tot_en.mu_sA <- matrix(NA, nosamples, PeriodLength-1)
+tot_en.mu_pB_Y <- tot_en.mu_pB_A <- matrix(NA, nosamples, PeriodLength-1)
+tot_en.mu_CS_Y <- tot_en.mu_CS_A <- matrix(NA, nosamples, PeriodLength-1)
+tot_en.mu_pNS <- matrix(NA, nosamples, PeriodLength-1)
+tot_en.mu_sN_Y <- tot_en.mu_sN_A <- matrix(NA, nosamples, PeriodLength-1)
+tot_en.mu_imm_Y <- tot_en.mu_imm_A <- matrix(NA, nosamples, PeriodLength-1)
 
-en.sig_sJ <- en.sig_sA <- array(NA, dim = c(S, S, nosamples, PeriodLength))
-en.sig_pB_Y <- en.sig_pB_A <- array(NA, dim = c(S, S, nosamples, PeriodLength))
-en.sig_CS_Y <- en.sig_CS_A <- array(NA, dim = c(S, S, nosamples, PeriodLength))
-en.sig_pNS <- array(NA, dim = c(S, S, nosamples, PeriodLength))
-en.sig_sN_Y <- en.sig_sN_A <- array(NA, dim = c(S, S, nosamples, PeriodLength))
-en.sig_imm_Y <- en.sig_imm_A <- array(NA, dim = c(S, S, nosamples, PeriodLength))
+en.sig_sJ <- en.sig_sA <- array(NA, dim = c(S, S, nosamples, PeriodLength-1))
+en.sig_pB_Y <- en.sig_pB_A <- array(NA, dim = c(S, S, nosamples, PeriodLength-1))
+en.sig_CS_Y <- en.sig_CS_A <- array(NA, dim = c(S, S, nosamples, PeriodLength-1))
+en.sig_pNS <- array(NA, dim = c(S, S, nosamples, PeriodLength-1))
+en.sig_sN_Y <- en.sig_sN_A <- array(NA, dim = c(S, S, nosamples, PeriodLength-1))
+en.sig_imm_Y <- en.sig_imm_A <- array(NA, dim = c(S, S, nosamples, PeriodLength-1))
 
-tot_en.sig_sJ <- tot_en.sig_sA <- matrix(NA, nosamples, PeriodLength)
-tot_en.sig_pB_Y <- tot_en.sig_pB_A <- matrix(NA, nosamples, PeriodLength)
-tot_en.sig_CS_Y <- tot_en.sig_CS_A <- matrix(NA, nosamples, PeriodLength)
-tot_en.sig_pNS <- matrix(NA, nosamples, PeriodLength)
-tot_en.sig_sN_Y <- tot_en.sig_sN_A <- matrix(NA, nosamples, PeriodLength)
-tot_en.sig_imm_Y <- tot_en.sig_imm_A <- matrix(NA, nosamples, PeriodLength)
+tot_en.sig_sJ <- tot_en.sig_sA <- matrix(NA, nosamples, PeriodLength-1)
+tot_en.sig_pB_Y <- tot_en.sig_pB_A <- matrix(NA, nosamples, PeriodLength-1)
+tot_en.sig_CS_Y <- tot_en.sig_CS_A <- matrix(NA, nosamples, PeriodLength-1)
+tot_en.sig_pNS <- matrix(NA, nosamples, PeriodLength-1)
+tot_en.sig_sN_Y <- tot_en.sig_sN_A <- matrix(NA, nosamples, PeriodLength-1)
+tot_en.sig_imm_Y <- tot_en.sig_imm_A <- matrix(NA, nosamples, PeriodLength-1)
 
 ## Define identity matrix and vector of ones
 I <- diag(S)
@@ -603,40 +547,40 @@ for(i in 1:nosamples){
   #------------------------------------------------------------------------
   
   ## Prepare arrays for perturbation matrices (C2) for direct effects
-  C2_sJ <- C2_sA <- array(0, dim = c(S^2, S^2, PeriodLength))
-  C2_pB_Y <- C2_pB_A <- array(0, dim = c(S^2, S^2, PeriodLength))
-  C2_CS_Y <- C2_CS_A <- array(0, dim = c(S^2, S^2, PeriodLength))
-  C2_pNS <- array(0, dim = c(S^2, S^2, PeriodLength))
-  C2_sN_Y <- C2_sN_A <- array(0, dim = c(S^2, S^2, PeriodLength))
-  C2_imm_Y <- C2_imm_A <- array(0, dim = c(S^2, S^2, PeriodLength))
+  C2_sJ <- C2_sA <- array(0, dim = c(S^2, S^2, PeriodLength-1))
+  C2_pB_Y <- C2_pB_A <- array(0, dim = c(S^2, S^2, PeriodLength-1))
+  C2_CS_Y <- C2_CS_A <- array(0, dim = c(S^2, S^2, PeriodLength-1))
+  C2_pNS <- array(0, dim = c(S^2, S^2, PeriodLength-1))
+  C2_sN_Y <- C2_sN_A <- array(0, dim = c(S^2, S^2, PeriodLength-1))
+  C2_imm_Y <- C2_imm_A <- array(0, dim = c(S^2, S^2, PeriodLength-1))
   
   ## Prepare arrays for perturbation matrices (C3) for indirect effects
-  C3_sJ <- C3_sA <- array(0, dim = c(S^2, S^2, PeriodLength))
-  C3_pB_Y <- C3_pB_A <- array(0, dim = c(S^2, S^2, PeriodLength))
-  C3_CS_Y <- C3_CS_A <- array(0, dim = c(S^2, S^2, PeriodLength))
-  C3_pNS <- array(0, dim = c(S^2, S^2, PeriodLength))
-  C3_sN_Y <- C3_sN_A <- array(0, dim = c(S^2, S^2, PeriodLength))
-  C3_imm_Y <- C3_imm_A <- array(0, dim = c(S^2, S^2, PeriodLength))
+  C3_sJ <- C3_sA <- array(0, dim = c(S^2, S^2, PeriodLength-1))
+  C3_pB_Y <- C3_pB_A <- array(0, dim = c(S^2, S^2, PeriodLength-1))
+  C3_CS_Y <- C3_CS_A <- array(0, dim = c(S^2, S^2, PeriodLength-1))
+  C3_pNS <- array(0, dim = c(S^2, S^2, PeriodLength-1))
+  C3_sN_Y <- C3_sN_A <- array(0, dim = c(S^2, S^2, PeriodLength-1))
+  C3_imm_Y <- C3_imm_A <- array(0, dim = c(S^2, S^2, PeriodLength-1))
   
   ## Prepare arrays for population structure perturbations (w) due to changes
   #  in mean VR
-  w.mu_sJ <- w.mu_sA <- array(0, dim = c(S, S, S, PeriodLength+1))
-  w.mu_pB_Y <- w.mu_pB_A <- array(0, dim = c(S, S, S, PeriodLength+1))
-  w.mu_CS_Y <- w.mu_CS_A <- array(0, dim = c(S, S, S, PeriodLength+1))
-  w.mu_pNS <- array(0, dim = c(S, S, S, PeriodLength+1))
-  w.mu_sN_Y <- w.mu_sN_A <- array(0, dim = c(S, S, S, PeriodLength+1))
-  w.mu_imm_Y <- w.mu_imm_A <- array(0, dim = c(S, S, S, PeriodLength+1))
+  w.mu_sJ <- w.mu_sA <- array(0, dim = c(S, S, S, PeriodLength))
+  w.mu_pB_Y <- w.mu_pB_A <- array(0, dim = c(S, S, S, PeriodLength))
+  w.mu_CS_Y <- w.mu_CS_A <- array(0, dim = c(S, S, S, PeriodLength))
+  w.mu_pNS <- array(0, dim = c(S, S, S, PeriodLength))
+  w.mu_sN_Y <- w.mu_sN_A <- array(0, dim = c(S, S, S, PeriodLength))
+  w.mu_imm_Y <- w.mu_imm_A <- array(0, dim = c(S, S, S, PeriodLength))
   
   ## Prepare arrays for population structure perturbations (w) due to changes
   #  in VR standard deviation
-  w.sig_sJ <- w.sig_sA <- array(0, dim = c(S, S, S, PeriodLength+1))
-  w.sig_pB_Y <- w.sig_pB_A <- array(0, dim = c(S, S, S, PeriodLength+1))
-  w.sig_CS_Y <- w.sig_CS_A <- array(0, dim = c(S, S, S, PeriodLength+1))
-  w.sig_pNS <- array(0, dim = c(S, S, S, PeriodLength+1))
-  w.sig_sN_Y <- w.sig_sN_A <- array(0, dim = c(S, S, S, PeriodLength+1))
-  w.sig_imm_Y <- w.sig_imm_A <- array(0, dim = c(S, S, S, PeriodLength+1))
+  w.sig_sJ <- w.sig_sA <- array(0, dim = c(S, S, S, PeriodLength))
+  w.sig_pB_Y <- w.sig_pB_A <- array(0, dim = c(S, S, S, PeriodLength))
+  w.sig_CS_Y <- w.sig_CS_A <- array(0, dim = c(S, S, S, PeriodLength))
+  w.sig_pNS <- array(0, dim = c(S, S, S, PeriodLength))
+  w.sig_sN_Y <- w.sig_sN_A <- array(0, dim = c(S, S, S, PeriodLength))
+  w.sig_imm_Y <- w.sig_imm_A <- array(0, dim = c(S, S, S, PeriodLength))
   
-  for(t in 1:PeriodLength){
+  for(t in 1:(PeriodLength-1)){
     
     # b) Build the reference matrix for time step t -> t+1 and make derivative 
     #    of projection matrix with regards to each vital rate (dA[t]/dVR[t])
@@ -1031,8 +975,7 @@ ContData <- data.frame(
 ## Assembling results in a list
 LTRE_Results <- list(
   PopID = PopID,
-  Period1 = Period1+min(StudyYears),
-  Period2 = Period1+min(StudyYears),
+  Period = CompPeriod,
   ContVecs_mu = ContVecs_mu,
   ContVecs_sig = ContVecs_sig,
   ContVecs_tot = ContVecs_tot,
@@ -1040,10 +983,5 @@ LTRE_Results <- list(
 )
 
 ## Saving output
-if(!FixLog0MeanRates){
-  saveRDS(LTRE_Results, file = paste0('periodLTRE_', PopID, '.rds'))
-}
-if(FixLog0MeanRates){
-  saveRDS(LTRE_Results, file = paste0('periodLTRE_', PopID, '_Log0MeanFix.rds'))
-}
+saveRDS(LTRE_Results, file = paste0('periodLTRE_crossPop_', PopID, '.rds'))
 

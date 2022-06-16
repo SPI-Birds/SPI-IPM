@@ -11,6 +11,10 @@ library(viridis)
 ## Make a list of all populations
 PopID_List <- c('DIN', 'EDM', 'KAT', 'NAG', 'NWA', 'OKE', 'TEI')
 
+## Define which type of LTRE is to be plotted (cross-time vs. cross-population)
+#crossPop <- FALSE
+crossPop <- TRUE
+type <- ifelse(crossPop, 'crossPop_', '')
 
 ############################################################################
 #### TOTAL DYNAMICS - DATA ASSEMBLY AND FORMATTING - LTRE CONTRIBUTIONS ####
@@ -23,7 +27,7 @@ assemble_periodLTREdata <- function(PopID, ComponentSum){
   #-------#
   
   # Set path and name for relevant LTRE's
-  DataPath <- paste0('periodLTRE_', PopID, '.rds') # Full LTRE
+  DataPath <- paste0('periodLTRE_', type, PopID, '.rds') # Full LTRE
   
   # Load LTRE data
   LTRE_Results <- readRDS(DataPath)
@@ -136,7 +140,7 @@ LTRE_SumVR$PopID <- factor(LTRE_SumVR$PopID, levels = c('EDM', 'TEI', 'OKE', 'NA
 PFC_ColorCode <- c('#B43AA5', '#F2309B', '#F23E1D', '#E7AA24', '#A5D85F', '#32A638', '#376BAD')
 
 ## Plotting: All levels
-pdf('Plots_ComponentSums/SumCont_Ind_AllPops.pdf', width = 8.3, height = 11.7)
+pdf(paste0(type, 'SumCont_Ind_AllPops.pdf'), width = 8.3, height = 11.7)
 ggplot(subset(LTRE_SumVR, SummaryLevel == 'None'), aes(x = cont, y = parameter)) + 
   geom_density_ridges(aes(height = ..ndensity.., fill = PopID, color = PopID), alpha = 0.6, scale = 2) +
   xlab('Contribution') + ylab('Category') +
@@ -150,7 +154,7 @@ ggplot(subset(LTRE_SumVR, SummaryLevel == 'None'), aes(x = cont, y = parameter))
 dev.off()
 
 ## Plotting: Categories
-pdf('Plots_ComponentSums/SumCont_Cat_AllPops.pdf', width = 8.3, height = 11.7)
+pdf(paste0(type, 'SumCont_Cat_AllPops.pdf'), width = 8.3, height = 11.7)
 ggplot(subset(LTRE_SumVR, SummaryLevel == 'Category'), aes(x = cont, y = parameter)) + 
   geom_density_ridges(aes(height = ..ndensity.., fill = PopID, color = PopID), alpha = 0.6, scale = 2) +
   xlab('Contribution') + ylab('Category') +
@@ -164,7 +168,7 @@ ggplot(subset(LTRE_SumVR, SummaryLevel == 'Category'), aes(x = cont, y = paramet
 dev.off()
 
 ## Plotting: Overall
-pdf('Plots_ComponentSums/SumCont_All_AllPops.pdf', width = 8.3, height = 11.7)
+pdf(paste0(type, 'SumCont_All_AllPops.pdf'), width = 8.3, height = 11.7)
 ggplot(subset(LTRE_SumVR, SummaryLevel == 'Overall'), aes(x = cont, y = parameter)) + 
   geom_density_ridges(aes(height = ..ndensity.., fill = PopID, color = PopID), alpha = 0.6, scale = 2) +
   xlab('Contribution') + ylab('Category') +
@@ -178,7 +182,7 @@ ggplot(subset(LTRE_SumVR, SummaryLevel == 'Overall'), aes(x = cont, y = paramete
 dev.off()
 
 ## Plotting: Survival vs. reproduction vs. immigration
-pdf('Plots_ComponentSums/SumCont_SurvRepImm_AllPops.pdf', width = 8, height = 6)
+pdf(paste0(type, 'SumCont_SurvRepImm_AllPops.pdf'), width = 8, height = 6)
 ggplot(subset(LTRE_SumVR, parameter %in% c('Survival', 'Reproduction', 'Immigration') & cont > -0.25 & cont < 0.6), aes(x = cont, y = PopID)) + 
   geom_density_ridges(aes(height = ..ndensity.., fill = parameter, color = parameter), alpha = 0.6, scale = 1) +
   geom_vline(aes(xintercept = 0), color = 'white', linetype = 'dotted', size = 0.4) + 
@@ -189,7 +193,6 @@ ggplot(subset(LTRE_SumVR, parameter %in% c('Survival', 'Reproduction', 'Immigrat
   scale_color_manual(values = c('#00A69D', '#8C085E', 'orange')) + 
   theme_ridges(font_size = 10, grid = FALSE) +
   theme(legend.title = element_blank(), legend.position = 'top', axis.text.y = element_text(face = 'bold'), axis.ticks.y = element_blank())
-
 dev.off()
 
 
@@ -212,7 +215,7 @@ LTRE_CompVR$Pathway <- factor(LTRE_CompVR$Pathway, levels = c('Direct', 'Indirec
 
 for(i in 1:7){
   
-  pdf(paste0('Plots_ByComponents/CompCont_', PopID_List[[i]], '.pdf'), width = 8, height = 10)
+  pdf(paste0(type, 'CompCont_', PopID_List[[i]], '.pdf'), width = 8, height = 10)
   print(ggplot(subset(LTRE_CompVR, PopID == PopID_List[[i]])) + 
     geom_density(aes(x = Contribution, y = ..scaled.., fill = Type, color = Type, linetype = Pathway), alpha = 0.3) +
     xlab('Density') + ylab('Contribution') + ggtitle(paste0('Contributions to long-term growth rate: ', PopID_List[[i]])) + 

@@ -37,18 +37,18 @@ for(i in 1:nosamples){
   logmudiff_imm_A[i] <- log(mean(ref_imm[2,1,i,2:PeriodLength])) - log(mean(imm_A[PopIDIdx,i,2:PeriodLength]))
   
   ## Calculate log differences of vital rate standard deviations
-  logmudiff_sJ[i] <- log(sd(ref_sJ[i,1:(PeriodLength-1)])) - log(sd(sJ[PopIDIdx,i,1:(PeriodLength-1)]))
-  logmudiff_sA[i] <- log(sd(ref_sA[i,1:(PeriodLength-1)])) - log(sd(sA[PopIDIdx,i,1:(PeriodLength-1)]))
-  logmudiff_pB_Y[i] <- log(sd(ref_pB_Y[i,1:(PeriodLength-1)])) - log(sd(pB_Y[PopIDIdx,i,1:(PeriodLength-1)]))
-  logmudiff_pB_A[i] <- log(sd(ref_pB_A[i,1:(PeriodLength-1)])) - log(sd(pB_A[PopIDIdx,i,1:(PeriodLength-1)]))
-  logmudiff_CS_Y[i] <- log(sd(ref_CS_Y[i,1:(PeriodLength-1)])) - log(sd(CS_Y[PopIDIdx,i,1:(PeriodLength-1)]))
-  logmudiff_CS_A[i] <- log(sd(ref_CS_A[i,1:(PeriodLength-1)])) - log(sd(CS_A[PopIDIdx,i,1:(PeriodLength-1)]))
-  logmudiff_pNS[i] <- log(sd(ref_pNS[i,1:(PeriodLength-1)])) - log(sd(pNS[PopIDIdx,i,1:(PeriodLength-1)]))
-  logmudiff_sN_Y[i] <- log(sd(ref_sN_Y[i,1:(PeriodLength-1)])) - log(sd(sN_Y[PopIDIdx,i,1:(PeriodLength-1)]))
-  logmudiff_sN_A[i] <- log(sd(ref_sN_A[i,1:(PeriodLength-1)])) - log(sd(sN_A[PopIDIdx,i,1:(PeriodLength-1)]))
+  logsigdiff_sJ[i] <- log(sd(ref_sJ[i,1:(PeriodLength-1)])) - log(sd(sJ[PopIDIdx,i,1:(PeriodLength-1)]))
+  logsigdiff_sA[i] <- log(sd(ref_sA[i,1:(PeriodLength-1)])) - log(sd(sA[PopIDIdx,i,1:(PeriodLength-1)]))
+  logsigdiff_pB_Y[i] <- log(sd(ref_pB_Y[i,1:(PeriodLength-1)])) - log(sd(pB_Y[PopIDIdx,i,1:(PeriodLength-1)]))
+  logsigdiff_pB_A[i] <- log(sd(ref_pB_A[i,1:(PeriodLength-1)])) - log(sd(pB_A[PopIDIdx,i,1:(PeriodLength-1)]))
+  logsigdiff_CS_Y[i] <- log(sd(ref_CS_Y[i,1:(PeriodLength-1)])) - log(sd(CS_Y[PopIDIdx,i,1:(PeriodLength-1)]))
+  logsigdiff_CS_A[i] <- log(sd(ref_CS_A[i,1:(PeriodLength-1)])) - log(sd(CS_A[PopIDIdx,i,1:(PeriodLength-1)]))
+  logsigdiff_pNS[i] <- log(sd(ref_pNS[i,1:(PeriodLength-1)])) - log(sd(pNS[PopIDIdx,i,1:(PeriodLength-1)]))
+  logsigdiff_sN_Y[i] <- log(sd(ref_sN_Y[i,1:(PeriodLength-1)])) - log(sd(sN_Y[PopIDIdx,i,1:(PeriodLength-1)]))
+  logsigdiff_sN_A[i] <- log(sd(ref_sN_A[i,1:(PeriodLength-1)])) - log(sd(sN_A[PopIDIdx,i,1:(PeriodLength-1)]))
   
-  logmudiff_imm_Y[i] <- log(sd(ref_imm[1,1,i,2:PeriodLength])) - log(sd(imm_Y[PopIDIdx,i,2:PeriodLength]))
-  logmudiff_imm_A[i] <- log(sd(ref_imm[2,1,i,2:PeriodLength])) - log(sd(imm_A[PopIDIdx,i,2:PeriodLength]))
+  logsigdiff_imm_Y[i] <- log(sd(ref_imm[1,1,i,2:PeriodLength])) - log(sd(imm_Y[PopIDIdx,i,2:PeriodLength]))
+  logsigdiff_imm_A[i] <- log(sd(ref_imm[2,1,i,2:PeriodLength])) - log(sd(imm_A[PopIDIdx,i,2:PeriodLength]))
 }
 
 

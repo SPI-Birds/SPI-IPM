@@ -49,9 +49,9 @@ F_{a,t}= pB_{a,t}\times CS_{a,t}\times pNS_{t}\times sN_{a,t}
 \end{equation}
 
 Fledglings that survive to the next breeding season and remain within the 
-population (probability = $sJ_t$) contribute to next year’s yearling class 
+population (apparent survival probability = $sJ_t$) contribute to next year’s yearling class 
 ($N_{Y,t+1}$). Yearlings and adults that survive to the next breeding season and
-remain within the population (probability = $sA_t$) become part of next year’s 
+remain within the population (apparent survival probability = $sA_t$) become part of next year’s 
 adult age class ($N_{A,t+1}$).
 
 ### Code implementation including demographic stochasticity
@@ -253,7 +253,7 @@ for(t in 1:Tmax){
 
 ###	Mark-recapture data likelihood
 In the SPI-IPM, capture histories of marked birds are analysed using an age-specific Cormack-Jolly-Seber (CJS) model [@cormack1964; @jolly1965; @seber1965], which allows estimation of parameters associated with both annual survival and the (re-)capturing process. \
-The survival parameters $sJ_t$ and $sA_t$ describe the probability of surviving from one breeding season to the next for fledglings/juveniles and adult females, respectively. Since field-based sexing fledglings is not possible in the hatch year, first-year survival in the CJS likelihood was set to $0.5sJ_t$, representing the probability that a fledgling is female and survives (recaptures of adult males were removed from the capture histories).\
+The apparent survival parameters $sJ_t$ and $sA_t$ describe the probability of surviving from one breeding season to the next and remaining in the study population for fledglings/juveniles and adult females, respectively. Since field-based sexing fledglings is not possible in the hatch year, first-year survival in the CJS likelihood was set to $0.5sJ_t$, representing the probability that a fledgling is female and survives (recaptures of adult males were removed from the capture histories).\
 The time- and age-dependent recapture parameters $p_{Age,t}^{Recap}$ describe the probability that an age class $a$ individual is recaptured and identified during the breeding season of year $t$ given that it survived the time interval $t-1$ to $t$. For many of the bird populations included in SPI-Birds, (re-)captures of birds are carried out at the nestboxes during the breeding season only. Consequently, two conditions need to be met for a (re-)capture besides the individual being alive: 1) the individual breeds in a nestbox (as non-breeders and birds breeding in natural cavities are not captured) and 2) the individual is actually captured and marked/identified while breeding in a nestbox. The recapture probability is therefore the product of the probability of breeding in a nestbox ($pB_{Age,t}$) and the probability of capture and identification given breeding in a nestbox ($p_t^{CapB}$):
 \begin{equation}
   p_{Age,t}^{Recap}=pB_{Age,t}\times p_t^{CapB}

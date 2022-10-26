@@ -52,5 +52,7 @@ The repository contains two main folders: "SPI-IPM_Code" and "SPI-IPM_CodeManual
 
 
 
-The code manual is still under development (sections marked with "TBA" will be added over the course of 2022), and final changes to code may be made during the revision process of the first associated manuscript. 
-If you would like to use (part of) the code before it is finalized and the documentation completed, or have other questions/inquiries about any of the materials, please contact Chloé R. Nater (chloe.nater@nina.no).
+The code manual is still under development (sections marked with "TBA" will be added over the course of 2022). 
+If you would like assistance using (part of) the code or have other questions/inquiries about any of the materials, please contact Chloé R. Nater (chloe.nater@nina.no).
+
+The latest release is v0.0.1 and is citable via Zenodo: [![DOI](https://zenodo.org/badge/364228589.svg)](https://zenodo.org/badge/latestdoi/364228589)

@@ -5,8 +5,7 @@ library(ggplot2)
 library(crayon)
 
 ## Set data path
-UserName <- 'chloe.nater'
-DataPath <- paste0('/Users/', UserName, '/Dropbox/PiedFlycatcher_IPM/IPM_Code/210819_FlycatcherIPM_PostSamples_MS1/')
+DataPath <- '...' # Set your data path
 
 ## Make a list of all populations
 PopID_List <- c('DIN', 'EDM', 'KAT', 'NAG', 'NWA', 'OKE', 'TEI')
@@ -128,7 +127,7 @@ nosamples <- dim(PopID.MCMC[[1]])[1]
 #### SETUP ####
 ###############
 
-message(cyan('Assembling posterior data...'))
+message(crayon::cyan('Assembling posterior data...'))
 
 ## Prepare matrices to rearrange samples - Vital rates & population sizes
 
@@ -196,7 +195,7 @@ for(p in 1:length(PopID_List)){
 #### CALCULATION OF GEOMETRIC MEAN GROWTH RATE ####
 ###################################################
 
-message(cyan('Calculating geometric mean growth rates...'))
+message(crayon::cyan('Calculating geometric mean growth rates...'))
 
 ## Prepare vectors
 loggeolam <- matrix(NA, ncol = nosamples, nrow = length(PopID_List)) # Mean log lambda for each population
@@ -221,7 +220,7 @@ for(p in 1:length(PopID_List)){
 #### SIMULATION OF POPULATION DYNAMICS FOR A "MEAN" REFERENCE POPULATION ####
 #############################################################################
 
-message(cyan('Simulating dynamics for the reference population...'))
+message(crayon::cyan('Simulating dynamics for the reference population...'))
 
 # NOTE: 
 # Reference population = hypothetical population whose vital rates and 
@@ -307,6 +306,6 @@ for(x in 1:length(PopID_List)){
   PopID <- PopID_List[x]
   PopIDIdx <- x
   
-  message(green$underline$bold(paste0('Cross-population period design LTRE analyses for ', PopID)))
+  message(crayon::green$underline$bold(paste0('Cross-population period design LTRE analyses for ', PopID)))
   source('periodLTRE_crossPop_PopID.R')
 }

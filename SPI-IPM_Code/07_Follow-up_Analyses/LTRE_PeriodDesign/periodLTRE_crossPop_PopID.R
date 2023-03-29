@@ -2,7 +2,7 @@
 #### CALCULATION OF LOG-DIFFERENCES OF VITAL RATE MEANS AND STANDARD DEVIATIONS ####
 ####################################################################################
 
-message(cyan('Calculating vital rate log-differences...'))
+message(crayon::cyan('Calculating vital rate log-differences...'))
 
 ## Prepare vectors to store numbers
 logmudiff_sJ <- logmudiff_sA <- rep(NA, nosamples)
@@ -56,7 +56,7 @@ for(i in 1:nosamples){
 #### CALCULATION OF REAL-TIME ELASTICITIES - VITAL RATES ####
 #############################################################
 
-message(cyan('Calculating real-time elasticities for direct effects...'))
+message(crayon::cyan('Calculating real-time elasticities for direct effects...'))
 
 # NOTE: 
 # This first set of real-time elasticities are for the direct effects of changes
@@ -248,7 +248,7 @@ avg_eA.sig_imm_A <- rowMeans(tot_eA.sig_imm_A)
 #### CALCULATION OF REAL-TIME ELASTICITIES - POPULATION STRUCTURE PERTURBATION ####
 ###################################################################################
 
-message(cyan('Calculating real-time elasticities for indirect effects...'))
+message(crayon::cyan('Calculating real-time elasticities for indirect effects...'))
 
 # NOTE: 
 # This second set of real-time elasticities are for the indirect effects of changes
@@ -597,7 +597,7 @@ avg_en.sig_imm_A <- rowMeans(tot_en.sig_imm_A)
 #### CALCULATION OF PERIOD LTRE CONTRIBUTIONS ####
 ##################################################
 
-message(cyan('Calculating period-design LTRE contributions...'))
+message(crayon::cyan('Calculating period-design LTRE contributions...'))
 
 ## Contributions from direct changes in mean VRs
 contA.mu_sJ <- logmudiff_sJ*avg_eA.mu_sJ
@@ -655,7 +655,7 @@ contn.sig_imm_A <- logsigdiff_imm_A*avg_en.sig_imm_A
 #### ASSEMBLING & SAVING RESULTS ####
 #####################################
 
-message(cyan('Assembling & saving results...'))
+message(crayon::cyan('Assembling & saving results...'))
 
 ## Assemble contributions from changes in VR means in a list
 ContVecs_mu <- list(

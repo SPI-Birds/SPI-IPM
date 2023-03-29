@@ -68,9 +68,8 @@ PropImmDetect <- PFC.data$PropCapBrood
 PropImmDetect[which(PFC.data$AR_Data == 1 & PFC.data$PropCapBrood == 0)] <- NA
 
 ## Load workspace containing environmental data
-load('210413_EnvData.RData')
-env.data <- eval(parse(text = paste0('EnvData$', PopID, '$WindowY')))
-#env.data <- eval(parse(text = paste0('EnvData$', PopID, '$WindowG')))
+EnvData <- readRDS('EnvData.rds')
+env.data <- eval(parse(text = paste0('EnvData$', PopID)))
 
 ## Arrange constants
 SPI.IPMconstants <- list(Tmax = length(PFC.data$NestCount), A = 2,

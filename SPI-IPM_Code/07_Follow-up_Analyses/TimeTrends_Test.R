@@ -13,19 +13,19 @@ library(tidyr)
 #--------------------#
 
 ## Load posterior samples from all 7 runs
-DIN.IPM <- readRDS('FlycatcherIPM_CovA_Sub_DIN.rds')
+DIN.IPM <- readRDS('SPI-IPM_DIN.rds')
 
-EDM.IPM <- readRDS('FlycatcherIPM_CovA_Sub_EDM.rds')
+EDM.IPM <- readRDS('SPI-IPM_EDM.rds')
 
-KAT.IPM <- readRDS('FlycatcherIPM_CovA_Sub_KAT.rds')
+KAT.IPM <- readRDS('SPI-IPM_KAT.rds')
 
-NAG.IPM <- readRDS('FlycatcherIPM_CovA_Sub_NAG.rds')
+NAG.IPM <- readRDS('SPI-IPM_NAG.rds')
 
-NWA.IPM <- readRDS('FlycatcherIPM_CovA_Sub_NWA.rds')
+NWA.IPM <- readRDS('SPI-IPM_NWA.rds')
 
-OKE.IPM <- readRDS('FlycatcherIPM_CovA_Sub_OKE.rds')
+OKE.IPM <- readRDS('SPI-IPM_OKE.rds')
 
-TEI.IPM <- readRDS('FlycatcherIPM_CovA_Sub_TEI.rds')
+TEI.IPM <- readRDS('SPI-IPM_TEI.rds')
 
 
 # Re-organizing data #

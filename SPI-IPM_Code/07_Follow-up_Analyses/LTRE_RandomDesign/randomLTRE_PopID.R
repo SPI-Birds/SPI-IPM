@@ -2,7 +2,7 @@
 #### DATA ASSEMBLY ####
 #######################
 
-message(green$underline$bold(paste0('Random design LTRE analyses for ', PopID)))
+message(crayon::green$underline$bold(paste0('Random design LTRE analyses for ', PopID)))
 
 ## Extract study years for focal population
 StudyYears <- eval(parse(text = paste0('StudyYearsList$', PopID)))
@@ -24,7 +24,7 @@ noyears <- length(StudyYears)
 #### SETUP ####
 ###############
 
-message(cyan('Assembling posterior data...'))
+message(crayon::cyan('Assembling posterior data...'))
 
 ## Prepare matrices to rearrange samples - Vital rates & population sizes
 
@@ -128,7 +128,7 @@ NAsamples <- which(lambda_mean == Inf)
 #### CALCULATION OF TRANSIENT SENSITIVITIES ####
 ################################################
 
-message(cyan('Calculating sensitivities & elasticities...'))
+message(crayon::cyan('Calculating sensitivities & elasticities...'))
 
 ## Make vectors for storing transient sensitivities
 
@@ -257,7 +257,7 @@ ElasVecs <- list(
 #### CALCULATE LTRE CONTRIBUTIONS - POPULATION STRUCTURE ####
 #############################################################
 
-message(cyan('Calculating LTRE contributions...'))
+message(crayon::cyan('Calculating LTRE contributions...'))
 
 ## Prepare vectors to store results
 cont_sJ <- rep(NA, nosamples)
@@ -393,7 +393,7 @@ print(quantile(cont_total, probs = c(0.025, 0.5, 0.975), na.rm = T))
 #### ASSEMBLING & SAVING RESULTS ####
 #####################################
 
-message(cyan('Assembling & saving results...'))
+message(crayon::cyan('Assembling & saving results...'))
 
 ## Assembling results in a list
 LTRE_Results <- list(

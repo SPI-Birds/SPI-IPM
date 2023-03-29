@@ -2,7 +2,7 @@
 #### DATA ASSEMBLY ####
 #######################
 
-message(green$underline$bold(paste0('Period design LTRE analyses for ', PopID)))
+message(crayon::green$underline$bold(paste0('Period design LTRE analyses for ', PopID)))
 
 ## Extract study years for focal population
 StudyYears <- eval(parse(text = paste0('StudyYearsList$', PopID)))
@@ -69,7 +69,7 @@ nosamples <- dim(out.mat)[1]
 #### SETUP ####
 ###############
 
-message(cyan('Assembling posterior data...'))
+message(crayon::cyan('Assembling posterior data...'))
 
 ## Prepare matrices to rearrange samples - Vital rates & population sizes
 
@@ -132,7 +132,7 @@ imm_A <- cbind(NA,Imm_A[,2:noyears]/N_tot[,1:(noyears-1)])
 #### CALCULATION OF GEOMETRIC MEAN GROWTH RATE ####
 ###################################################
 
-message(cyan('Calculating geometric mean growth rates...'))
+message(crayon::cyan('Calculating geometric mean growth rates...'))
 
 ## Prepare vectors
 loggeolam_1 <- rep(NA, nosamples) # Mean log lambda for period 1
@@ -161,7 +161,7 @@ print(quantile(diffgeolam, probs = c(0.025, 0.5, 0.975), na.rm = T))
 #### SIMULATION OF POPULATION DYNAMICS FOR A "MEAN" REFERENCE POPULATION ####
 #############################################################################
 
-message(cyan('Simulating dynamics for the reference population...'))
+message(crayon::cyan('Simulating dynamics for the reference population...'))
 
 # NOTE: 
 # Reference population = hypothetical population whose vital rates and 
@@ -246,7 +246,7 @@ ref_imm_A.mu <- rowMeans(ref_imm[2,1,,2:(PeriodLength+1)])
 #### CALCULATION OF LOG-DIFFERENCES OF VITAL RATE MEANS AND STANDARD DEVIATIONS ####
 ####################################################################################
 
-message(cyan('Calculating vital rate log-differences...'))
+message(crayon::cyan('Calculating vital rate log-differences...'))
 
 ## Prepare vectors to store numbers
 logmudiff_sJ <- logmudiff_sA <- rep(NA, nosamples)
@@ -362,7 +362,7 @@ analysis.')
 #### CALCULATION OF REAL-TIME ELASTICITIES - VITAL RATES ####
 #############################################################
 
-message(cyan('Calculating real-time elasticities for direct effects...'))
+message(crayon::cyan('Calculating real-time elasticities for direct effects...'))
 
 # NOTE: 
 # This first set of real-time elasticities are for the direct effects of changes
@@ -554,7 +554,7 @@ avg_eA.sig_imm_A <- rowMeans(tot_eA.sig_imm_A)
 #### CALCULATION OF REAL-TIME ELASTICITIES - POPULATION STRUCTURE PERTURBATION ####
 ###################################################################################
 
-message(cyan('Calculating real-time elasticities for indirect effects...'))
+message(crayon::cyan('Calculating real-time elasticities for indirect effects...'))
 
 # NOTE: 
 # This second set of real-time elasticities are for the indirect effects of changes
@@ -903,7 +903,7 @@ avg_en.sig_imm_A <- rowMeans(tot_en.sig_imm_A)
 #### CALCULATION OF PERIOD LTRE CONTRIBUTIONS ####
 ##################################################
 
-message(cyan('Calculating period-design LTRE contributions...'))
+message(crayon::cyan('Calculating period-design LTRE contributions...'))
 
 ## Contributions from direct changes in mean VRs
 contA.mu_sJ <- logmudiff_sJ*avg_eA.mu_sJ
@@ -961,7 +961,7 @@ contn.sig_imm_A <- logsigdiff_imm_A*avg_en.sig_imm_A
 #### ASSEMBLING & SAVING RESULTS ####
 #####################################
 
-message(cyan('Assembling & saving results...'))
+message(crayon::cyan('Assembling & saving results...'))
 
 ## Assemble contributions from changes in VR means in a list
 ContVecs_mu <- list(

@@ -2,7 +2,7 @@
 #### DATA ASSEMBLY ####
 #######################
 
-message(green$underline$bold(paste0('Fixed design LTRE analyses for ', PopID)))
+message(crayon::green$underline$bold(paste0('Fixed design LTRE analyses for ', PopID)))
 
 ## Extract study years for focal population
 StudyYears <- eval(parse(text = paste0('StudyYearsList$', PopID)))
@@ -34,7 +34,7 @@ fixedD.LTRE = function(t1, t2){
 	# STEP 1) Organise samples for relevant quantities
 	#-------------------------------------------------
 	
-	#message(cyan('Assembling posterior data...'))
+	#message(crayon::cyan('Assembling posterior data...'))
 	
 	## Extract vital rates for relevant time-steps (all samples)
 	pB_Y <- cbind(out.mat[, paste0('pB[1, ', t1, ']')], out.mat[, paste0('pB[1, ', t2, ']')])
@@ -81,7 +81,7 @@ fixedD.LTRE = function(t1, t2){
 	# STEP 2) Calculate sensitivities (for mean values)
 	#--------------------------------------------------
 	
-	#message(cyan('Calculating sensitivities...'))
+	#message(crayon::cyan('Calculating sensitivities...'))
 
 	## Calculate averages between both time-steps
 	sJ_mean <- rowMeans(sJ)
@@ -178,7 +178,7 @@ fixedD.LTRE = function(t1, t2){
 	# STEP 3) Calculate contributions (fixed design LTRE)
 	#----------------------------------------------------
 
-	#message(cyan('Calculating LTRE contributions...'))
+	#message(crayon::cyan('Calculating LTRE contributions...'))
 
 	## Calculate LTRE contributions for vital rates
   cont_sJ <- (sJ[,2] - sJ[,1])*sens_sJ
@@ -266,7 +266,7 @@ t2 <- t1 + 1
 years <- cbind(t1, t2)
 
 ## Run analysis for all pairs of matrices / time-steps
-message(cyan('Running fixed design LTRE on all subsequent time steps...'))
+message(crayon::cyan('Running fixed design LTRE on all subsequent time steps...'))
 LTRE_Results <- do.call("rbind", sapply(1:nrow(years), FUN = function(x) fixedD.LTRE(t1 = years[x,1], t2 = years[x,2]), simplify = FALSE))
 
 ## Add actual years compared

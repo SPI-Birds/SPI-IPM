@@ -160,7 +160,7 @@ PFC_ColorCode <- c('#B43AA5', '#F2309B', '#F23E1D', '#E7AA24', '#A5D85F', '#32A6
 
 pdf('Plots/VR_Posteriors_crossPop_Forest1.pdf', width = 8, height = 7)
 ggplot(post.data) + 
-  geom_pointrangeh(aes(x = Median, y = Spacing, xmin = lCI, xmax = uCI, colour = PopID, shape = AgeClassPlot, linetype = AgeClassPlot), size = 0.3, fatten = 4) + 
+  geom_pointrangeh(aes(x = Median, y = Spacing, xmin = lCI, xmax = uCI, colour = PopID, shape = AgeClassPlot, linetype = AgeClassPlot), size = 0.3, stroke = 0.5) + 
   scale_color_manual(values = PFC_ColorCode) + 
   guides(colour = guide_legend(order = 1)) + 
   scale_shape_manual(name = 'Age Class', values = c(1,19), labels = c('Juvenile/yearling', 'Adult/combined')) + 
@@ -176,7 +176,7 @@ dev.off()
 
 pdf('Plots/VR_Posteriors_crossPop_Forest2.pdf', width = 6*0.9, height = 7*0.9)
 ggplot(post.data) + 
-  geom_pointrange(aes(y = Median, x = Spacing, ymin = lCI, ymax = uCI, colour = PopID, shape = AgeClassPlot, linetype = AgeClassPlot), size = 0.275, fatten = 4) + 
+  geom_pointrange(aes(y = Median, x = Spacing, ymin = lCI, ymax = uCI, colour = PopID, shape = AgeClassPlot, linetype = AgeClassPlot), size = 0.5, stroke = 0.5) + 
   scale_color_manual(values = PFC_ColorCode) + 
   guides(colour = guide_legend(nrow = 1, order = 1)) + 
   scale_x_reverse() + 

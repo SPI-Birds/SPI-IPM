@@ -155,7 +155,7 @@ stoch.Sims = function(i, data.Tmax, sim.Tmax, out.mat){ # i = simulation number
 run.stochSim = function(PopID, SimNoMax, SimYearMax){
   
   ## Load posterior samples for specified population
-  PFC.IPM <- readRDS(paste0('FlycatcherIPM_CovA_Sub_', PopID, '.rds'))
+  PFC.IPM <- readRDS(paste0('SPI-IPM_', PopID, '.rds'))
   out.mat <- as.matrix(PFC.IPM)
   
   ## Set the index of the final year with data for the selected population

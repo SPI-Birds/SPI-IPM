@@ -16,9 +16,6 @@ library(gridExtra)
 ## Make a list of PopIDs
 PopID_List <- c('DIN', 'EDM', 'KAT', 'NAG', 'NWA', 'OKE', 'TEI')
 
-## Set path for input data and MCMC samples
-DataPath <- '/Users/chloe.nater/Dropbox/PiedFlycatcher_IPM/IPM_Code/210819_FlycatcherIPM_PostSamples_MS1/'
-
 ## Define a short-cut function for posterior summaries
 sam.summary <- function(x){
   unname(quantile(x, probs = c(0.025, 0.5, 0.995), na.rm = T))
@@ -45,7 +42,7 @@ for (i in 1:7){
   PopID <- PopID_List[[i]]
   
   ## Load input data
-  PFC.data <- readRDS(paste0(DataPath, '201210_', PopID, '_IPMData.rds'))
+  PFC.data <- readRDS(paste0(PopID, '_IPMData.rds'))
   
   ## Set max time index
   Tmax <- dim(PFC.data$YearIndeces)[1]
@@ -91,7 +88,7 @@ for (i in 1:7){
   #--------------------------------------------#
   
   ## Load posterior samples
-  PFC.IPM <- readRDS(paste0(DataPath, 'FlycatcherIPM_CovA_Sub_', PopID, '.rds'))
+  PFC.IPM <- readRDS(paste0('SPI-IPM_', PopID, '.rds'))
   sam.mat <- as.matrix(PFC.IPM)
   
   ## Prepare matrices to store results

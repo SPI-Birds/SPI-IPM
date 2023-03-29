@@ -5,9 +5,7 @@ library(ggplot2)
 library(crayon)
 
 ## Set data path
-UserName <- 'chloenater'
-#UserName <- 'chloern'
-DataPath <- paste0('/Users/', UserName, '/Dropbox/PiedFlycatcher_IPM/IPM_Code/210819_FlycatcherIPM_PostSamples_MS1/')
+DataPath <- '...' # Set your data path
 
 ## Make a list of all populations
 PopID_List <- c('DIN', 'EDM', 'KAT', 'NAG', 'NWA', 'OKE', 'TEI')
